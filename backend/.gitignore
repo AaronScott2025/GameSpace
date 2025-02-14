@@ -1,0 +1,3 @@
+# Ignore build output directories for .NET projects
+bin/
+obj/
