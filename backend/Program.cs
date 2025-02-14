@@ -78,6 +78,9 @@ if (app.Environment.IsDevelopment())
 
   
 
+  // Example endpoint to fetch tasks
+  
+
 app.MapGet("/tasks", () => TaskDB.GetTasks());
 app.MapGet("/tasks/{id}", (int id) => TaskDB.GetTask(id));
 app.MapPost("/tasks", (TaskItem task) => TaskDB.addTask(task));
