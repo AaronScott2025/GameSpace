@@ -1,3 +1,13 @@
-# Ignore build output directories for .NET projects
-bin/Debug/net9.0
+# Ignore build and compiled output
+bin/
 obj/
+
+# Ignore user-specific files
+*.user
+*.vs
+*.suo
+*.vscode/
+
+# Ignore dependency-related files
+packages/
+project.lock.json
