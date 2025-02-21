@@ -1,32 +1,33 @@
-import { useState, useEffect } from "react";
-
+import { useRoutes } from "react-router-dom";
+import LandingPage from "./pages/landing-page";
+import LoginPage from "./pages/login-page";
+import SignupPage from "./pages/signup-page";
+import HomePage from "./pages/home-page";
 import "./App.css";
 
 function App() {
-  const [tasks, setTasks] = useState([]);
-
-  useEffect(() => {
-    fetch("/api/tasks")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Fetched tasks:", data); // Debug log
-        setTasks(data);
-      })
-      .catch((error) => console.error("Error fetching tasks:", error));
-  }, []);
+  const routes = useRoutes([
+    {
+      path: "/",
+      element: <LandingPage />,
+    },
+    {
+      path: "/login",
+      element: <LoginPage />,
+    },
+    {
+      path: "/signup",
+      element: <SignupPage />,
+    },
+    {
+      path: "/home",
+      element: <HomePage />,
+    },
+  ]);
 
   return (
     <>
-      <div>
-        <h2>Tasks</h2>
-        <ul>
-          {tasks.map((task) => (
-            <li key={task.id}>
-              {task.title} - {task.completed ? "Completed" : "Pending"}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <div className="App">{routes}</div>
     </>
   );
 }
