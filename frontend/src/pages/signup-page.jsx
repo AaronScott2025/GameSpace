@@ -9,7 +9,10 @@ const SignupPage = () => {
     password: "",
   });
   return (
-    <>
+    <div className="layout-container">
+      <div className="logo-container">
+        <h1>Game Space</h1>
+      </div>
       <form className="form-container">
         <h1 className="form-tittle">Sign Up</h1>
         <SignUpTextField
@@ -50,7 +53,7 @@ const SignupPage = () => {
         <h3>Already have an account?</h3>
         <FormButton text="Log In" />
       </form>
-    </>
+    </div>
   );
 };
 export default SignupPage;

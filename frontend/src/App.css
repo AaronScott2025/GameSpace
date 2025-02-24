@@ -4,6 +4,15 @@
   padding: 2rem;
   text-align: center;
 }
+.layout-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.logo-container h1 {
+  font-size: 9rem;
+  color: #d3f114;
+}
 
 .form-container {
   display: flex;
@@ -17,7 +26,6 @@
   margin: 2rem auto 2rem auto; /* Center the form container vertically */
   width: 90%; /* Make the width responsive */
   max-width: 400px; /* Set a maximum width */
-  margin-left: 50rem; /* Align the form container to the right */
 }
 
 .form-container h1 {
