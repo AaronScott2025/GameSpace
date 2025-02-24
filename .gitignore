@@ -11,3 +11,4 @@ obj/
 # Ignore dependency-related files
 packages/
 project.lock.json
+.fake
