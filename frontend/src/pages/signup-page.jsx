@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import SignUpTextField from "../components/login-signup-components/sign-up-textfield";
 import FormButton from "../components/login-signup-components/form-button";
+import "../styles/login-signup-styles.css";
 const SignupPage = () => {
   const [usersData, setUsersData] = useState({
     username: "",
@@ -51,7 +52,9 @@ const SignupPage = () => {
         <FormButton text="Sign Up" />
 
         <h3>Already have an account?</h3>
-        <FormButton text="Log In" />
+        <Link to="/login" className="link">
+          <FormButton text="Log In" />
+        </Link>
       </form>
     </div>
   );
