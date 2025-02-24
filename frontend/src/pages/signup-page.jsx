@@ -1,9 +1,16 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SignUpTextField from "../components/login-signup-components/sign-up-textfield";
 import FormButton from "../components/login-signup-components/form-button";
-import "../styles/login-signup-styles.css";
+import "../styles/signup-page.css";
+
 const SignupPage = () => {
+  const navigate = useNavigate();
+
+  const goToLogin = () => {
+    navigate("/login"); // Navigate to Login page
+  };
+
   const [usersData, setUsersData] = useState({
     username: "",
     email: "",
@@ -11,51 +18,56 @@ const SignupPage = () => {
   });
   return (
     <div className="layout-container">
-      <div className="logo-container">
-        <h1>Game Space</h1>
+      <div className="signup-container">
+        <div className="signup-logo-container">
+          <img src="/planet.png" alt="Planet" className="planet-logo" />
+          <h1 className="logo-text">
+            {" "}
+            G A M E <br /> S P A C E{" "}
+          </h1>
+        </div>
       </div>
-      <form className="form-container">
-        <h1 className="form-tittle">Sign Up</h1>
-        <SignUpTextField
-          label="Username"
-          type="text"
-          name="username"
-          placeholder="username"
-          value={usersData.username}
-          onChange={(e) =>
-            setUsersData({ ...usersData, username: e.target.value })
-          }
-        />
-        <SignUpTextField
-          label="Email"
-          type="email"
-          name="email"
-          placeholder="email"
-          value={usersData.email}
-          onChange={(e) =>
-            setUsersData({ ...usersData, email: e.target.value })
-          }
-        />
-        <SignUpTextField
-          label="Password"
-          type="password"
-          name="password"
-          placeholder="password"
-          value={usersData.password}
-          onChange={(e) =>
-            setUsersData({ ...usersData, password: e.target.value })
-          }
-        />
+      {/* end of the logo*/}
 
-        <h3>Create account</h3>
-
-        <FormButton text="Sign Up" />
-
-        <h3>Already have an account?</h3>
-        <Link to="/login" className="link">
-          <FormButton text="Log In" />
-        </Link>
-      </form>
+      <div className="signup-form-container">
+        <form className="form">
+          <h1 className="form-tittle">Sign Up</h1>
+          <SignUpTextField
+            label="Username"
+            type="text"
+            name="username"
+            placeholder="username"
+            value={usersData.username}
+            onChange={(e) =>
+              setUsersData({ ...usersData, username: e.target.value })
+            }
+          />
+          <SignUpTextField
+            label="Email"
+            type="email"
+            name="email"
+            placeholder="email"
+            value={usersData.email}
+            onChange={(e) =>
+              setUsersData({ ...usersData, email: e.target.value })
+            }
+          />
+          <SignUpTextField
+            label="Password"
+            type="password"
+            name="password"
+            placeholder="password"
+            value={usersData.password}
+            onChange={(e) =>
+              setUsersData({ ...usersData, password: e.target.value })
+            }
+          />
+          <h2>Create account </h2>
+          <FormButton text={"Sign Up"} />
+        </form>
+        <h2>Already have an account?</h2>
+        <FormButton text={"Log In"} route={goToLogin} />
+      </div>
     </div>
   );
 };
