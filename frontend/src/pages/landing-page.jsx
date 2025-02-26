@@ -1,6 +1,6 @@
 import { React } from "react";
 //import Header from "../components/header";
-import "./landing-page.css";
+import "../style/landing-page.css";
 import { GiAstronautHelmet, GiWhistle, GiSatelliteCommunication  } from "react-icons/gi";
 import { FaUsers } from "react-icons/fa";
 import { CiShoppingCart } from "react-icons/ci";

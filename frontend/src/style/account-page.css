@@ -1,22 +1,33 @@
-/* Container Grid Layout */
 .account-page {
     display: grid;
     grid-template-areas:
         "pfp bio marketplace"
         "account-info games marketplace";
     grid-template-columns: 1fr 2fr 1fr;
-    grid-template-rows: 1fr 1fr;  
+    grid-template-rows: 1fr 1fr;
     gap: 25px;
     padding: 25px;
     background: linear-gradient(180deg, #3c006e, #5b168f);
     height: 90vh;
-    width: 100%;              
-    box-sizing: border-box;   
+    width: 100%;
+    box-sizing: border-box;
     color: white;
+    border-radius: 10px;
 }
 
+/* Titles - Ensuring proper precedence */
+.account-info-title,
+.bio-title,
+.favoriteGames-title,
+.marketplace-title {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Profile Section */
 .profile-section {
-    grid-area: pfp;           
+    grid-area: pfp;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -25,11 +36,11 @@
 }
 
 .profile-picture {
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     background: #777;
-    border: 3px solid white;  
+    border: 2px solid white;
 }
 
 .profile-edit {
@@ -37,16 +48,17 @@
     text-align: center;
     padding: 5px 10px;
     border-radius: 5px;
-    cursor: pointer;          
+    cursor: pointer;
 }
 
 .profile-edit-label {
-    font-size: 14px;
+    font-size: 18px;
     font-weight: bold;
     color: white;
     text-decoration: underline;
 }
 
+/* Account Info Section */
 .account-info-section {
     grid-area: account-info;
     background: #5b168f;
@@ -54,47 +66,9 @@
     border-radius: 10px;
 }
 
-.bio-section {
-    grid-area: bio;
-    background: #5b168f;
-    padding: 20px;
-    border-radius: 10px;
-}
-
-.favoriteGames-section {
-    grid-area: games;
-    background: #5b168f;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-}
-
-.marketplace-section {
-    grid-area: marketplace;
-    background: #5b168f;
-    padding: 20px;
-    border-radius: 10px;
-}
-
-.pfp-img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: #777;
-}
-
-.edit-img {
-    width: 120px;
-    height: 30px;
-    background: #888;
-    text-align: center;
-    line-height: 30px;
-    border-radius: 5px;
-}
-
-.account-info-title,
+/* Linked Services Section */
 .linked-services-title {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
     margin-bottom: 10px;
 }
@@ -110,42 +84,54 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #eee;
     padding: 10px;
     border-radius: 5px;
 }
 
 .info-label {
     font-weight: bold;
+    font-size: 18px;
     color: #333;
+    height: 100%;
     width: 120px;
+    color: #EEFF00;
 }
 
 .info-input {
     flex: 1;
     padding: 5px;
     border: none;
-    border-radius: 3px;
+    border-radius: 8px;
 }
 
-.bio-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
+/* Bio Section */
+.bio-section {
+    grid-area: bio;
+    background: #5b168f;
+    padding: 20px;
+    border-radius: 10px;
 }
 
 .bio-input {
     width: 100%;
-    height: 80px;
+    height: 400px;
     padding: 5px;
     border-radius: 5px;
     border: none;
-}
-
-.favoriteGames-title {
+    resize: none;
+    background: transparent;
+    color: #EEFF00;
     font-size: 18px;
     font-weight: bold;
-    margin-bottom: 10px;
+}
+
+/* Favorite Games Section */
+.favoriteGames-section {
+    grid-area: games;
+    background: #5b168f;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
 }
 
 .favoriteGames-content {
@@ -154,14 +140,17 @@
 }
 
 .favoriteGames-content img {
-    width: 100px;
-    height: 150px;
+    width: 125px;
+    height: 200px;
     border-radius: 8px;
     object-fit: cover;
     background: #777;
 }
 
-.marketplace-title {
-    font-size: 18px;
-    font-weight: bold;
+/* Marketplace Section */
+.marketplace-section {
+    grid-area: marketplace;
+    background: #5b168f;
+    padding: 20px;
+    border-radius: 10px;
 }
