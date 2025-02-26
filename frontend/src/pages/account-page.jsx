@@ -1,20 +1,20 @@
 import React from 'react';
+import '/home/alecmucz/RiderProjects/SeniorProject/frontend/src/pages/account-page.css'; 
+
 
 const AccountPage = () => {
     return (
-        <div classname="account-page">
-            
-        
-            
-            <div className="pfp-section">
-                <div className="pfp-img"></div>
-                <div className="edit-img"></div>
+        <div className="account-page">
+
+
+            <div className="profile-section">
+                <div className="profile-picture"></div>
+                <div className="profile-edit">
+                    <span className="profile-edit-label">Edit Profile Picture</span>
+                </div>
             </div>
             
-            
-
             <div className="account-info-section">
-                
                 <div className="account-info-title">Account Settings</div>
                 <div className="account-info-content">
                     <div className="account-info-item">
@@ -32,7 +32,6 @@ const AccountPage = () => {
                         </div>
                     </div>
                 </div>
-
                 <div className="linked-services-title">Linked Services</div>
                 <div className="linked-services-content">
                     <div className="linked-services-item">
@@ -55,10 +54,28 @@ const AccountPage = () => {
                     </div>
                 </div>
             </div>
+            
+            <div className="bio-section">
+                <div className="bio-title">Bio</div>
+                <div className="bio-content">
+                    <textarea className="bio-input" placeholder="Bio" ></textarea>
+                </div>
+            </div>
+            
+            <div className="favoriteGames-section">
+                <div className="favoriteGames-title">Favorite Games</div>
+                <div className="favoriteGames-content">
+                    <img src="" alt="Game 1" />
+                    <img src="" alt="Game 2" />
+                    <img src="" alt="Game 3" />
+                </div>
+            </div>
+            
+            <div className="marketplace-section">
+                <div className="marketplace-title">Marketplace</div>
+            </div>
 
-
-
-
+            
         </div>
     );
 };
