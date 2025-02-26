@@ -3,7 +3,11 @@ using Supabase;
 using Supabase.Interfaces;
 using backend.Models;
 using backend.contract;
+using backend.Models;
 using Microsoft.VisualBasic;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +40,12 @@ builder.Services.AddScoped<Supabase.Client>(
         }
     )
 );
+
+
+
+
+
+
 
 var app = builder.Build();
 
@@ -76,17 +86,22 @@ if (app.Environment.IsDevelopment())
 
    });
 
+    app.MapPost("/login", async (Login request, Supabase.Client client) =>{
+     var response =  await client.Auth.SignIn(request.email, request.password);
+    
+     return Results.Ok(response);
+    
+    });
+
+    app.MapPost("/signup", async (Login request, Supabase.Client client) =>{
+     var response =  await client.Auth.SignUp(request.email, request.password);
+    
+     return Results.Ok(response);
+    
+    });
   
 
-  // Example endpoint to fetch tasks
   
-
-app.MapGet("/tasks", () => TaskDB.GetTasks());
-app.MapGet("/tasks/{id}", (int id) => TaskDB.GetTask(id));
-app.MapPost("/tasks", (TaskItem task) => TaskDB.addTask(task));
-app.MapPut("/tasks", (TaskItem task) => TaskDB.updateTask(task));
-app.MapDelete("/tasks/{id}", (int id) => TaskDB.deleteTask(id));
-
 
 
 
