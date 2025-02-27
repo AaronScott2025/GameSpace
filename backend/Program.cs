@@ -89,14 +89,47 @@ if (app.Environment.IsDevelopment())
     app.MapPost("/login", async (Login request, Supabase.Client client) =>{
      var response =  await client.Auth.SignIn(request.email, request.password);
     
-     return Results.Ok(response);
+     if (response != null && response.User != null)
+    {
+        // Return only necessary information, avoid returning the access token directly
+        return Results.Ok(new { response.User.Id, response.User.Email });
+    }
+    else
+    {
+        return Results.Unauthorized();
+    }
     
     });
 
     app.MapPost("/signup", async (Login request, Supabase.Client client) =>{
-     var response =  await client.Auth.SignUp(request.email, request.password);
-    
-     return Results.Ok(response);
+     var response = await client.Auth.SignUp(request.email, request.password);
+
+    if (response.User != null)
+    {
+        // Create a new profile with the user ID as a foreign key
+        var newProfile = new Profile
+        {
+            user_id = response.User.Id,
+            username ="kevv",
+            
+            // Add other profile fields as needed
+        };
+
+        var profileResponse = await client.From<Profile>().Insert(newProfile);
+
+        if (profileResponse.Models.Any())
+        {
+            return Results.Ok(new { response.User.Id, response.User.Email });
+        }
+        else
+        {
+            return Results.BadRequest("Profile creation failed");
+        }
+    }
+    else
+    {
+        return Results.BadRequest("Signup failed");
+    }
     
     });
   

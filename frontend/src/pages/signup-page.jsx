@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import SignUpTextField from "../components/login-signup-components/sign-up-textfield";
 import FormButton from "../components/login-signup-components/form-button";
 import "../styles/signup-page.css";
+import { supabase } from "../../client";
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -16,6 +17,28 @@ const SignupPage = () => {
     email: "",
     password: "",
   });
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(usersData),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Sign up successful", data);
+        goToLogin();
+      } else {
+        console.error("Sign up failed");
+      }
+    } catch (error) {
+      console.error("Sign up failed", error);
+    }
+  };
+
   return (
     <div className="layout-container">
       <div className="signup-container">
@@ -30,9 +53,9 @@ const SignupPage = () => {
       {/* end of the logo*/}
 
       <div className="signup-form-container">
-        <form className="form">
+        <form className="form" onSubmit={handleSignUp}>
           <h1 className="form-tittle">Sign Up</h1>
-          <SignUpTextField
+          {/* <SignUpTextField
             label="Username"
             type="text"
             name="username"
@@ -41,7 +64,7 @@ const SignupPage = () => {
             onChange={(e) =>
               setUsersData({ ...usersData, username: e.target.value })
             }
-          />
+          /> */}
           <SignUpTextField
             label="Email"
             type="email"

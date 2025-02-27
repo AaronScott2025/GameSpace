@@ -20,6 +20,28 @@ const LoginPage = () => {
     password: "",
   });
 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(usersData),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Login successful", data);
+        goToHome();
+      } else {
+        console.error("Login failed");
+      }
+    } catch (error) {
+      console.error("Login failed", error);
+    }
+  };
+
   return (
     <div className="layout-container">
       <div className="signup-container">
@@ -34,7 +56,7 @@ const LoginPage = () => {
       {/* end of the logo*/}
 
       <div className="signup-form-container">
-        <form className="form">
+        <form className="form" onSubmit={handleLogin}>
           <h1 className="form-tittle">Log In</h1>
 
           <SignUpTextField
