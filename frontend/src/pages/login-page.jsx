@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import SignUpTextField from "../components/login-signup-components/sign-up-textfield";
 import FormButton from "../components/login-signup-components/form-button";
 import "../styles/signup-page.css";
+import { supabase } from "../../client";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -23,22 +24,17 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(usersData),
+      const { user, error } = await supabase.auth.signInWithPassword({
+        email: usersData.email,
+        password: usersData.password,
       });
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Login successful", data);
-        goToHome();
-      } else {
-        console.error("Login failed");
+      navigate("/home");
+      if (error) {
+        console.error("Sign in failed", error);
+        return; // Exit the function if sign-in fails
       }
     } catch (error) {
-      console.error("Login failed", error);
+      console.error("Sign in failed", error);
     }
   };
 

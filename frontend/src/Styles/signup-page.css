@@ -63,7 +63,9 @@
   width: 100%; /* Make the width responsive */
   max-width: 200px; /* Set a maximum width */
   height: 30px;
-
+  padding: 5px 10px; /* Add padding for better readability */
+  font-size: 1rem; /* Adjust the font size */
+  letter-spacing: 0.2rem; /* Add letter spacing */
   border: 2px solid #325f54;
   margin-bottom: 1rem;
 }

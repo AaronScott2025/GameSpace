@@ -20,19 +20,32 @@ const SignupPage = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(usersData),
+      const { data, error } = await supabase.auth.signUp({
+        email: usersData.email,
+        password: usersData.password,
       });
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Sign up successful", data);
-        goToLogin();
-      } else {
-        console.error("Sign up failed");
+
+      if (error) {
+        console.error("Sign up failed", error);
+        return; // Exit the function if sign-up fails
+      }
+
+      const user = data.user;
+
+      if (user) {
+        console.log("Sign up successful");
+
+        // Insert user ID and username into the profile table
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .insert([{ user_id: user.id, username: usersData.username }]);
+
+        if (profileError) {
+          console.error("Profile creation failed", profileError);
+        } else {
+          console.log("Profile created", profileData);
+          navigate("/login");
+        }
       }
     } catch (error) {
       console.error("Sign up failed", error);
@@ -55,7 +68,7 @@ const SignupPage = () => {
       <div className="signup-form-container">
         <form className="form" onSubmit={handleSignUp}>
           <h1 className="form-tittle">Sign Up</h1>
-          {/* <SignUpTextField
+          <SignUpTextField
             label="Username"
             type="text"
             name="username"
@@ -64,7 +77,7 @@ const SignupPage = () => {
             onChange={(e) =>
               setUsersData({ ...usersData, username: e.target.value })
             }
-          /> */}
+          />
           <SignUpTextField
             label="Email"
             type="email"
