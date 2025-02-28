@@ -4,6 +4,10 @@ import "./duo-matchmaker-page.css";
 const DuoMatchmakerPage = () => {
   return (
     <div className="page-layout">
+      <div className="No-match">
+        <h1>X</h1>
+        <h1>NO</h1>
+      </div>
       {/** this the match card information */}
       <div className="match-profile">
         <div className="profile-picture">
@@ -42,6 +46,10 @@ const DuoMatchmakerPage = () => {
             the end of the season.
           </p>
         </div>
+      </div>
+      <div className="Yes-match">
+        <h1>✓</h1>
+        <h1>YES</h1>
       </div>
     </div>
   );

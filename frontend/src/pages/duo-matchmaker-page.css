@@ -1,24 +1,61 @@
+.page-layout {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 50px;
+}
+.No-match {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.No-match h1 {
+  font-size: 7rem;
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+.Yes-match {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.Yes-match h1 {
+  font-size: 7rem;
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+.match-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+  background: linear-gradient(180deg, #266bff, #a4e4ff);
+  color: #000000;
+  max-height: 800px;
+  max-width: 400px;
+  border-radius: 28px;
+}
 .profile-picture {
   width: 150px; /* Set the width of the circle */
   height: 150px; /* Set the height of the circle */
   border-radius: 50%; /* Make the div a circle */
   overflow: hidden; /* Ensure the image fits within the circle */
+  border: 10px solid #ffcc00;
 }
 
 .profile-picture img {
   width: 100%; /* Ensure the image covers the entire div */
   height: 100%; /* Ensure the image covers the entire div */
   object-fit: cover; /* Maintain the aspect ratio of the image */
-}
-
-.match-profile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  column-gap: 10px;
-  background: linear-gradient(180deg, #266bff, #a4e4ff);
-  color: #000000;
 }
 
 .profile-information {
@@ -46,4 +83,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.description-container p {
+  text-align: left;
 }
