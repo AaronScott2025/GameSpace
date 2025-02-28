@@ -68,6 +68,9 @@ const AccountPage = () => {
                     <img src="" alt="Game 1" />
                     <img src="" alt="Game 2" />
                     <img src="" alt="Game 3" />
+                    <img src="" alt="Game 4" />
+                    <img src="" alt="Game 5" />
+                    <img src="" alt="Game 6" />
                 </div>
             </div>
             

@@ -13,10 +13,9 @@
     box-sizing: border-box;
     color: white;
     border-radius: 10px;
-    overflow: hidden;
+    overflow: scroll;
 }
 
-/* Titles - Ensuring proper precedence */
 .account-info-title,
 .bio-title,
 .favoriteGames-title,
@@ -65,6 +64,9 @@
     background: #5b168f;
     padding: 20px;
     border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
 }
 
 /* Linked Services Section */
@@ -79,6 +81,8 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    flex-grow: 1;
+    overflow: auto;
 }
 
 .info-row {
@@ -133,20 +137,24 @@
     padding: 20px;
     border-radius: 10px;
     text-align: center;
+    overflow: scroll;
 }
 
 .favoriteGames-content {
     display: flex;
+    flex-wrap: wrap; 
     justify-content: space-around;
+    gap: 15px; 
 }
 
 .favoriteGames-content img {
-    width: 100px;
-    height: 150px;
+    width: 125px;
+    height: 187px;
     border-radius: 8px;
     object-fit: cover;
     background: #777;
 }
+
 
 /* Marketplace Section */
 .marketplace-section {
