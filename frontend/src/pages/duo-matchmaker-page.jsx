@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useState, useEffect } from "react";
 import {
   motion,
   useMotionValue,
@@ -15,6 +15,7 @@ const MatchProfileCard = ({
   description,
   isActive,
   onSwipe,
+  triggerSwipe,
 }) => {
   // to move the card as the user drags it
   const motionValue = useMotionValue(0);
@@ -40,6 +41,16 @@ const MatchProfileCard = ({
   // framer animation hook
   const animControls = useAnimation();
 
+  // when the card is swiped to left or right
+  useEffect(() => {
+    if (triggerSwipe) {
+      animControls
+        .start({ x: triggerSwipe === "left" ? -200 : 200 })
+        .then(() => {
+          onSwipe();
+        });
+    }
+  }, [triggerSwipe, onSwipe, animControls]);
   return (
     <motion.div
       className={`match-profile ${isActive ? "active" : ""}`}
@@ -47,6 +58,7 @@ const MatchProfileCard = ({
       style={{ x: motionValue, rotate: rotateValue, opacity: opacityValue }}
       dragConstraints={{ left: 0, right: 0 }}
       onDragEnd={handleDragEnd}
+      animate={animControls}
     >
       <div className="profile-picture">
         <img src={imgSrc} alt="profile picture" />
@@ -81,7 +93,17 @@ const MatchProfileCard = ({
   );
 };
 
+const DecisionButton = ({ imgSrc, text, onClick, name }) => {
+  return (
+    <motion.div className={name} onClick={onClick}>
+      <img src={imgSrc} alt={text} />
+      <h1>{text}</h1>
+    </motion.div>
+  );
+};
+
 const DuoMatchmakerPage = () => {
+  const [triggerSwipe, setTriggerSwipe] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const profilesData = [
@@ -120,10 +142,12 @@ const DuoMatchmakerPage = () => {
 
   return (
     <div className="page-layout">
-      <div className="No-match">
-        <h1>X</h1>
-        <h1>NO</h1>
-      </div>
+      <DecisionButton
+        name="No-match"
+        imgSrc="https://banner2.cleanpng.com/20190512/xyi/kisspng-rainbow-flag-nail-art-pixel-gay-pride-5-percent-of-businesses-are-planning-to-break-up-1713893183862.webp"
+        text="GAME OVER"
+        onClick={() => setTriggerSwipe("left")}
+      />
       <div className="match-profiles-container">
         {profilesData.map((profile, index) => (
           <MatchProfileCard
