@@ -3,7 +3,11 @@ using Supabase;
 using Supabase.Interfaces;
 using backend.Models;
 using backend.contract;
+using backend.Models;
 using Microsoft.VisualBasic;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +40,12 @@ builder.Services.AddScoped<Supabase.Client>(
         }
     )
 );
+
+
+
+
+
+
 
 var app = builder.Build();
 
@@ -76,17 +86,55 @@ if (app.Environment.IsDevelopment())
 
    });
 
+    app.MapPost("/login", async (Login request, Supabase.Client client) =>{
+     var response =  await client.Auth.SignIn(request.email, request.password);
+    
+     if (response != null && response.User != null)
+    {
+        // Return only necessary information, avoid returning the access token directly
+        return Results.Ok(new { response.User.Id, response.User.Email });
+    }
+    else
+    {
+        return Results.Unauthorized();
+    }
+    
+    });
+
+    app.MapPost("/signup", async (Login request, Supabase.Client client) =>{
+     var response = await client.Auth.SignUp(request.email, request.password);
+
+    if (response.User != null)
+    {
+        // Create a new profile with the user ID as a foreign key
+        var newProfile = new Profile
+        {
+            user_id = response.User.Id,
+            username ="kevv",
+            
+            // Add other profile fields as needed
+        };
+
+        var profileResponse = await client.From<Profile>().Insert(newProfile);
+
+        if (profileResponse.Models.Any())
+        {
+            return Results.Ok(new { response.User.Id, response.User.Email });
+        }
+        else
+        {
+            return Results.BadRequest("Profile creation failed");
+        }
+    }
+    else
+    {
+        return Results.BadRequest("Signup failed");
+    }
+    
+    });
   
 
-  // Example endpoint to fetch tasks
   
-
-app.MapGet("/tasks", () => TaskDB.GetTasks());
-app.MapGet("/tasks/{id}", (int id) => TaskDB.GetTask(id));
-app.MapPost("/tasks", (TaskItem task) => TaskDB.addTask(task));
-app.MapPut("/tasks", (TaskItem task) => TaskDB.updateTask(task));
-app.MapDelete("/tasks/{id}", (int id) => TaskDB.deleteTask(id));
-
 
 
 
