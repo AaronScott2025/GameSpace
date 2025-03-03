@@ -5,7 +5,7 @@ import {
   useTransform,
   useAnimation,
 } from "framer-motion";
-import "./duo-matchmaker-page.css";
+import "../styles/duo-matchmaker-page.css";
 
 const MatchProfileCard = ({
   imgSrc,
@@ -14,22 +14,28 @@ const MatchProfileCard = ({
   playerType,
   description,
   isActive,
+  onSwipe,
 }) => {
   // to move the card as the user drags it
   const motionValue = useMotionValue(0);
 
   // to rotate the card as the card moves on drag
-  const rotateValue = useTransform(motionValue, [-200, 200], [-50, 50]);
+  const rotateValue = useTransform(motionValue, [-150, 150], [-18, 18]);
 
   // To decrease opacity of the card when swiped
   // on dragging card to left(-200) or right(200)
   // opacity gradually changes to 0
   // and when the card is in center opacity = 1
-  const opacityValue = useTransform(
-    motionValue,
-    [-200, -150, 0, 150, 200],
-    [0, 1, 1, 1, 0]
-  );
+  const opacityValue = useTransform(motionValue, [-150, 0, 150], [0, 1, 0]);
+
+  const handleDragEnd = () => {
+    if (Math.abs(motionValue.get()) > 100) {
+      // get rid of the frontcard
+      onSwipe();
+    } else {
+      motionValue.set(0);
+    }
+  };
 
   // framer animation hook
   const animControls = useAnimation();
@@ -39,20 +45,8 @@ const MatchProfileCard = ({
       className={`match-profile ${isActive ? "active" : ""}`}
       drag="x"
       style={{ x: motionValue, rotate: rotateValue, opacity: opacityValue }}
-      dragConstraints={{ left: -1000, right: 1000 }}
-      onDragEnd={(event, info) => {
-        // If the card is dragged only up to 150 on x-axis
-        // bring it back to initial position
-        if (Math.abs(info.point.x) <= 150) {
-          animControls.start({ x: 0 });
-        } else {
-          // If card is dragged beyond 150
-          // make it disappear
-
-          // Making use of ternary operator
-          animControls.start({ x: info.point.x < 0 ? -200 : 200 });
-        }
-      }}
+      dragConstraints={{ left: 0, right: 0 }}
+      onDragEnd={handleDragEnd}
     >
       <div className="profile-picture">
         <img src={imgSrc} alt="profile picture" />
@@ -120,6 +114,10 @@ const DuoMatchmakerPage = () => {
     },
   ];
 
+  const handleSwipe = () => {
+    setActiveIndex((prevIndex) => (prevIndex + 1) % profilesData.length);
+  };
+
   return (
     <div className="page-layout">
       <div className="No-match">
@@ -136,6 +134,7 @@ const DuoMatchmakerPage = () => {
             playerType={profile.playerType}
             description={profile.description}
             isActive={index === activeIndex}
+            onSwipe={handleSwipe}
           />
         ))}
       </div>
@@ -148,9 +147,3 @@ const DuoMatchmakerPage = () => {
 };
 
 export default DuoMatchmakerPage;
-
-// In the above code, we have created a  MatchProfileCard  component that represents each card in the matchmaker page. We have used the  motion  component from  framer-motion  to create the draggable card. We have used the  useMotionValue  hook to move the card as the user drags it. We have used the  useTransform  hook to rotate the card as the card moves on drag. We have used the  useAnimation  hook to animate the card when the user drags it.
-// We have also used the  opacityValue  to decrease the opacity of the card when swiped. We have used the  dragConstraints  to restrict the drag of the card. We have used the  onDragEnd  event handler to bring the card back to the initial position if the card is dragged only up to 150 on the x-axis. If the card is dragged beyond 150, we make it disappear.
-// We have also created the  DuoMatchmakerPage  component that renders the matchmaker page. We have used the  profilesData  array to store the profile data. We have used the  map  function to render the  MatchProfileCard  component for each profile. We have used the  isActive  prop to determine if the card is active.
-// Step 5: Create a CSS file for the Duo Matchmaker Page
-// Now, let’s create a CSS file for the Duo Matchmaker page.
