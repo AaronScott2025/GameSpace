@@ -3,6 +3,7 @@
   grid-template-columns: 1fr 2fr 1fr;
   gap: 50px;
   align-items: start;
+  justify-content: center;
 }
 .No-match,
 .Yes-match {
@@ -20,6 +21,11 @@
   padding: 0;
   line-height: 1;
 }
+.match-profiles-container {
+  display: grid;
+  place-items: center;
+}
+
 .match-profile {
   display: flex;
   flex-direction: column;
@@ -32,6 +38,8 @@
   max-width: 400px;
   border-radius: 28px;
   margin-bottom: 20px; /* Add some space between the cards */
+  grid-column: 1;
+  grid-row: 1;
 }
 
 .profile-picture {
