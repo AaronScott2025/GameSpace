@@ -1,11 +1,11 @@
 from typing import List
 
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
-from pydantic.dataclasses import dataclass
+from dataclasses import dataclass
 
 
 @dataclass
-class Coaching(BaseModel):
+class Coaching:
     Username = str
     CoachID = str
     Title = str
@@ -14,7 +14,7 @@ class Coaching(BaseModel):
 
 
 @dataclass
-class CommunityEvents(BaseModel):
+class CommunityEvents:
     EventID = str
     lat = float
     lon = float
@@ -22,7 +22,7 @@ class CommunityEvents(BaseModel):
 
 
 @dataclass
-class Clans(BaseModel):
+class Clans:
     Username = str
     ClanID = str
     Title = str
@@ -30,20 +30,20 @@ class Clans(BaseModel):
     Logo = str
 
 @dataclass
-class Posts(BaseModel):
+class Posts:
     Username = str
     PostID = str
     PostContent = str
     PostAttachment = str
 
 @dataclass
-class Users(BaseModel):
+class Users:
     UserID = str
     password = str
     Email = str
 
 @dataclass
-class Profile(BaseModel):
+class Profile:
     Id = str
     Username = str
     Bio = str
@@ -52,14 +52,15 @@ class Profile(BaseModel):
     Followers = List[str]
 
 @dataclass
-class DuoMatching(BaseModel):
+class DuoMatching:
+    id = str
     Username = str
     Top5Games = List[str]
     PlayerType = List[str]
     Description = str
 
 @dataclass
-class Marketplace(BaseModel):
+class Marketplace:
     Username = str
     SaleID = str
     Title = str
