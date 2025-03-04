@@ -3,7 +3,8 @@ from urllib import request
 import openai
 from supabase import create_client, Client
 from flask import Flask, jsonify
-from GameSpaceBackend.models.classes import Profile
+from GameSpaceBackend.models.classes import Profile, DuoMatching
+import GameSpaceBackend.services.MatchmakingService as ms
 
 app = Flask(__name__)
 
@@ -24,28 +25,28 @@ def mediaGet():
                 "next_offset": offset + 25  # Provide the next offset for subsequent calls
             }), 200
         else:
-            return jsonify({"message": "No more posts available"}), 200
+            return jsonify({"message": "No more posts available"}), 200 #No more posts
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e)}), 500 #Some Error
 
 
 @app.route('/chatbot/', methods= ['POST'])
 def chatbot(userinfo):
     try:
-        user = Profile(userinfo.username,userinfo.bio,userinfo.favoritegames,userinfo.profilepicture,userinfo.followers)
-        input = request.get_json()
-        message = input['message']
-        response = openai.ChatCompletion.create(
-            model = "gpt-4o",
-            messages = [
+        user = Profile(userinfo.username,userinfo.bio,userinfo.favoritegames,userinfo.profilepicture,userinfo.followers) #User Dataclass
+        input = request.get_json() #input
+        message = input['message'] #message
+        response = openai.ChatCompletion.create( #Create a response
+            model = "gpt-4o", #Model
+            messages = [ #System Message
                 {"role": "system", "content": "You are a chatbot for a gaming social media page. You will be talking to "
                                               "a user with the following background:"
                                               f"Username: {user.Username} "
                                               f"Bio: {user.Bio} "
                                               f"FavoriteGames: {user.FavoriteGames} "
                                               f"Your job is to assist the user with anything they need" },
-                {"role": "user", "content": message}
+                {"role": "user", "content": message} #User Message
             ]
         )
         reply = response['choices'][0]['message']['content']
@@ -58,7 +59,10 @@ def chatbot(userinfo):
 @app.route('/matchmaker/', methods= ['GET'])
 def matchmaker(mminfo):
     try:
-        print("temp")
+        match = DuoMatching(mminfo.id,mminfo.Username,mminfo.Top5Games,mminfo.PlayerType,mminfo.Description)
+        listofallduos = ms.importSpecificProfiles(supabase,match)
+        listofpotentialduos = ms.matchMaking(listofallduos,supabase,match)
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
