@@ -8,10 +8,6 @@ import { supabase } from "../../client";
 const LoginPage = () => {
   const navigate = useNavigate();
 
-  const goToHome = () => {
-    navigate("/home"); // Navigate to Login page
-  };
-
   const goToCreateAccount = () => {
     navigate("/signup");
   };
@@ -21,6 +17,8 @@ const LoginPage = () => {
     password: "",
   });
 
+  const [errorMessage, setErrorMessage] = useState(""); // State for error message
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -28,11 +26,13 @@ const LoginPage = () => {
         email: usersData.email,
         password: usersData.password,
       });
-      navigate("/home");
+
       if (error) {
+        setErrorMessage("Sign in failed: " + error.message); // Set error message
         console.error("Sign in failed", error);
         return; // Exit the function if sign-in fails
       }
+      navigate("/home");
     } catch (error) {
       console.error("Sign in failed", error);
     }
@@ -54,7 +54,8 @@ const LoginPage = () => {
       <div className="signup-form-container">
         <form className="form" onSubmit={handleLogin}>
           <h1 className="form-tittle">Log In</h1>
-
+          {errorMessage && <p className="error-message">{errorMessage}</p>}{" "}
+          {/* Conditionally render error message */}
           <SignUpTextField
             label="Email"
             type="email"
@@ -75,9 +76,7 @@ const LoginPage = () => {
               setUsersData({ ...usersData, password: e.target.value })
             }
           />
-
           <br></br>
-
           <FormButton text={"Log In"} />
         </form>
         <h2>New to GameSpace?</h2>
