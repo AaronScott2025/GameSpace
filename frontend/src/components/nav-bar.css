@@ -1,0 +1,130 @@
+
+/*    
+FOR NAVBAR U NEED TO ADD TO the PAGES/GUI'S :
+import "./nav-bar.css";
+<Navbar />                                           */
+
+
+  /* --------------------  Nav Bar  --------------------- */
+
+
+  .navbar {   /* container / Basically header */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 15px;  
+    background: linear-gradient(to right, #1048c9, #3b74d6, #5aa0ff);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2000;
+}
+.logo {   /* Game Space */
+    position: absolute;
+    left: 11%;
+    top: -39%;
+    transform: translate(-30%, 0%);
+    display: flex;
+    align-items: center;
+}
+.logo a {   /* Game Space attributes */
+    font-size: 4.5rem;
+    font-weight: bold;
+    color: #ffff00;
+    text-decoration: none;
+    z-index: 2100;
+}
+
+
+  /* --------------------  Menu Button --------------------- */
+
+
+  .nav-button {   /* arrow */
+    display: flex;
+    position: absolute;
+    background: rgba(49, 115, 230, 0.8);
+    color: #ffff00;
+    padding: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    left: 2.7%;
+    z-index: 2101;
+}
+.nav-button svg {
+  width: 30px;
+  height: 30px;
+  color: #ffff00;
+}
+
+
+  /* --------------------  Profile Button --------------------- */
+
+
+  .profile-auth {   /* Profile Container */
+    gap: 10px;
+    position: absolute;
+    right: 45px;  /* Moves to the right  */
+    top: 50%;
+    transform: translateY(-50%); /* Centers it */
+}
+  .profile-btn {    /* Profile link */
+    border: clear;
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    padding: 8px 15px;
+    border-radius: 19px;
+    margin-right: 8px;
+    transition: background 0.3s ease;
+}
+.profile-btn:hover {
+    background: #444;
+}
+
+
+  /* --------------------  Side Menu --------------------- */
+
+
+  .side-menu {
+    position: fixed;
+    border: clear;
+    top: 80px;
+    left: -250px; /*  off-screen */
+    width: 200px; /* size */
+    height: 56%;
+    background: linear-gradient(to right, #1048c9, #3b74d6, #5aa0ff);
+    transition: left 0.3s ease-in-out;
+    z-index:50;
+    padding-top: 85px;
+}
+.side-menu .nav-links a {
+    color: yellow;
+    text-decoration: none;
+    font-size: 2.1rem;
+    padding: 15px;
+    display: block;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.2); /* transparent background */
+    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+.side-menu .nav-links a:hover {
+    background-color: rgba(255, 255, 255, 0.4); /* darker on hover */
+    color: white;
+    transform: scale(1.05); /* Enlarge  */
+}
+.side-menu .nav-links {
+    list-style: none;
+    padding: 5px;
+    margin-top: -90px; /* menu items below  navbar */
+}
+.side-menu .nav-links li {
+    margin: 6% 0;
+}
+.side-menu.open {
+    left: 0; /* Slides side menu */
+}
+
+
