@@ -6,6 +6,26 @@
   justify-content: center;
   align-items: center;
 }
+
+.decision-button {
+  font: inherit;
+  line-height: 0.8;
+  font-size: 7rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+.decision-button:hover {
+  transform: scale(1.1);
+}
+
+.decision-button img {
+  width: 150px; /* Set the width of the circle */
+  height: 150px; /* Set the height of the circle */
+}
+
 .No-match,
 .Yes-match {
   display: flex;

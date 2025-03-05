@@ -7,6 +7,56 @@ import {
 } from "framer-motion";
 import "../styles/duo-matchmaker-page.css";
 
+const PreferencesForm = ({ onSubmit }) => {
+  const [preferences, setPreferences] = useState({
+    topGames: "",
+    playerType: "",
+    description: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPreferences((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(preferences);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="preferences-form">
+      <label>
+        Top Games:
+        <input
+          type="text"
+          name="topGames"
+          value={preferences.topGames}
+          onChange={handleChange}
+        />
+      </label>
+      <label>
+        Player Type:
+        <input
+          type="text"
+          name="playerType"
+          value={preferences.playerType}
+          onChange={handleChange}
+        />
+      </label>
+      <label>
+        Description:
+        <textarea
+          name="description"
+          value={preferences.description}
+          onChange={handleChange}
+        />
+      </label>
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
 const MatchProfileCard = ({
   imgSrc,
   username,
@@ -95,16 +145,19 @@ const MatchProfileCard = ({
 
 const DecisionButton = ({ imgSrc, text, onClick, name }) => {
   return (
-    <motion.div className={name} onClick={onClick}>
-      <img src={imgSrc} alt={text} />
-      <h1>{text}</h1>
-    </motion.div>
+    <button className="decision-button" onClick={onClick}>
+      {imgSrc && <img src={imgSrc} alt="button icon" />}
+      {text}
+    </button>
   );
 };
 
 const DuoMatchmakerPage = () => {
   const [triggerSwipe, setTriggerSwipe] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isFirstTime, setIsFirstTime] = useState(
+    !localStorage.getItem("preferences")
+  );
 
   const profilesData = [
     {
@@ -140,32 +193,45 @@ const DuoMatchmakerPage = () => {
     setActiveIndex((prevIndex) => (prevIndex + 1) % profilesData.length);
   };
 
+  const handlePreferencesSubmit = (preferences) => {
+    localStorage.setItem("preferences", JSON.stringify(preferences));
+    setIsFirstTime(false);
+  };
+
   return (
     <div className="page-layout">
-      <DecisionButton
-        name="No-match"
-        imgSrc="https://banner2.cleanpng.com/20190512/xyi/kisspng-rainbow-flag-nail-art-pixel-gay-pride-5-percent-of-businesses-are-planning-to-break-up-1713893183862.webp"
-        text="GAME OVER"
-        onClick={() => setTriggerSwipe("left")}
-      />
-      <div className="match-profiles-container">
-        {profilesData.map((profile, index) => (
-          <MatchProfileCard
-            key={index}
-            imgSrc={profile.imgSrc}
-            username={profile.username}
-            topGames={profile.topGames}
-            playerType={profile.playerType}
-            description={profile.description}
-            isActive={index === activeIndex}
-            onSwipe={handleSwipe}
+      {isFirstTime ? (
+        <PreferencesForm onSubmit={handlePreferencesSubmit} />
+      ) : (
+        <>
+          <DecisionButton
+            imgSrc="https://banner2.cleanpng.com/20190512/xyi/kisspng-rainbow-flag-nail-art-pixel-gay-pride-5-percent-of-businesses-are-planning-to-break-up-1713893183862.webp"
+            text="GAME OVER"
+            onClick={() => setTriggerSwipe("left")}
           />
-        ))}
-      </div>
-      <div className="Yes-match">
-        <h1>✓</h1>
-        <h1>YES</h1>
-      </div>
+          <div className="match-profiles-container">
+            {profilesData.map((profile, index) => (
+              <MatchProfileCard
+                key={index}
+                imgSrc={profile.imgSrc}
+                username={profile.username}
+                topGames={profile.topGames}
+                playerType={profile.playerType}
+                description={profile.description}
+                isActive={index === activeIndex}
+                onSwipe={handleSwipe}
+              />
+            ))}
+          </div>
+          <div className="Yes-match">
+            <DecisionButton
+              imgSrc="https://banner2.cleanpng.com/20190512/xyi/kisspng-rainbow-flag-nail-art-pixel-gay-pride-5-percent-of-businesses-are-planning-to-break-up-1713893183862.webp"
+              text="GAME ON"
+              onClick={() => setTriggerSwipe("left")}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };
