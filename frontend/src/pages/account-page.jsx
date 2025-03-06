@@ -1,30 +1,56 @@
-import React from 'react';
-import '/src/style/account-page.css'; 
-
+// AccountPage.jsx
+import { useEffect, useState } from 'react';
+import '/src/style/account-page.css';
+import { getUserInfo, handleGameSelection } from '../scripts/account-page-scripts';
 
 const AccountPage = () => {
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const userId = '2';
+
+    useEffect(() => {
+        const loadUserInfo = async () => {
+            const userInfo = await getUserInfo(userId);
+            if (userInfo) {
+                setUsername(userInfo.username);
+                setEmail(userInfo.email);
+            }
+        };
+        loadUserInfo();
+    }, [userId]);
+
     return (
         <div className="account-page">
-
-
             <div className="profile-section">
                 <div className="profile-picture"></div>
                 <div className="profile-edit">
                     <span className="profile-edit-label">Edit Profile Picture</span>
                 </div>
             </div>
-            
+
             <div className="account-info-section">
                 <div className="account-info-title">Account Settings</div>
                 <div className="account-info-content">
                     <div className="account-info-item">
                         <div className="info-row">
                             <label className="info-label">E-Mail</label>
-                            <input type="text" className="info-input" placeholder="E-mail" />
+                            <input
+                                type="text"
+                                className="info-input"
+                                placeholder="E-mail"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
                         </div>
                         <div className="info-row">
                             <label className="info-label">Username</label>
-                            <input type="text" className="info-input" placeholder="Username" />
+                            <input
+                                type="text"
+                                className="info-input"
+                                placeholder="Username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                            />
                         </div>
                         <div className="info-row">
                             <label className="info-label">Password</label>
@@ -51,34 +77,48 @@ const AccountPage = () => {
                             <label className="info-label">X-Box</label>
                             <input type="text" className="info-input" placeholder="Xbox " />
                         </div>
+                        <div className="info-row">
+                            <label className="info-label">Discord</label>
+                            <input type="text" className="info-input" placeholder="Discord " />
+                        </div>
                     </div>
                 </div>
             </div>
-            
+
             <div className="bio-section">
                 <div className="bio-title">Bio</div>
                 <div className="bio-content">
-                    <textarea className="bio-input" placeholder="Bio" ></textarea>
+                    <textarea className="bio-input" placeholder="Bio"></textarea>
                 </div>
             </div>
-            
+
             <div className="favoriteGames-section">
                 <div className="favoriteGames-title">Favorite Games</div>
                 <div className="favoriteGames-content">
-                    <img src="" alt="Game 1" />
-                    <img src="" alt="Game 2" />
-                    <img src="" alt="Game 3" />
-                    <img src="" alt="Game 4" />
-                    <img src="" alt="Game 5" />
-                    <img src="" alt="Game 6" />
+                    <div className="favorite-game" onClick={() => handleGameSelection("Game 1")}>
+                        <img src="" alt="Game 1" />
+                    </div>
+                    <div className="favorite-game" onClick={() => handleGameSelection("Game 2")}>
+                        <img src="" alt="Game 2" />
+                    </div>
+                    <div className="favorite-game" onClick={() => handleGameSelection("Game 3")}>
+                        <img src="" alt="Game 3" />
+                    </div>
+                    <div className="favorite-game" onClick={() => handleGameSelection("Game 4")}>
+                        <img src="" alt="Game 4" />
+                    </div>
+                    <div className="favorite-game" onClick={() => handleGameSelection("Game 5")}>
+                        <img src="" alt="Game 5" />
+                    </div>
+                    <div className="favorite-game" onClick={() => handleGameSelection("Game 6")}>
+                        <img src="" alt="Game 6" />
+                    </div>
                 </div>
             </div>
-            
+
             <div className="marketplace-section">
                 <div className="marketplace-title">Marketplace</div>
             </div>
-
-            
         </div>
     );
 };

@@ -1,28 +1,39 @@
+:root {
+    --primary-bg: #5b168f;
+    --secondary-bg: #3c006e;
+    --accent-color: #EEFF00;
+    --neutral-bg: #888888;
+    --border-radius: 10px;
+    --base-gap: 25px;
+    --base-padding: 25px;
+    --title-font-size: 36px;
+    --subtitle-font-size: 28px;
+    --label-font-size: 18px;
+}
+
+/* Ensure consistent sizing across all elements */
+* {
+    box-sizing: border-box;
+}
+
+/* Main Container with a constrained max-width */
 .account-page {
     display: grid;
     grid-template-areas:
         "pfp bio marketplace"
         "account-info games marketplace";
-    grid-template-columns: 1fr 2fr 1fr;
-    grid-template-rows: minmax(250px, 1fr) minmax(250px, 1fr);
-    gap: 25px;
-    padding: 25px;
-    background: linear-gradient(180deg, #3c006e, #5b168f);
+    grid-template-columns: minmax(100px, 1.5fr) minmax(300px, 2fr) minmax(100px, 1fr);
+    grid-template-rows: 1fr 1fr;
+    gap: var(--base-gap);
+    padding: var(--base-padding);
+    background: linear-gradient(180deg, var(--secondary-bg), var(--primary-bg));
     height: 90vh;
     width: 100%;
-    box-sizing: border-box;
+    max-width: 1200px;
+    margin: 0 auto;
     color: white;
-    border-radius: 10px;
-    overflow: scroll;
-}
-
-.account-info-title,
-.bio-title,
-.favoriteGames-title,
-.marketplace-title {
-    font-size: 36px;
-    font-weight: bold;
-    margin-bottom: 15px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
 }
 
 /* Profile Section */
@@ -30,8 +41,8 @@
     grid-area: pfp;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     gap: 15px;
 }
 
@@ -39,20 +50,20 @@
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    background: #777;
+    background: var(--neutral-bg);
     border: 2px solid white;
 }
 
 .profile-edit {
-    background: #888;
-    text-align: center;
+    background: var(--neutral-bg);
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
+    text-align: center;
 }
 
 .profile-edit-label {
-    font-size: 18px;
+    font-size: var(--label-font-size);
     font-weight: bold;
     color: white;
     text-decoration: underline;
@@ -60,20 +71,22 @@
 
 /* Account Info Section */
 .account-info-section {
+    min-width: 300px;
     grid-area: account-info;
-    background: #5b168f;
+    background: var(--primary-bg);
     padding: 20px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
 }
 
-/* Linked Services Section */
-.linked-services-title {
-    font-size: 24px;
+.account-info-title {
+    font-size: var(--title-font-size);
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .account-info-content,
@@ -81,23 +94,25 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    flex-grow: 1;
-    overflow: auto;
 }
 
+.linked-services-title {
+    font-size: var(--title-font-size);
+}
+
+/* Info Rows */
 .info-row {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     padding: 10px;
     border-radius: 5px;
 }
 
 .info-label {
+    font-size: var(--label-font-size);
     font-weight: bold;
-    font-size: 18px;
-    color: #EEFF00;
-    height: 100%;
+    color: var(--accent-color);
     width: 120px;
 }
 
@@ -111,70 +126,98 @@
 /* Bio Section */
 .bio-section {
     grid-area: bio;
-    background: #5b168f;
+    background: var(--primary-bg);
     padding: 20px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: column;
+}
+
+.bio-title {
+    font-size: var(--title-font-size);
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.bio-content {
+    flex: 1;
 }
 
 .bio-input {
     width: 100%;
     min-height: 150px;
-    max-height: 250px;
+    max-height: 100%;
     padding: 5px;
-    border-radius: 5px;
     border: none;
+    border-radius: 5px;
     resize: none;
     background: transparent;
-    color: #EEFF00;
-    font-size: 18px;
+    color: var(--accent-color);
+    font-size: var(--label-font-size);
     font-weight: bold;
 }
 
 /* Favorite Games Section */
 .favoriteGames-section {
     grid-area: games;
-    background: #5b168f;
-    padding: 20px;
-    border-radius: 10px;
+    background: var(--primary-bg);
+    padding: 10px;
+    border-radius: var(--border-radius);
     text-align: center;
-    overflow: scroll;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+}
+
+.favoriteGames-title {
+    font-size: var(--title-font-size);
+    font-weight: bold;
+    margin-bottom: 15px;
 }
 
 .favoriteGames-content {
     display: flex;
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
     justify-content: space-around;
-    gap: 15px; 
+    gap: 15px;
+    flex: 1;
 }
 
-.favoriteGames-content img {
+.favorite-game {
     width: 125px;
-    height: 187px;
+    aspect-ratio: 125 / 187;
+    border: 2px solid var(--accent-color);
+    background: var(--neutral-bg);
     border-radius: 8px;
-    object-fit: cover;
-    background: #777;
+    overflow: hidden;
+    cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
 }
 
+.favorite-game:hover {
+    opacity: 0.8;
+}
+
+.favorite-game img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
 /* Marketplace Section */
 .marketplace-section {
     grid-area: marketplace;
-    background: #5b168f;
+    background: var(--primary-bg);
     padding: 20px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: var(--title-font-size);
 }
 
 /* Responsive Adjustments */
-@media (max-width: 1400px) {
-    .account-page {
-        grid-template-columns: 1fr 1.5fr 0.8fr;
-        gap: 15px;
-    }
-    .bio-input {
-        max-height: 200px;
-    }
-}
-
 @media (max-width: 1024px) {
     .account-page {
         grid-template-areas:
@@ -187,9 +230,6 @@
     .marketplace-section {
         grid-column: span 2;
     }
-    .bio-input {
-        height: auto;
-    }
 }
 
 @media (max-width: 768px) {
@@ -197,6 +237,7 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
+        height: auto;
     }
     .profile-picture {
         width: 100px;
@@ -204,5 +245,12 @@
     }
     .bio-input {
         height: 150px;
+    }
+}
+
+@media (max-height: 900px) {
+    .account-info-section,
+    .favorite-game {
+        transform-origin: top center;
     }
 }
