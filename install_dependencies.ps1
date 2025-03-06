@@ -15,6 +15,8 @@ try {
     pip install -r requirements.txt
 } catch {
     Write-Error "Failed to navigate to GameSpaceBackend directory or install backend dependencies"
+    Set-Location -Path ".."
     exit 1
 }
+Set-Location -Path ".."
 Write-Host "All dependencies installed successfully!"
