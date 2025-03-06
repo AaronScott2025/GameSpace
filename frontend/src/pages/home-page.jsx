@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import  { useContext } from "react";
 import { supabase } from "../../client";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";

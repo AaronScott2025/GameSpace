@@ -1,23 +1,30 @@
 // AccountPage.jsx
-import { useEffect, useState } from 'react';
+import {useContext, useEffect, useState} from 'react';
 import '/src/style/account-page.css';
 import { getUserInfo, handleGameSelection } from '../scripts/account-page-scripts';
+import { UserContext } from "./UserContext";
 
 const AccountPage = () => {
+    const { user } = useContext(UserContext);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
-    const userId = '2';
+    const [setLoading] = useState(true);
 
     useEffect(() => {
         const loadUserInfo = async () => {
-            const userInfo = await getUserInfo(userId);
+            if (!user?.id) return;
+
+            setLoading(true);
+            const userInfo = await getUserInfo(user.id);
             if (userInfo) {
                 setUsername(userInfo.username);
                 setEmail(userInfo.email);
             }
+            setLoading(false);
         };
+
         loadUserInfo();
-    }, [userId]);
+    }, [user?.id]);
 
     return (
         <div className="account-page">
