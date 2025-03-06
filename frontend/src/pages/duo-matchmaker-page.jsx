@@ -9,9 +9,11 @@ import "../styles/duo-matchmaker-page.css";
 
 const PreferencesForm = ({ onSubmit }) => {
   const [preferences, setPreferences] = useState({
-    topGames: "",
-    playerType: "",
-    description: "",
+    playStyle: "",
+    playerDescription: "",
+    playerPersonality: "",
+    micUsage: "",
+    playTime: "",
   });
 
   const handleChange = (e) => {
@@ -30,6 +32,7 @@ const PreferencesForm = ({ onSubmit }) => {
         Top Games:
         <input
           type="text"
+          s
           name="topGames"
           value={preferences.topGames}
           onChange={handleChange}
