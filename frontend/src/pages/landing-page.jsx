@@ -1,11 +1,15 @@
-import { React } from "react";
 //import Header from "../components/header";
+import "../styles/landing-page.css";
+import {
+  GiAstronautHelmet,
+  GiWhistle,
+  GiSatelliteCommunication,
+} from "react-icons/gi";
 import "../style/landing-page.css";
-import { GiAstronautHelmet, GiWhistle, GiSatelliteCommunication  } from "react-icons/gi";
 import { FaUsers } from "react-icons/fa";
 import { CiShoppingCart } from "react-icons/ci";
 import { BsRocket } from "react-icons/bs";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 /*<Header />*/
 const LandingPage = () => {
@@ -17,12 +21,13 @@ const LandingPage = () => {
     navigate("/login"); // Navigate to Login page
   };
   return (
-    <div className="landing-page"> 
-
+    <div className="landing-page">
       <div className="planet-container">
-
         <img src="/planet.png" alt="Planet" className="planet" />
-        <h1 className="title"> G A M E <br /> S P A C E </h1>
+        <h1 className="title">
+          {" "}
+          G A M E <br /> S P A C E{" "}
+        </h1>
         <div className="icon rocket" onClick={goToHome}>
           <BsRocket size={50} />
           <span className="tooltip">Home</span>
@@ -44,10 +49,9 @@ const LandingPage = () => {
           <span className="tooltip">Coaching</span>
         </div>
         <div className="icon frens">
-          <GiSatelliteCommunication  size={50} />
+          <GiSatelliteCommunication size={50} />
           <span className="tooltip">PartyFinder</span>
         </div>
-
       </div>
     </div>
   );

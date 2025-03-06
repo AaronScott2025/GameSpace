@@ -1,0 +1,138 @@
+
+
+/* --------------------  landing Page --------------------- */
+
+.landing-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-family: "Jersey 10", sans-serif;
+  animation: fadeIn 3s ease-out; /* fadein animation */
+}
+/* background-image: url('/galaxy.gif'); /* .gif as the background */
+/*background-size: cover; /* Covers entire background */
+/*background-position: center; /* Centers background */
+/*background-repeat: no-repeat;*/
+
+
+/* --------------------  Planet container --------------------- */
+
+.planet-container {
+  position: relative;
+  display: auto;
+}
+
+.title {
+  font-size: 7rem;
+  color: #ffff00;
+  position: absolute;
+  top: 6%;
+  width: 100%;
+  line-height: 1.1;  /* Reduce space between lines */
+  font-family: "Jersey 10", sans-serif;
+  animation: pulse 08s ease-in-out infinite;
+}
+
+
+/* --------------------  png & icons --------------------- */
+
+.planet {
+  width: 500px;
+  height: auto;
+  z-index: 0; /* Keep the planet behind the title */
+  object-fit: contain;
+  animation: float 6s ease-in-out infinite;
+}
+
+.rocket {
+  top: 10%;
+  left: -10%;
+}
+
+.helmet {
+  top: 9%;
+  right: -10%;
+}
+
+.frens {
+  top: 47%;
+  left: 107%;
+}
+
+.store {
+  top: 45%;
+  right: 105%;
+}
+
+.clan {
+  bottom: 2%;
+  left: 0%;
+}
+
+.whistle {
+  bottom: 2%;
+  right: 0%;
+}
+
+.icon {
+  position: absolute;
+  color: #ffff00;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+}
+
+
+/* --------------------  Animations --------------------- */
+
+.icon:hover {
+  color: yellow;
+  transform: scale(1.25); /* Enlarge the icon */
+  cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+.icon:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip {
+  visibility: hidden;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 15px;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-11px); /* Float upwards */
+  }
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Praj */
