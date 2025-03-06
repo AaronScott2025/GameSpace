@@ -1,5 +1,6 @@
 from supabase import create_client, Client
 from os import environ
+import numpy as np
 
 from GameSpaceBackend.models.classes import DuoMatching
 
@@ -18,6 +19,7 @@ def importSpecificProfiles(supabase,match):
             Username=item["username"],
             Top5Games=item["top_5_games"],
             PlayerType=item["playerType"],
+            PlayerTypeInts=['playerTypeInts'],
             Description = item["Description"]
         )
         for item in datafilter
@@ -33,6 +35,7 @@ def importAllProfiles(supabase):
             Username=item["username"],
             Top5Games=item["top_5_games"],
             PlayerType=item["playerType"],
+            PlayerTypeInts=['playerTypeInts'],
             Description = item["Description"]
         )
         for item in data
@@ -41,8 +44,11 @@ def importAllProfiles(supabase):
 
 
 def matchMaking(duoList,supabase,match):
-    print("wip")
+    origin = np.array((match.PlayerTypeInts[0],match.PlayerTypeInts[1],match.PlayerTypeInts[2],match.PlayerTypeInts[3],match.PlayerTypeInts[4]))
+    for item in duoList:
+        point = np.array((item.PlayerTypeInts[0],item.PlayerTypeInts[1],item.PlayerTypeInts[2],item.PlayerTypeInts[3],item.PlayerTypeInts[4]))
+        item.weight = np.linalg.norm(point-origin)
+    return duoList.sort(DuoMatching.Weight)
 
-def convertToNumericData(user):
-    print("wip")
+
 

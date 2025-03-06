@@ -54,19 +54,28 @@ def chatbot(userinfo):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-#Initialize on login AFTER profile creation
-@app.route('/matchmaker/', methods= ['GET'])
-def matchmaker(mminfo):
+@app.route('/matchmaker/', methods=['GET'])
+def matchmaker():
     try:
-        match = DuoMatching(mminfo.id,mminfo.Username,mminfo.Top5Games,mminfo.PlayerType,mminfo.Description)
-        listofallduos = ms.importSpecificProfiles(supabase,match)
-        listofpotentialduos = ms.matchMaking(listofallduos,supabase,match)
+        mminfo = request.args
+        match = DuoMatching(
+            mminfo.get('id'),
+            mminfo.get('Username'),
+            mminfo.get('Top5Games'),
+            mminfo.get('PlayerType'),
+            mminfo.get('PlayerTypeInts'),
+            mminfo.get('Description')
+        )
+        listofallduos = ms.importSpecificProfiles(supabase, match)
+        listofpotentialduos = ms.matchMaking(listofallduos, supabase, match)
+        return jsonify(listofpotentialduos)  # Return the potential duos as JSON
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({'error': str(e)}), 400
 
 
+if __name__ == '__main__':
+    app.run(debug=True)
 
 if __name__ == '__main__':
     app.run(debug=True)

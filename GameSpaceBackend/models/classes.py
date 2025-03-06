@@ -57,7 +57,9 @@ class DuoMatching:
     Username = str
     Top5Games = List[str]
     PlayerType = List[str]
+    PlayerTypeInts = List[int]
     Description = str
+    Weight = float
 
 @dataclass
 class Marketplace:
