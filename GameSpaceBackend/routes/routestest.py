@@ -26,23 +26,23 @@ def test_chatbot():
     print("Testing /chatbot endpoint")
     print(f"Status Code: {response.status_code}")
     print(f"Response: {response.json()}")
-
-def test_matchmaker():
-    url = f"{BASE_URL}/matchmaker/"
-    params = {
-        'id': '1',
-        'Username': 'gamer123',
-        'Top5Games': 'Apex Legends, Fortnite, PUBG, Valorant, Overwatch',
-        'PlayerType': 'Casual',
-        'PlayerTypeInts': '1, 2, 3',
-        'Description': 'Looking for a duo partner'
-    }
-    response = requests.get(url, params=params)
-    print("Testing /matchmaker endpoint")
-    print(f"Status Code: {response.status_code}")
-    print(f"Response: {response.json()}")
+#
+# def test_matchmaker(): WIP, DONT USE. THIS IS NOT READY TO BE USED YET!!!!
+#     url = f"{BASE_URL}/matchmaker/"
+#     params = {
+#         'id': '1',
+#         'Username': 'gamer123',
+#         'Top5Games': 'Apex Legends, Fortnite, PUBG, Valorant, Overwatch',
+#         'PlayerType': 'Casual',
+#         'PlayerTypeInts': '1, 2, 3',
+#         'Description': 'Looking for a duo partner'
+#     }
+#     response = requests.get(url, params=params)
+#     print("Testing /matchmaker endpoint")
+#     print(f"Status Code: {response.status_code}")
+#     print(f"Response: {response.json()}")
 
 if __name__ == "__main__":
     test_media_get()
     test_chatbot()
-    test_matchmaker()
+    # test_matchmaker()
