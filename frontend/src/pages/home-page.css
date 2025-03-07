@@ -1,0 +1,100 @@
+/* Centering the main container */
+.media-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+    text-align: center;
+    position:absolute;
+    max-height: 85%;
+    max-width: 33%;
+    top:10%;
+    left:33%;
+  }
+
+  .localevents-container {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+    text-align: center;
+    max-width: 20%;
+    max-height: 85%;
+    display: flex;
+    justify-content: flex-end;
+    position: absolute;
+    left: 74%; /* Ensures it stays at the right edge */
+    top: 10% /* Centers vertically */
+  }
+  
+  /* Scrollable box */
+  .scroll-box {
+    width: max-content;
+    height:100vh;
+    background-color: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  /* Individual information container */
+  .media-box {
+    display: flex;
+    align-items: center;
+    background-color: #4a90e2;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    gap: 50%;
+    width: 33vw;
+  }
+  
+  /* Image inside the container */
+  .media-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+  }
+  
+  /* Content beside the image */
+  .media-content {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    max-width: 25vw;
+  }
+
+    /* Individual information container */
+    .localevent-box {
+        display: flex;
+        align-items: center;
+        background-color: #4a90e2;
+        color: white;
+        padding: 15px;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        gap: 50%;
+        width: 25vw;
+      }
+      
+      /* Image inside the container */
+      .localevent-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 5px;
+      }
+      
+      /* Content beside the image */
+      .localevent-content {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+      }
