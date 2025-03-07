@@ -2,15 +2,12 @@ import React, { useState } from "react";
 import { RiAliensFill } from "react-icons/ri"; // Import the icon
 import "./chat-bot.css";
 
-  // http://localhost:5174/chatbot
-
 const ChatBot = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  
-  
+  // !!
   // not sure how the connection works
-  //
+  // !!
   const sendMessage = async () => {
     if (input.trim() === "") return; // Don't send empty messages
     const userMessage = { text: input, sender: "user" };
@@ -22,7 +19,7 @@ const ChatBot = () => {
         message: input,
       });
       const botMessage = { text: response.data.response, sender: "bot" };
-      setMessages((prevMessages) => [...prevMessages, botMessage]); // Add bot response
+      setMessages((prevMessages) => [...prevMessages, botMessage]); //  bot response
     } catch (error) {
       console.error("Error fetching chatbot response:", error);
       setMessages((prevMessages) => [
@@ -31,6 +28,7 @@ const ChatBot = () => {
       ]);
     }
   };
+
 
 
   return (
@@ -61,6 +59,5 @@ const ChatBot = () => {
     </div>
   );
 };
-
 
 export default ChatBot;
