@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { RiAliensFill } from "react-icons/ri"; // Import the icon
+import { RiAliensFill } from "react-icons/ri"; // Import the icons
+import { IoMdSend } from "react-icons/io";
+
 import "./chat-bot.css";
 
 const ChatBot = () => {
@@ -35,7 +37,7 @@ const ChatBot = () => {
     <div className="chat-container">
       <div className="chat-header">
         <RiAliensFill size={30} color="#00ff00" />
-        <h3>ChatBot 4o</h3>
+        <h3>GameSpace Guru</h3> 
       </div>
       <div className="chat-box">
         {messages.map((message, index) => (
@@ -54,7 +56,9 @@ const ChatBot = () => {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message"
         />
-        <button onClick={sendMessage}>Send</button>
+      <button onClick={sendMessage}>
+        <IoMdSend size={26} color="#fff" /> 
+      </button>
       </div>
     </div>
   );
