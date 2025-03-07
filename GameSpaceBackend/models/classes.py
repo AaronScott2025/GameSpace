@@ -44,12 +44,9 @@ class Users:
 
 @dataclass
 class Profile:
-    Id = str
-    Username = str
-    Bio = str
-    FavoriteGames = List[str]
-    ProfilePicture = str
-    Followers = List[str]
+    username: str
+    bio: str
+    favoritegames: List[str]
 
 @dataclass
 class DuoMatching:
