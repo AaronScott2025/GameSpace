@@ -1,0 +1,108 @@
+
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* Disable scrolling  */
+  }
+ 
+  #root {
+    height: 100%; /* Ensure the root div takes full height */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+  }
+ 
+  /* Chat container  */
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Align the chat box at the bottom */
+    width: 80vw; /* width to your preference */
+    height: 80vh; /*  height to your preference */
+    border: 2px solid #333;
+    border-radius: 10px;
+    background-color: #fcf9f9;
+    box-sizing: border-box;
+  }
+ 
+  /* Chat header */
+  .chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center icon and the text */
+    background: linear-gradient(to right, #1048c9, #3b74d6, #5aa0ff);
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+    color: white;
+    font-size: 18px;
+  }
+ 
+  .chat-header h3 {
+    margin-left: 10px;
+    font-size: 18px;
+    margin-right: 10px;
+  }
+ 
+  /* Chat messages box  */
+  .chat-box {
+    flex-grow: 1; /* Takes up  space */
+    overflow-y: auto; /*  scrolling  */
+    padding: 10px;
+    color: white;
+    height: 100%; /* Fill height */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column; /* Stack messages vertically */
+  }
+ 
+  /* Message styles */
+  /* User message styles */
+  .chat-user {
+    align-self: flex-end; /* Align user messages to the right */
+    text-align: right;
+    background-color: #0084ff;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    margin: 5px;
+    max-width: 80%; /* Ensure the message doesn't stretch too far */
+    word-wrap: break-word; /* Ensure long messages break into new lines */
+  }
+ 
+  /* Chat bot message styles */
+  .chat-bot {
+    align-self: flex-start; /* Align bot messages to the left */
+    text-align: left;
+    background-color: #444;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    margin: 5px;
+    max-width: 80%; /* Ensure the message doesn't stretch too far */
+    word-wrap: break-word; /* Ensure long messages break into new lines */
+  }
+ 
+  /* Input  */
+  .chat-input {
+    display: flex;
+    padding: 10px;
+    background-color: #222;
+    box-sizing: border-box;
+  }
+ 
+  .chat-input input {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+  }
+ 
+  .chat-input button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0084ff;
+    color: white;
+    cursor: pointer;
+    margin-left: 10px; /*  input and button space */
+  }
