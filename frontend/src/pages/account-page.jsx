@@ -1,14 +1,20 @@
-// AccountPage.jsx
-import {useContext, useEffect, useState} from 'react';
+import { useContext, useEffect, useState } from 'react';
 import '/src/style/account-page.css';
 import { getUserInfo, handleGameSelection } from '../scripts/account-page-scripts';
 import { UserContext } from "./UserContext";
 
 const AccountPage = () => {
-    const { user } = useContext(UserContext);
+    const { user: contextUser } = useContext(UserContext);
+
+    const mockUser = {
+        id: '7'
+    };
+
+    const user = contextUser || mockUser;
+
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
-    const [setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const loadUserInfo = async () => {
@@ -16,6 +22,7 @@ const AccountPage = () => {
 
             setLoading(true);
             const userInfo = await getUserInfo(user.id);
+            console.log("Fetched user info:", userInfo);
             if (userInfo) {
                 setUsername(userInfo.username);
                 setEmail(userInfo.email);
@@ -26,13 +33,15 @@ const AccountPage = () => {
         loadUserInfo();
     }, [user?.id]);
 
+    if (loading) {
+        return <div>Loading user data...</div>;
+    }
+
     return (
         <div className="account-page">
             <div className="profile-section">
                 <div className="profile-picture"></div>
-                <div className="profile-edit">
-                    <span className="profile-edit-label">Edit Profile Picture</span>
-                </div>
+                <button className="action-button">Edit Profile Picture</button>
             </div>
 
             <div className="account-info-section">
@@ -60,8 +69,7 @@ const AccountPage = () => {
                             />
                         </div>
                         <div className="info-row">
-                            <label className="info-label">Password</label>
-                            <input type="password" className="info-input" placeholder="Password" />
+                            <button className="action-button">Change Password</button>
                         </div>
                     </div>
                 </div>

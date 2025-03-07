@@ -9,6 +9,7 @@
     --title-font-size: 36px;
     --subtitle-font-size: 28px;
     --label-font-size: 18px;
+    --button-font-size: 14px;
 }
 
 /* Ensure consistent sizing across all elements */
@@ -54,19 +55,26 @@
     border: 2px solid white;
 }
 
-.profile-edit {
+/* Unified Button Styling */
+.action-button {
     background: var(--neutral-bg);
-    padding: 5px 10px;
+    color: white;
+    font-size: var(--button-font-size);
+    font-weight: bold;
+    padding: 10px 15px;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
+    transition: background 0.3s ease-in-out;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
 
-.profile-edit-label {
-    font-size: var(--label-font-size);
-    font-weight: bold;
-    color: white;
-    text-decoration: underline;
+.action-button:hover {
+    background: var(--accent-color);
+    color: black;
 }
 
 /* Account Info Section */
@@ -97,7 +105,9 @@
 }
 
 .linked-services-title {
-    font-size: var(--title-font-size);
+    font-size: var(--subtitle-font-size);
+    font-weight: bold;
+    margin-bottom: 5px;
 }
 
 /* Info Rows */
