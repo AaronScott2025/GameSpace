@@ -5,6 +5,7 @@ import {
   useTransform,
   useAnimation,
 } from "framer-motion";
+import RadioButton from "../components/Radio-button";
 import "../styles/duo-matchmaker-page.css";
 
 const PreferencesForm = ({ onSubmit }) => {
@@ -29,31 +30,74 @@ const PreferencesForm = ({ onSubmit }) => {
   return (
     <form onSubmit={handleSubmit} className="preferences-form">
       <label>
-        Top Games:
-        <input
-          type="text"
-          s
-          name="topGames"
-          value={preferences.topGames}
-          onChange={handleChange}
-        />
+        Which of the following best describes your play style?
+        <div>
+          <RadioButton
+            name="playStyle"
+            options={[
+              "Supportive/Backline",
+              "Neutral/Middle",
+              "Neutral/Middle",
+            ]}
+            value={preferences.playStyle}
+            onChange={handleChange}
+          />
+        </div>
       </label>
       <label>
-        Player Type:
-        <input
-          type="text"
-          name="playerType"
-          value={preferences.playerType}
-          onChange={handleChange}
-        />
+        Which of the following best describes you as a gamer?
+        <div>
+          <RadioButton
+            name="playerDescription"
+            options={[
+              "Exclusive(1 or 2 games at a time)",
+              "Non-Exclusive (3 or 5 games at a time)",
+              "Casual (6 or 8 games at a time)",
+              "Variety Gamer(9+ games at a time)",
+            ]}
+            value={preferences.playerDescription}
+            onChange={handleChange}
+          />
+        </div>
       </label>
       <label>
-        Description:
-        <textarea
-          name="description"
-          value={preferences.description}
-          onChange={handleChange}
-        />
+        Which of the following best describes your personality?
+        <div>
+          <RadioButton
+            name="playerPersonality"
+            options={["Competitive", "Casual", "Both", "Neither"]}
+            value={preferences.playerPersonality}
+            onChange={handleChange}
+          />
+        </div>
+      </label>
+      <label>
+        How much do you use your microphone in game?
+        <div>
+          <RadioButton
+            name="micUsage"
+            options={["Never", "Sometimes", "Often", "Very Often"]}
+            value={preferences.micUsage}
+            onChange={handleChange}
+          />
+        </div>
+      </label>
+      <label>
+        How long do you spend playing games every week?
+        <div>
+          <RadioButton
+            name="playTime"
+            options={[
+              "1-3 Hours",
+              "4-7 Hours",
+              "8-11 hours",
+              "12-15 hours",
+              "16+ hour",
+            ]}
+            value={preferences.micUsage}
+            onChange={handleChange}
+          />
+        </div>
       </label>
       <button type="submit">Submit</button>
     </form>
@@ -197,7 +241,11 @@ const DuoMatchmakerPage = () => {
   };
 
   const handlePreferencesSubmit = (preferences) => {
-    localStorage.setItem("preferences", JSON.stringify(preferences));
+    const data = localStorage.setItem(
+      "preferences",
+      JSON.stringify(preferences)
+    );
+    console.log(data);
     setIsFirstTime(false);
   };
 
