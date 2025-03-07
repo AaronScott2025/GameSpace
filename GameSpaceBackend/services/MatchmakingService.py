@@ -43,7 +43,7 @@ def importAllProfiles(supabase):
     return duoList #Return all candidates in list
 
 
-def matchMaking(duoList,supabase,match):
+def matchMaking(duoList,match):
     origin = np.array((match.PlayerTypeInts[0],match.PlayerTypeInts[1],match.PlayerTypeInts[2],match.PlayerTypeInts[3],match.PlayerTypeInts[4]))
     for item in duoList:
         point = np.array((item.PlayerTypeInts[0],item.PlayerTypeInts[1],item.PlayerTypeInts[2],item.PlayerTypeInts[3],item.PlayerTypeInts[4]))
