@@ -82,7 +82,7 @@ def matchmaker():
             description=mminfo.get('Description', '')
         )
         listofallduos = ms.importSpecificProfiles(supabase, match)
-        listofpotentialduos = ms.matchMaking(listofallduos, supabase, match)
+        listofpotentialduos = ms.matchMaking(listofallduos, match)
         return jsonify(listofpotentialduos)
     except Exception as e:
         return jsonify({'error': str(e)}), 400
