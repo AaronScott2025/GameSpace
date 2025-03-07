@@ -30,7 +30,7 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center; /* Center icon and the text */
-    background: linear-gradient(to right, #1048c9, #3b74d6, #5aa0ff);
+    background: linear-gradient(to right, #000000, #292929, #616161);
     padding: 10px;
     border-radius: 10px 10px 0 0;
     color: white;
