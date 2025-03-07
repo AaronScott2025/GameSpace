@@ -83,7 +83,7 @@ def matchmaker():
         )
         listofallduos = ms.importSpecificProfiles(supabase, match)
         listofpotentialduos = ms.matchMaking(listofallduos, match)
-        return jsonify(listofpotentialduos)
+        return jsonify({'Matches' : listofpotentialduos}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
