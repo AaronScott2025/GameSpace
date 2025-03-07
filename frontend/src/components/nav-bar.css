@@ -48,7 +48,7 @@ import "./nav-bar.css";
     padding: 5px;
     font-size: 1rem;
     cursor: pointer;
-    border: none;
+    border: clear;
     border-radius: 4px;
     left: 2.7%;
     z-index: 2101;

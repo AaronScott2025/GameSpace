@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 //import { BiSolidJoystickButton } from "react-icons/bi";
-import { BiSolidDownArrow } from "react-icons/bi";
-//import { BsJoystick } from "react-icons/bs";
+//import { BiSolidDownArrow } from "react-icons/bi";
+import { BsJoystick } from "react-icons/bs";
 import "./nav-bar.css";
 
 
@@ -26,7 +26,7 @@ const Navbar = () => {
         </div>
 
         <button className="nav-button" onClick={handleMenuToggle}>
-        <BiSolidDownArrow size={30} color="#FFFF00" />
+        <BsJoystick size={30} color="#FFFF00" />
         </button>
 
         <div className="profile-auth">
