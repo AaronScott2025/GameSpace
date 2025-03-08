@@ -1,0 +1,110 @@
+
+
+/*//////////////////////// Disable scrolable screen  /////////////////////////*/
+
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* for scrolling  */
+  }
+ 
+  #root {
+    height: 100%; /*  root div takes full height */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+  }
+ 
+
+/*//////////////////////// Chat container /////////////////////////*/
+  .chat-container {
+    display: flex;
+    flex-direction: column;;
+    width: 60vw; /* width  */
+    height: 95vh; /*  height  */
+    border: 2px solid #333;
+    border-radius: 10px;
+    background-color: #fcf9f9;
+    box-sizing: border-box;
+  }
+  .chat-header {  /* Chat header / alien */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center icon and the text */
+    background: linear-gradient(to right, #000000, #292929, #484747);
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+    color: white;
+    font-size: 18px;
+  }
+  .chat-header h3 {  /*  header / alien */
+    margin-left: 10px;
+    font-size: 20px;
+    margin-right: 10px;
+  }
+
+
+/*//////////////////////// Messages box  /////////////////////////*/
+
+  .chat-box {
+    flex-grow: 1; /* Takes up  space */
+    overflow-y: auto; /*  scrolling  */
+    padding: 10px;
+    color: white;
+    height: 100%; /* Fill height */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column; /* Stack messages vertically */
+  }
+
+
+
+/*//////////////////////// Message styles  /////////////////////////*/
+
+  .chat-user {  /* User message styles */
+    align-self: flex-end; /* user messages to the right */
+    text-align: right;
+    background-color: #0084ff;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    margin: 5px;
+    max-width: 80%; /*  message doesn't stretch too far */
+    word-wrap: break-word; /*  long messages break into new lines */
+  }
+  .chat-bot {    /* Chat bot message styles */
+    align-self: flex-start; /* bot messages to the left */
+    text-align: left;
+    background-color: #444;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    margin: 5px;
+    max-width: 80%; /*  message doesn't stretch too far */
+    word-wrap: break-word; /*  long messages break into new lines */
+  }
+
+/*//////////////////////// Inputs  /////////////////////////*/
+
+  /* Input  */
+  .chat-input {
+    display: flex;
+    padding: 10px;
+    background-color: #222;
+    box-sizing: border-box;
+  }
+  .chat-input input {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+  }
+  .chat-input button {
+    padding: 6px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0084ff;
+    color: white;
+    cursor: pointer;
+    margin-left: 10px; /*  input and button space */
+  }
