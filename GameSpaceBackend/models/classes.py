@@ -50,13 +50,13 @@ class Profile:
 
 @dataclass
 class DuoMatching:
-    id = str
-    Username = str
-    Top5Games = List[str]
-    PlayerType = List[str]
-    PlayerTypeInts = List[int]
-    Description = str
-    Weight = float
+    username: str
+    top5games: List[str]
+    playertype: List[str]
+    playertypeints: List[int]
+    description: str
+    weight: float
+
 
 @dataclass
 class Marketplace:

@@ -15,7 +15,6 @@ def importSpecificProfiles(supabase,match):
 
     duoList = [ #Put all data into DuoMatching data class list
         DuoMatching(
-            id=item["id"],
             Username=item["username"],
             Top5Games=item["top_5_games"],
             PlayerType=item["playerType"],
@@ -31,7 +30,6 @@ def importAllProfiles(supabase):
     data = response.data #Data in var
     duoList = [ #Put all data into DuoMatching data class list
         DuoMatching(
-            id=item["id"],
             Username=item["username"],
             Top5Games=item["top_5_games"],
             PlayerType=item["playerType"],
