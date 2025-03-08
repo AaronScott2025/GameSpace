@@ -23,8 +23,11 @@ function App() {
       element: <SignupPage />,
     },
     {
-      path: "/chatbot", // Add chatbot route
-      element: <ChatBot />,
+      path: "/chatbot", 
+      element: 
+      <Wrapper>
+        <ChatBot />
+      </Wrapper>
     },
     {
       path: "/home",
