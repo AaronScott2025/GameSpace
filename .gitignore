@@ -9,6 +9,7 @@ obj/
 *.vscode/
 .env
 .venv
+__pycache__/
 # Ignore dependency-related files
 packages/
 project.lock.json
