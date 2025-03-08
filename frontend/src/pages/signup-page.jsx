@@ -38,7 +38,13 @@ const SignupPage = () => {
         // Insert user ID and username into the profile table
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
-          .insert([{ user_id: user.id, username: usersData.username }]);
+          .insert([
+            {
+              user_id: user.id,
+              username: usersData.username,
+              email: usersData.email,
+            },
+          ]);
 
         if (profileError) {
           console.error("Profile creation failed", profileError);
