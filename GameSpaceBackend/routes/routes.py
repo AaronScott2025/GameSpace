@@ -6,8 +6,8 @@ from supabase import create_client, Client
 from flask import Flask, jsonify, request
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.env'))
-from GameSpaceBackend.models.classes import Profile, DuoMatching
-import GameSpaceBackend.services.MatchmakingService as ms
+from backend.models.classes import Profile, DuoMatching
+import backend.services.MatchmakingService as ms
 load_dotenv(dotenv_path=env_path)
 
 SUPABASE_API_KEY = os.getenv("SUPABASE")

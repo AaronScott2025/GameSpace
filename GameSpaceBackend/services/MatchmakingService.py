@@ -2,7 +2,7 @@ from supabase import create_client, Client
 from os import environ
 import numpy as np
 
-from GameSpaceBackend.models.classes import DuoMatching
+from backend.models.classes import DuoMatching
 
 
 def importSpecificProfiles(supabase,match):
