@@ -8,7 +8,7 @@ obj/
 *.suo
 *.vscode/
 .env
-
+.venv
 # Ignore dependency-related files
 packages/
 project.lock.json
