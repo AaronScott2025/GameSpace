@@ -19,7 +19,6 @@ const HomePage = () => {
 
   return (
     <div>
-      <Navbar />
       <h1>Welcome to the Home Page!</h1>
       <h1>Hello you are log in</h1>
       <p>{user.bio}</p>
