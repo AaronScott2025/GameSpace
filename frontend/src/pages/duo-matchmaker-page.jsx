@@ -6,6 +6,7 @@ import {
   useAnimation,
 } from "framer-motion";
 import RadioButton from "../components/Radio-button";
+import Navbar from "../components/nav-bar";
 import "../styles/duo-matchmaker-page.css";
 
 const PreferencesForm = ({ onSubmit }) => {
@@ -205,7 +206,24 @@ const DuoMatchmakerPage = () => {
   const [isFirstTime, setIsFirstTime] = useState(
     !localStorage.getItem("preferences")
   );
+  const [screenSize, setScreenSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
 
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   const profilesData = [
     {
       imgSrc:
@@ -214,7 +232,7 @@ const DuoMatchmakerPage = () => {
       topGames: ["League of Legends", "Valorant", "Overwatch"],
       playerType: ["Competitive", "Casual", "Chill"],
       description:
-        "I am a competitive player who is looking for a duo partner to climb the ranks with. I am currently in gold and looking to reach plat by the end of the season.",
+        "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
     },
     {
       imgSrc:
@@ -223,7 +241,7 @@ const DuoMatchmakerPage = () => {
       topGames: ["Fortnite", "Apex Legends", "PUBG"],
       playerType: ["Casual", "Strategic", "Team Player"],
       description:
-        "I enjoy playing battle royale games and am looking for a team player to strategize and win matches together.",
+        "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
     },
     {
       imgSrc:
@@ -232,7 +250,7 @@ const DuoMatchmakerPage = () => {
       topGames: ["God of War", "Assassin's Creed", "The Witcher 3"],
       playerType: ["Story-driven", "Explorer", "Adventurer"],
       description:
-        "I love story-driven games and exploring vast open worlds. Looking for someone who shares the same passion for epic adventures.",
+        "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
     },
   ];
 
@@ -250,40 +268,47 @@ const DuoMatchmakerPage = () => {
   };
 
   return (
-    <div className="page-layout">
-      {isFirstTime ? (
-        <PreferencesForm onSubmit={handlePreferencesSubmit} />
-      ) : (
-        <>
-          <DecisionButton
-            imgSrc="https://banner2.cleanpng.com/20190512/xyi/kisspng-rainbow-flag-nail-art-pixel-gay-pride-5-percent-of-businesses-are-planning-to-break-up-1713893183862.webp"
-            text="GAME OVER"
-            onClick={() => setTriggerSwipe("left")}
-          />
-          <div className="match-profiles-container">
-            {profilesData.map((profile, index) => (
-              <MatchProfileCard
-                key={index}
-                imgSrc={profile.imgSrc}
-                username={profile.username}
-                topGames={profile.topGames}
-                playerType={profile.playerType}
-                description={profile.description}
-                isActive={index === activeIndex}
-                onSwipe={handleSwipe}
-              />
-            ))}
-          </div>
-          <div className="Yes-match">
+    <>
+      <Navbar />
+
+      <div className="page-layout">
+        {isFirstTime ? (
+          <PreferencesForm onSubmit={handlePreferencesSubmit} />
+        ) : (
+          <>
             <DecisionButton
               imgSrc="https://banner2.cleanpng.com/20190512/xyi/kisspng-rainbow-flag-nail-art-pixel-gay-pride-5-percent-of-businesses-are-planning-to-break-up-1713893183862.webp"
-              text="GAME ON"
+              text="GAME OVER"
               onClick={() => setTriggerSwipe("left")}
             />
-          </div>
-        </>
-      )}
-    </div>
+            <div className="match-profiles-container">
+              {profilesData.map((profile, index) => (
+                <MatchProfileCard
+                  key={index}
+                  imgSrc={profile.imgSrc}
+                  username={profile.username}
+                  topGames={profile.topGames}
+                  playerType={profile.playerType}
+                  description={profile.description}
+                  isActive={index === activeIndex}
+                  onSwipe={handleSwipe}
+                />
+              ))}
+            </div>
+            <div className="Yes-match">
+              <DecisionButton
+                imgSrc="https://banner2.cleanpng.com/20190512/xyi/kisspng-rainbow-flag-nail-art-pixel-gay-pride-5-percent-of-businesses-are-planning-to-break-up-1713893183862.webp"
+                text="GAME ON"
+                onClick={() => setTriggerSwipe("left")}
+              />
+            </div>
+            <div className="screen-size">
+              Screen Size: {screenSize.width} x {screenSize.height}
+            </div>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 
