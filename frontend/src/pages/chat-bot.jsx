@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { RiAliensFill } from "react-icons/ri"; // Import the icons
 import { IoMdSend } from "react-icons/io";
+import axios from "axios";
+import { UserContext } from "./UserContext";
 
 import "./chat-bot.css";
 
 const ChatBot = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+
+  // Get the user from the UserContext
+  const { user } = useContext(UserContext);
+
   // !!
   // not sure how the connection works
   // !!
@@ -17,8 +23,14 @@ const ChatBot = () => {
     setInput(""); // Clear input
     try {
       // Send the message to your backend
-      const response = await axios.post("http://your-backend-url/chatbot/", {
+      const response = await axios.post("/api/chatbot/", {
         message: input,
+        userinfo: {
+          username: user.username,
+          email: user.email,
+          bio: user.bio,
+          favoritegames: user.favorites_games,
+        },
       });
       const botMessage = { text: response.data.response, sender: "bot" };
       setMessages((prevMessages) => [...prevMessages, botMessage]); //  bot response
@@ -30,14 +42,15 @@ const ChatBot = () => {
       ]);
     }
   };
-
-
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="chat-container">
       <div className="chat-header">
         <RiAliensFill size={30} color="#00ff00" />
-        <h3>GameSpace Guru</h3> 
+        <h3>GameSpace Guru</h3>
       </div>
       <div className="chat-box">
         {messages.map((message, index) => (
@@ -56,9 +69,9 @@ const ChatBot = () => {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message"
         />
-      <button onClick={sendMessage}>
-        <IoMdSend size={26} color="#fff" /> 
-      </button>
+        <button onClick={sendMessage}>
+          <IoMdSend size={26} color="#fff" />
+        </button>
       </div>
     </div>
   );
