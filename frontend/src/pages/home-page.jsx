@@ -38,6 +38,17 @@ const HomePage = () => {
   return (
     <div>
             <Navbar />
+
+      <div className="profileinfo-container">
+      <h1>Welcome to the Home Page!</h1>
+      <h1>Logged in as: </h1>
+       <div className = "profileinfo-box">
+       <p>Username: {user.username}</p>
+       <p>Email: {user.email}</p>
+       <button onClick={signOut}>sign Out</button>
+       </div>
+      </div>
+
       <div className="media-container">
       <h1>Media Posts</h1>
       <div className="scroll-box">

@@ -1,3 +1,20 @@
+.profileinfo-container {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items:center;
+  text-align: center;
+  max-width: 20%;
+  max-height: 85%;
+  display: flex;
+  justify-content: flex-end;
+  position: absolute;
+  left: 5%; /* Ensures it stays at the right edge */
+  top: 10%; /* Centers vertically */
+  border: 1px solid black;
+  padding:5px;
+}
+
 /* Centering the main container */
 .media-container {
     display: flex;
@@ -15,17 +32,24 @@
   .localevents-container {
     display:flex;
     flex-direction: column;
-    justify-content: center;
     align-items:center;
     text-align: center;
     max-width: 20%;
     max-height: 85%;
-    display: flex;
     justify-content: flex-end;
     position: absolute;
     left: 74%; /* Ensures it stays at the right edge */
     top: 10% /* Centers vertically */
   }
+
+  .profileinfo-box {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align: center;
+
+  }
+
   
   /* Scrollable box */
   .scroll-box {
