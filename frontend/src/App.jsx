@@ -40,7 +40,7 @@ function App() {
       ),
     },
     {
-      path: "/duo-matchmaker",
+      path: "/partyfinder",
       element: <DuoMatchmakerPage />,
     },
   ]);
