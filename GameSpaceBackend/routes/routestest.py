@@ -27,24 +27,24 @@ def test_chatbot():
     print(f"Status Code: {response.status_code}")
     print(f"Response: {response.json()}")
 
-# def test_matchmaker():
-#     url = f"{BASE_URL}/matchmaker/"
-#     params = {
-#         'username': 'gamer123',
-#         'Top5Games': 'Apex Legends, Fortnite, PUBG, Valorant, Overwatch',
-#         'PlayerType': 'Supportive/Backline, Exclusive(1 or 2 games at a time), Casual, Never, 1-3 Hours',
-#         'PlayerTypeInts': '3, 2, 4, 3, 1',
-#         'Description': 'Looking for a duo partner',
-#         'Weight': '1.5'  # Add a value for Weight
-#     }
-#     response = requests.get(url, params=params)
-#     print("Testing /matchmaker endpoint")
-#     print(f"Status Code: {response.status_code}")
-#     print(f"Response: {response.json()}")
+def test_matchmaker():
+    url = f"{BASE_URL}/matchmaker/"
+    params = {
+        'username': 'gamer123',
+        'Top5Games': 'Apex Legends,Fortnite,PUBG,Valorant,Overwatch',
+        'PlayerType': 'Supportive/Backline, Exclusive(1 or 2 games at a time), Casual, Never, 1-3 Hours',
+        'PlayerTypeInts': '3, 2, 4, 3, 1',
+        'Description': 'Looking for a duo partner',
+        'Weight': '1.5'
+    }
+    response = requests.get(url, params=params)
+    print("Testing /matchmaker endpoint")
+    print(f"Status Code: {response.status_code}")
+    print(f"Response: {response.json()}")
 
 
 
 if __name__ == "__main__":
-    test_media_get()
-    test_chatbot()
-    # test_matchmaker()
+     #test_media_get()
+    # test_chatbot()
+    test_matchmaker()
