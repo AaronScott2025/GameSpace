@@ -1,5 +1,5 @@
-import React from "react";
 import Navbar from "../components/nav-bar";
+<<<<<<< HEAD
 import "./home-page.css";
 
 const items = [
@@ -18,10 +18,29 @@ const items = [
   { id: 13, title: "Item 13", description: "This is the seventh item.", image: "../public/planet.png" },
   { id: 14, title: "Item 14", description: "This is the seventh item.", image: "../public/planet.png" },
 ];
+=======
+import React, { useContext } from "react";
+import { supabase } from "../../client";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "./UserContext";
+>>>>>>> origin/main
 
 const HomePage = () => {
+  const navigate = useNavigate();
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    navigate("/login");
+  };
+
+  const { user } = useContext(UserContext);
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
+<<<<<<< HEAD
             <Navbar />
       <div className="media-container">
       <h1>Media Posts</h1>
@@ -51,6 +70,15 @@ const HomePage = () => {
           </div>
         ))}
       </div>
+=======
+      <h1>Welcome to the Home Page!</h1>
+      <h1>Hello you are log in</h1>
+      <p>{user.bio}</p>
+      <p>{user.username}</p>
+      <p>{user.email}</p>
+      <p>{user.favorites_games}</p>
+      <button onClick={signOut}>sign Out</button>
+>>>>>>> origin/main
     </div>
   </div>
   );
