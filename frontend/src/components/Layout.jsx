@@ -6,7 +6,7 @@ const Layout = ({ children }) => {
   const location = useLocation();
   const hideNavbarPaths = ["/login", "/signup", "/"];
   return (
-    <div>
+    <div className="layout">
       {!hideNavbarPaths.includes(location.pathname) && <Navbar />}
       <div>{children}</div>
     </div>
