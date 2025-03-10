@@ -12,18 +12,16 @@
   justify-content: flex-start;
   align-items: flex-start;
   text-align: left;
-  gap: 5px;
+  gap: 50px;
 }
 
 .title-description {
-  position: relative;
   display: flex;
-  left: -100px;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
   gap: 10px;
-  margin: 0;
+  margin-left: 60px;
   padding: 0;
 }
 .info-title {
@@ -57,6 +55,28 @@
 
 .title-description li {
   text-align: left; /* Ensure list items are also aligned to the left */
+}
+
+.preferences-form-container {
+  position: relative;
+  top: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 10px;
+  margin-right: 80px;
+
+  background-color: #f0f0f0;
+  color: #000000;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: #000000 0px 0px 10px;
+  overflow-y: auto;
+  height: 600px;
+  width: 1200px;
+  max-width: 1200px;
+  max-height: 600px;
 }
 
 .matches-layout {

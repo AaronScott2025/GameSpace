@@ -71,12 +71,6 @@ const PreferencesForm = ({ onSubmit }) => {
         </ol>
       </div>
       <div className="preferences-form-container">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis quisquam
-        sunt dignissimos nemo ad velit adipisci similique veniam obcaecati,
-        commodi officia omnis saepe odit iure minus architecto veritatis
-        consectetur laboriosam.
-      </div>
-      {/* <div className="preferences-form-container">
         <form onSubmit={handleSubmit} className="preferences-form">
           <label>
             Which of the following best describes your play style?
@@ -86,7 +80,7 @@ const PreferencesForm = ({ onSubmit }) => {
                 options={[
                   "Supportive/Backline",
                   "Neutral/Middle",
-                  "Neutral/Middle",
+                  "Aggressive/Frontline",
                 ]}
                 value={preferences.playStyle}
                 onChange={handleChange}
@@ -143,14 +137,14 @@ const PreferencesForm = ({ onSubmit }) => {
                   "12-15 hours",
                   "16+ hour",
                 ]}
-                value={preferences.micUsage}
+                value={preferences.playTime}
                 onChange={handleChange}
               />
             </div>
           </label>
           <button type="submit">Submit</button>
         </form>
-      </div> */}
+      </div>
     </div>
   );
 };
