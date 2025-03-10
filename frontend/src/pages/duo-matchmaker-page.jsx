@@ -9,6 +9,7 @@ import { GiSatelliteCommunication } from "react-icons/gi";
 import RadioButton from "../components/Radio-button";
 import { supabase } from "../../client";
 import { UserContext } from "./UserContext";
+import { LuSwords } from "react-icons/lu";
 import "../styles/duo-matchmaker-page.css";
 
 const PreferencesForm = ({ onSubmit }) => {
@@ -61,8 +62,7 @@ const PreferencesForm = ({ onSubmit }) => {
 
           <li>
             <span className="highlight">Swipe to Match:</span> Swipe left if
-            you're not interested, or swipe right to connect with a gamer. If
-            both of you swipe right, it's a match!
+            you're not interested, or swipe right to connect with a gamer.
           </li>
           <li>
             <span className="highlight">Connect and Play:</span> Once matched,
@@ -72,6 +72,7 @@ const PreferencesForm = ({ onSubmit }) => {
       </div>
       <div className="preferences-form-container">
         <form onSubmit={handleSubmit} className="preferences-form">
+          <h2>Set Your Preferences</h2>
           <label>
             Which of the following best describes your play style?
             <div>
@@ -142,7 +143,10 @@ const PreferencesForm = ({ onSubmit }) => {
               />
             </div>
           </label>
-          <button type="submit">Submit</button>
+          <button type="submit">
+            <LuSwords />
+            Submit
+          </button>
         </form>
       </div>
     </div>
