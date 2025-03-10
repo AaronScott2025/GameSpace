@@ -6,7 +6,7 @@ import {
   useAnimation,
 } from "framer-motion";
 import RadioButton from "../components/Radio-button";
-import Navbar from "../components/nav-bar";
+
 import "../styles/duo-matchmaker-page.css";
 
 const PreferencesForm = ({ onSubmit }) => {
@@ -269,8 +269,6 @@ const DuoMatchmakerPage = () => {
 
   return (
     <>
-      <Navbar />
-
       <div className="page-layout">
         {isFirstTime ? (
           <PreferencesForm onSubmit={handlePreferencesSubmit} />
