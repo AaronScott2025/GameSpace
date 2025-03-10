@@ -69,24 +69,25 @@ def chatbot():
         return jsonify({"error": str(e)}), 500
 
 
-# @app.route('/matchmaker/', methods=['GET'])
-# def matchmaker():
-#     try:
-#         mminfo = request.args
-#         match = DuoMatching(
-#             username=mminfo.get('username', ''),
-#             top5games=mminfo.get('Top5Games', '').split(', '),
-#             playertype=mminfo.get('PlayerType', '').split(','),
-#             playertypeints=[int(i) for i in mminfo.get('PlayerTypeInts', '').split(', ')],
-#             description=mminfo.get('Description', ''),
-#             weight=float(mminfo.get('Weight', 0))  # Assuming Weight is required
-#         )
-#         listofallduos = ms.importSpecificProfiles(supabase, match)
-#         listofpotentialduos = ms.matchMaking(listofallduos, match)
-#         return jsonify({'Matches': listofpotentialduos}), 200
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 400
-#
+@app.route('/matchmaker/', methods=['GET'])
+def matchmaker():
+    try:
+        mminfo = request.args
+        match = DuoMatching(
+            username=mminfo.get('username', ''),
+            top5games=mminfo.get('Top5Games', '').split(','),
+            playertype=mminfo.get('PlayerType', '').split(','),
+            playertypeints=[int(i) for i in mminfo.get('PlayerTypeInts', '').split(',')],
+            description=mminfo.get('Description', ''),
+            weight=float(mminfo.get('Weight', 0))  # Assuming Weight is required
+        )
+        data,listofallduos = ms.importSpecificProfiles(supabase, match)
+        listofpotentialduos = ms.matchMaking(listofallduos, match)
+        return jsonify({
+            'Matches': listofpotentialduos}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
 
 
 if __name__ == '__main__':
