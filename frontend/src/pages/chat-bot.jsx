@@ -4,7 +4,7 @@ import { IoMdSend } from "react-icons/io";
 import axios from "axios";
 import { UserContext } from "./UserContext";
 
-import "./chat-bot.css";
+import "../styles/chat-bot.css";
 
 const ChatBot = () => {
   const [messages, setMessages] = useState([]);
