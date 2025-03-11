@@ -103,6 +103,10 @@
     width: 33vw;
   }
 
+  .media-box:hover{
+    filter: brightness(90%);
+  }
+
     .username {
       align-self: flex-end; /* Moves it to the right */
       margin-bottom: 5px; /* Adds spacing between username and post content */
