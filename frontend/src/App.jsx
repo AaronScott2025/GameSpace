@@ -6,6 +6,7 @@ import HomePage from "./pages/home-page";
 import ChatBot from "./pages/chat-bot";
 
 import Wrapper from "./pages/Wrapper";
+import AccountPage from "./pages/account-page";
 import "./App.css";
 
 function App() {
@@ -27,7 +28,10 @@ function App() {
       element: 
       <Wrapper>
         <ChatBot />
-      </Wrapper>
+      </Wrapper>},
+      {
+      path: "/account",
+      element: < AccountPage/>,
     },
     {
       path: "/home",

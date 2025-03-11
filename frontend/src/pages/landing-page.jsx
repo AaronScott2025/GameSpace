@@ -6,6 +6,7 @@ import {
   GiWhistle,
   GiSatelliteCommunication,
 } from "react-icons/gi";
+import "../style/landing-page.css";
 import { FaUsers } from "react-icons/fa";
 import { CiShoppingCart } from "react-icons/ci";
 import { BsRocket } from "react-icons/bs";
