@@ -90,7 +90,9 @@
   /* Individual information container */
   .media-box {
     display: flex;
+    flex-direction: column;
     align-items: center;
+    position:relative;
     background-color: #4a90e2;
     color: white;
     padding: 15px;
@@ -100,6 +102,13 @@
     gap: 50%;
     width: 33vw;
   }
+
+    .username {
+      align-self: flex-end; /* Moves it to the right */
+      margin-bottom: 5px; /* Adds spacing between username and post content */
+      border: 0.5px solid white;
+    }
+
   
   /* Image inside the container */
   .media-image {
@@ -114,6 +123,7 @@
     flex-direction: column;
     text-align: center;
     max-width: 25vw;
+    align-self: flex-end; /* Moves it to the right */
   }
 
     /* Individual information container */

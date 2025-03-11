@@ -1,6 +1,6 @@
 import Navbar from "../components/nav-bar";
 import "/src/styles/home-page.css";
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { supabase } from "../../client";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
@@ -33,7 +33,7 @@ const HomePage = () => {
   };
 
   const [data, setData] = useState([]); // Store the fetched posts
-  const [nextOffset, setNextOffset] = useState(25); // Start with an initial offset
+  const [nextOffset, setNextOffset] = useState(0); // Start with an initial offset
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -47,7 +47,7 @@ const HomePage = () => {
 
       if (result.posts) {
         setData((prevData) => [...prevData, ...result.posts]); // Append new posts to existing data
-        setNextOffset(result.nextOffset); // Update the next offset for pagination
+        setNextOffset((prevOffset) => prevOffset + 5); // Update the next offset for pagination
       } else {
         setError(result.message || "Failed to fetch posts");
       }
@@ -63,12 +63,23 @@ const HomePage = () => {
     fetchPosts(0); // Start with offset 0 when the component mounts
   }, []);
 
+  const scrollBoxRef = useRef(null);
+
   // Handle "Load More" functionality
-  const loadMore = () => {
-    if (!loading) {
-      fetchPosts(nextOffset); // Fetch posts based on the next offset
-    }
-  };
+    const loadMore = async () => {
+      if (!loading && scrollBoxRef.current) {
+        const scrollBox = scrollBoxRef.current;
+        const prevScrollHeight = scrollBox.scrollHeight;
+        const prevScrollTop = scrollBox.scrollTop;
+    
+        await fetchPosts(nextOffset); // Fetch new posts
+    
+        requestAnimationFrame(() => {
+          // Maintain position relative to new content height
+          scrollBox.scrollTop = scrollBox.scrollHeight - prevScrollHeight + prevScrollTop;
+        });
+      }
+    };
 
   const { user } = useContext(UserContext);
   if (!user) {
@@ -91,14 +102,14 @@ const HomePage = () => {
 
       <div className="media-container">
         <h1>Media Posts</h1>
-        <div className="mediascroll-box">
+        <div ref={scrollBoxRef} className="mediascroll-box">
           {loading ? (
             <p>Loading data...</p>
           ) : data && data.length > 0 ? (
             data.map((item, index) => (
               <div key={index} className="media-box">
-                <h3>{item.username}</h3> {/* Display username */}
-                <p>{item.post_content}</p> {/* Display post content */}
+                <span className = "username">{item.username}</span> {/* Display username */}
+                <p className = "mediapost-content">{item.post_content}</p> {/* Display post content */}
               </div>
             ))
           ) : (

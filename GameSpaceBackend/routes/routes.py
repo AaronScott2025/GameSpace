@@ -22,11 +22,11 @@ supabase = create_client("https://xfmccwekbxjkrjwuheyv.supabase.co", SUPABASE_AP
 def mediaGet():
     try:
         offset = int(request.args.get('offset', 0))
-        response = supabase.table('post').select('*').range(offset, offset + 24).execute()
+        response = supabase.table('post').select('*').range(offset, offset + 4).execute()
         if response.data:
             return jsonify({
                 "posts": response.data,
-                "next_offset": offset + 25
+                "next_offset": offset + 5
             }), 200
         else:
             return jsonify({"message": "No more posts available"}), 200
