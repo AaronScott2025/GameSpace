@@ -7,26 +7,26 @@ html, body {
     margin: 0;
     overflow: hidden; /* for scrolling  */
   }
- 
   #root {
     height: 100%; /*  root div takes full height */
     display: flex;
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
-  }
+    }
  
 
 /*//////////////////////// Chat container /////////////////////////*/
   .chat-container {
     display: flex;
-    flex-direction: column;;
-    width: 60vw; /* width  */
-    height: 95vh; /*  height  */
+    flex-direction: column;
+    width: 60vw; /* keeps the width as is */
+    height: calc(95vh - 55px); /* adjusts height to account for navbar overlap */
+    margin-top: 75px; /* moves the chat container down */
     border: 2px solid #333;
     border-radius: 10px;
     background-color: #fcf9f9;
     box-sizing: border-box;
-  }
+    }
   .chat-header {  /* Chat header / alien */
     display: flex;
     align-items: center;

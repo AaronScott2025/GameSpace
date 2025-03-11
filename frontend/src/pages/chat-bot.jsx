@@ -13,9 +13,8 @@ const ChatBot = () => {
   // Get the user from the UserContext
   const { user } = useContext(UserContext);
 
-  // !!
-  // not sure how the connection works
-  // !!
+  
+  // connection works / integration 
   const sendMessage = async () => {
     if (input.trim() === "") return; // Don't send empty messages
     const userMessage = { text: input, sender: "user" };
