@@ -1,5 +1,5 @@
 import React from 'react';
-import '/src/Styles/account-page.css'; 
+import '/src/styles/account-page.css'; 
 
 
 const AccountPage = () => {
