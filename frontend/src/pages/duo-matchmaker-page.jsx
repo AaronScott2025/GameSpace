@@ -13,12 +13,15 @@ import { LuSwords } from "react-icons/lu";
 import "../styles/duo-matchmaker-page.css";
 
 const PreferencesForm = ({ onSubmit }) => {
+  const { user } = useContext(UserContext);
   const [preferences, setPreferences] = useState({
     playStyle: "",
     playerDescription: "",
     playerPersonality: "",
     micUsage: "",
     playTime: "",
+    top5Games: "",
+    description: "",
   });
 
   const handleChange = (e) => {
@@ -26,9 +29,85 @@ const PreferencesForm = ({ onSubmit }) => {
     setPreferences((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const mapAnswersToValues = (preferences) => {
+    const playStyleMap = {
+      "Supportive/Backline": 3,
+      "Neutral/Middle": 6,
+      "Aggressive/Frontline": 9,
+    };
+
+    const playerDescriptionMap = {
+      "Exclusive(1 or 2 games at a time)": 2,
+      "Non-Exclusive (3 or 5 games at a time)": 4,
+      "Casual (6 or 8 games at a time)": 6,
+      "Variety Gamer(9+ games at a time)": 8,
+    };
+
+    const playerPersonalityMap = {
+      Casual: 4,
+      Competitive: 8,
+      Both: 12,
+      Neither: 16,
+    };
+
+    const micUsageMap = {
+      Never: 3,
+      Sometimes: 6,
+      Often: 9,
+      "Very Often": 12,
+    };
+
+    const playTimeMap = {
+      "1-3 Hours": 1,
+      "4-7 Hours": 2,
+      "8-11 hours": 3,
+      "12-15 hours": 4,
+      "16+ hours": 5,
+    };
+
+    return [
+      playStyleMap[preferences.playStyle],
+      playerDescriptionMap[preferences.playerDescription],
+      playerPersonalityMap[preferences.playerPersonality],
+      micUsageMap[preferences.micUsage],
+      playTimeMap[preferences.playTime],
+    ];
+  };
+  const calculateWeight = (playerTypeInt) => {
+    // Example weight calculation, you can adjust this as needed
+    return (
+      playerTypeInt.reduce((acc, value) => acc + value, 0) /
+      playerTypeInt.length
+    );
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(preferences);
+    const playerType = [
+      preferences.playStyle,
+      preferences.playerDescription,
+      preferences.playerPersonality,
+      preferences.micUsage,
+      preferences.playTime,
+    ].join(", ");
+
+    const playerTypeInt = mapAnswersToValues(preferences);
+
+    const { error } = await supabase
+      .from("duo_matchmaker")
+      .update({
+        playerType: playerType,
+        top_5_games: preferences.top5Games,
+        description: preferences.description,
+        playerTypeInts: playerTypeInt,
+      })
+      .eq("username", user.username);
+
+    if (error) {
+      console.error("Error updating preferences:", error);
+    } else {
+      onSubmit(preferences);
+    }
   };
 
   return (
@@ -36,7 +115,7 @@ const PreferencesForm = ({ onSubmit }) => {
       <div className="title-description">
         <h1 className="info-title">
           <GiSatelliteCommunication />
-          party Finder
+          Party Finder
         </h1>
 
         <p>
@@ -71,83 +150,113 @@ const PreferencesForm = ({ onSubmit }) => {
         </ol>
       </div>
       <div className="preferences-form-container">
-        <form onSubmit={handleSubmit} className="preferences-form">
-          <h2>Set Your Preferences</h2>
-          <label>
-            Which of the following best describes your play style?
-            <div>
-              <RadioButton
-                name="playStyle"
-                options={[
-                  "Supportive/Backline",
-                  "Neutral/Middle",
-                  "Aggressive/Frontline",
-                ]}
-                value={preferences.playStyle}
-                onChange={handleChange}
-              />
+        <div className="preferences-form-wrapper">
+          <form onSubmit={handleSubmit} className="preferences-form">
+            <h2>Set Your Preferences</h2>
+            <label>
+              Which of the following best describes your play style?
+              <div>
+                <RadioButton
+                  name="playStyle"
+                  options={[
+                    "Supportive/Backline",
+                    "Neutral/Middle",
+                    "Aggressive/Frontline",
+                  ]}
+                  value={preferences.playStyle}
+                  onChange={handleChange}
+                />
+              </div>
+            </label>
+            <label>
+              Which of the following best describes you as a gamer?
+              <div>
+                <RadioButton
+                  name="playerDescription"
+                  options={[
+                    "Exclusive(1 or 2 games at a time)",
+                    "Non-Exclusive (3 or 5 games at a time)",
+                    "Casual (6 or 8 games at a time)",
+                    "Variety Gamer(9+ games at a time)",
+                  ]}
+                  value={preferences.playerDescription}
+                  onChange={handleChange}
+                />
+              </div>
+            </label>
+            <label>
+              Which of the following best describes your personality?
+              <div>
+                <RadioButton
+                  name="playerPersonality"
+                  options={["Competitive", "Casual", "Both", "Neither"]}
+                  value={preferences.playerPersonality}
+                  onChange={handleChange}
+                />
+              </div>
+            </label>
+            <label>
+              How much do you use your microphone in game?
+              <div>
+                <RadioButton
+                  name="micUsage"
+                  options={["Never", "Sometimes", "Often", "Very Often"]}
+                  value={preferences.micUsage}
+                  onChange={handleChange}
+                />
+              </div>
+            </label>
+            <label>
+              How long do you spend playing games every week?
+              <div>
+                <RadioButton
+                  name="playTime"
+                  options={[
+                    "1-3 Hours",
+                    "4-7 Hours",
+                    "8-11 hours",
+                    "12-15 hours",
+                    "16+ hour",
+                  ]}
+                  value={preferences.playTime}
+                  onChange={handleChange}
+                />
+              </div>
+            </label>
+            <label>
+              What are your top 5 favorite games?
+              <div>
+                <input
+                  type="text"
+                  id="Top5Games"
+                  name="top5Games"
+                  value={preferences.top5games}
+                  onChange={handleChange}
+                  required
+                ></input>
+              </div>
+            </label>
+            <label>
+              please provide a brief description of yourself:
+              <div>
+                <input
+                  type="text"
+                  id="Description"
+                  name="description"
+                  value={preferences.description}
+                  onChange={handleChange}
+                  required
+                ></input>
+              </div>
+            </label>
+            <div className="button-container">
+              <button type="submit">
+                <LuSwords />
+                Submit
+              </button>
             </div>
-          </label>
-          <label>
-            Which of the following best describes you as a gamer?
-            <div>
-              <RadioButton
-                name="playerDescription"
-                options={[
-                  "Exclusive(1 or 2 games at a time)",
-                  "Non-Exclusive (3 or 5 games at a time)",
-                  "Casual (6 or 8 games at a time)",
-                  "Variety Gamer(9+ games at a time)",
-                ]}
-                value={preferences.playerDescription}
-                onChange={handleChange}
-              />
-            </div>
-          </label>
-          <label>
-            Which of the following best describes your personality?
-            <div>
-              <RadioButton
-                name="playerPersonality"
-                options={["Competitive", "Casual", "Both", "Neither"]}
-                value={preferences.playerPersonality}
-                onChange={handleChange}
-              />
-            </div>
-          </label>
-          <label>
-            How much do you use your microphone in game?
-            <div>
-              <RadioButton
-                name="micUsage"
-                options={["Never", "Sometimes", "Often", "Very Often"]}
-                value={preferences.micUsage}
-                onChange={handleChange}
-              />
-            </div>
-          </label>
-          <label>
-            How long do you spend playing games every week?
-            <div>
-              <RadioButton
-                name="playTime"
-                options={[
-                  "1-3 Hours",
-                  "4-7 Hours",
-                  "8-11 hours",
-                  "12-15 hours",
-                  "16+ hour",
-                ]}
-                value={preferences.playTime}
-                onChange={handleChange}
-              />
-            </div>
-          </label>
-          <button type="submit">
-            <LuSwords />
-            Submit
-          </button>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
@@ -275,10 +384,13 @@ const DuoMatchmakerPage = () => {
   const handleSwipe = () => {
     setActiveIndex((prevIndex) => (prevIndex + 1) % profilesData.length);
   };
+  const handlePreferencesSubmit = (preferences) => {
+    setUserPreferences(preferences);
+  };
 
   return (
     <div className="page-layout">
-      <PreferencesForm />
+      <PreferencesForm onSubmit={handlePreferencesSubmit} />
       {/* <div className="matches-layout"> */}
       {/* <DecisionButton
         imgSrc="https://banner2.cleanpng.com/20190512/xyi/kisspng-rainbow-flag-nail-art-pixel-gay-pride-5-percent-of-businesses-are-planning-to-break-up-1713893183862.webp"
