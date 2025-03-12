@@ -7,6 +7,7 @@ import DuoMatchmakerPage from "./pages/duo-matchmaker-page";
 import ChatBot from "./pages/chat-bot";
 
 import Wrapper from "./pages/Wrapper";
+import AccountPage from "./pages/account-page";
 import "./App.css";
 
 function App() {
@@ -30,6 +31,10 @@ function App() {
           <ChatBot />
         </Wrapper>
       ),
+    },
+    {
+      path: "/account",
+      element: <AccountPage />,
     },
     {
       path: "/home",

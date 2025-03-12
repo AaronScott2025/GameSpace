@@ -41,7 +41,7 @@ const Navbar = () => {
         </button>
 
         <div className="profile-auth">
-          <NavLink to="/profile" className="profile-btn">
+          <NavLink to="/account" className="profile-btn">
             <div className="profile-icon">
               <GiAstronautHelmet size={40} />
             </div>
