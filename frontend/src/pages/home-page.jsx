@@ -3,7 +3,7 @@ import "/src/styles/home-page.css";
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { supabase } from "../../client";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "./UserContext";
+import { UserContext } from "./UserContext.jsx";
 import axios from "axios";
 
 const items = [
