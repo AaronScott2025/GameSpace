@@ -319,7 +319,7 @@ const MatchProfileCard = ({
       <div className="profile-picture">
         <img src={imgSrc} alt="profile picture" />
       </div>
-      <h1 className="username">{username}</h1>
+      <h1 className="match-username">{username}</h1>
 
       {/** second part of the card: top games and type of player */}
       <div className="profile-information">
@@ -414,7 +414,6 @@ const DuoMatchmakerPage = () => {
       {userPreferences ? (
         <div className="matches-layout">
           <DecisionButton
-            imgSrc="https://banner2.cleanpng.com/20190512/xyi/kisspng-rainbow-flag-nail-art-pixel-gay-pride-5-percent-of-businesses-are-planning-to-break-up-1713893183862.webp"
             text="GAME OVER"
             onClick={() => setTriggerSwipe("left")}
           />
@@ -439,7 +438,6 @@ const DuoMatchmakerPage = () => {
           </div>
           <div className="Yes-match">
             <DecisionButton
-              imgSrc="https://banner2.cleanpng.com/20190512/xyi/kisspng-rainbow-flag-nail-art-pixel-gay-pride-5-percent-of-businesses-are-planning-to-break-up-1713893183862.webp"
               text="GAME ON"
               onClick={() => setTriggerSwipe("left")}
             />
