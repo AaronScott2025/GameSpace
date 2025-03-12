@@ -4,7 +4,6 @@ import { IoMdSend } from "react-icons/io";
 import axios from "axios";
 import { UserContext } from "./UserContext";
 
-import "/src/styles/chat-bot.css";
 import "../styles/chat-bot.css";
 
 const ChatBot = () => {
