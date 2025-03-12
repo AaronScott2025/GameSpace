@@ -6,6 +6,7 @@ import HomePage from "./pages/home-page";
 import Wrapper from "./pages/Wrapper";
 import AccountPage from "./pages/account-page";
 import "./App.css";
+import ChatBot from "./pages/chat-bot.jsx";
 
 function App() {
   const routes = useRoutes([
@@ -24,6 +25,10 @@ function App() {
     {
       path: "/account",
       element: < AccountPage/>,
+    },
+    {
+      path: "/chatbot",
+      element: < ChatBot/>,
     },
     {
       path: "/home",

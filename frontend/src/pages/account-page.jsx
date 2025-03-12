@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import '/src/style/account-page.css';
+import '/src/styles/account-page.css';
 import {
     getUserInfo,
     handleGameSelection,
