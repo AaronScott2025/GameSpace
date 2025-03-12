@@ -11,6 +11,7 @@ import { supabase } from "../../client";
 import { UserContext } from "./UserContext";
 import { LuSwords } from "react-icons/lu";
 import "../styles/duo-matchmaker-page.css";
+import axios from "axios";
 
 const PreferencesForm = ({ onSubmit }) => {
   const { user } = useContext(UserContext);
@@ -361,24 +362,44 @@ const DuoMatchmakerPage = () => {
   const [triggerSwipe, setTriggerSwipe] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [userPreferences, setUserPreferences] = useState(null);
-  const [screenSize, setScreenSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
+  const [profilesData, setProfilesData] = useState([]);
 
   useEffect(() => {
-    const handleResize = () => {
-      setScreenSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    };
+    const fetchProfiles = async () => {
+      try {
+        const response = await axios.get("api/matchmaker/", {
+          params: {
+            username: "gamer123",
+            Top5Games: "Apex Legends,Fortnite,PUBG,Valorant,Overwatch",
+            PlayerType:
+              "Supportive/Backline, Exclusive(1 or 2 games at a time), Casual, Never, 1-3 Hours",
+            PlayerTypeInts: "3, 2, 4, 3, 1",
+            Description: "Looking for a duo partner",
+          },
+        });
+        console.log("API response:", response.data); // Log the API response
 
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
+        if (response.data && response.data.Matches) {
+          // Ensure playertype and top5games are arrays and clean up playertype
+          const formattedProfiles = response.data.Matches.map((profile) => ({
+            ...profile,
+            playertype: profile.playertype.map((type) =>
+              type.replace(/[\[\]]/g, "").trim()
+            ),
+            top5games: Array.isArray(profile.top5games)
+              ? profile.top5games
+              : profile.top5games.split(", "),
+            playertypeints: JSON.parse(profile.playertypeints),
+          }));
+          setProfilesData(formattedProfiles);
+        } else {
+          console.error("No matches found in the API response");
+        }
+      } catch (error) {
+        console.error("Error fetching profiles:", error);
+      }
     };
+    fetchProfiles();
   }, []);
 
   const handleSwipe = () => {
@@ -390,37 +411,43 @@ const DuoMatchmakerPage = () => {
 
   return (
     <div className="page-layout">
-      <PreferencesForm onSubmit={handlePreferencesSubmit} />
-      {/* <div className="matches-layout"> */}
-      {/* <DecisionButton
-        imgSrc="https://banner2.cleanpng.com/20190512/xyi/kisspng-rainbow-flag-nail-art-pixel-gay-pride-5-percent-of-businesses-are-planning-to-break-up-1713893183862.webp"
-        text="GAME OVER"
-        onClick={() => setTriggerSwipe("left")}
-      />
-      <div className="match-profiles-container">
-        {profilesData.map((profile, index) => (
-          <MatchProfileCard
-            key={index}
-            imgSrc={profile.imgSrc}
-            username={profile.username}
-            topGames={profile.topGames}
-            playerType={profile.playerType}
-            description={profile.description}
-            isActive={index === activeIndex}
-            onSwipe={handleSwipe}
+      {userPreferences ? (
+        <div className="matches-layout">
+          <DecisionButton
+            imgSrc="https://banner2.cleanpng.com/20190512/xyi/kisspng-rainbow-flag-nail-art-pixel-gay-pride-5-percent-of-businesses-are-planning-to-break-up-1713893183862.webp"
+            text="GAME OVER"
+            onClick={() => setTriggerSwipe("left")}
           />
-        ))}
-      </div>
-      <div className="Yes-match">
-        <DecisionButton
-          imgSrc="https://banner2.cleanpng.com/20190512/xyi/kisspng-rainbow-flag-nail-art-pixel-gay-pride-5-percent-of-businesses-are-planning-to-break-up-1713893183862.webp"
-          text="GAME ON"
-          onClick={() => setTriggerSwipe("left")}
-        />
-      </div>
-      <div className="screen-size">
-        Screen Size: {screenSize.width} x {screenSize.height}
-      </div> */}
+          <div className="match-profiles-container">
+            {profilesData && profilesData.length > 0 ? (
+              profilesData.map((profile, index) => (
+                <MatchProfileCard
+                  key={index}
+                  imgSrc={profile.imgSrc}
+                  username={profile.username}
+                  topGames={profile.top5games}
+                  playerType={profile.playertype}
+                  description={profile.description}
+                  isActive={index === activeIndex}
+                  onSwipe={handleSwipe}
+                  triggerSwipe={triggerSwipe}
+                />
+              ))
+            ) : (
+              <p>No profiles available</p>
+            )}
+          </div>
+          <div className="Yes-match">
+            <DecisionButton
+              imgSrc="https://banner2.cleanpng.com/20190512/xyi/kisspng-rainbow-flag-nail-art-pixel-gay-pride-5-percent-of-businesses-are-planning-to-break-up-1713893183862.webp"
+              text="GAME ON"
+              onClick={() => setTriggerSwipe("left")}
+            />
+          </div>
+        </div>
+      ) : (
+        <PreferencesForm onSubmit={handlePreferencesSubmit} />
+      )}
     </div>
   );
 };
