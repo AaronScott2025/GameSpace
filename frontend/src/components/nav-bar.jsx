@@ -20,6 +20,7 @@ import Navbar from "../components/nav-bar";
 const Navbar = () => {
   // State to toggle the side menu visibility
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
   const handleMenuToggle = () => {
     setMenuOpen((prevState) => !prevState);
   };
