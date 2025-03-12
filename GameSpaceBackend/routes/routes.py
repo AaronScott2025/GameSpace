@@ -53,7 +53,7 @@ def chatbot():
             model="gpt-4",
             messages=[
                 {"role": "system", "content": (
-                    "You are a chatbot for a gaming social media page. "
+                    "You are a chatbot for a web application called 'GameSpace', a gaming social media platform. "
                     "You will be talking to a user with the following background:"
                     f" Username: {user.username} "
                     f" Bio: {user.bio} "
