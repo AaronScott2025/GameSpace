@@ -439,7 +439,7 @@ const DuoMatchmakerPage = () => {
           <div className="Yes-match">
             <DecisionButton
               text="GAME ON"
-              onClick={() => setTriggerSwipe("left")}
+              onClick={() => setTriggerSwipe(!"left")}
             />
           </div>
         </div>
