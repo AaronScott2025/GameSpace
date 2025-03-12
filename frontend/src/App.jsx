@@ -3,8 +3,6 @@ import LandingPage from "./pages/landing-page";
 import LoginPage from "./pages/login-page";
 import SignupPage from "./pages/signup-page";
 import HomePage from "./pages/home-page";
-import ChatBot from "./pages/chat-bot";
-
 import Wrapper from "./pages/Wrapper";
 import AccountPage from "./pages/account-page";
 import "./App.css";
@@ -24,12 +22,6 @@ function App() {
       element: <SignupPage />,
     },
     {
-      path: "/chatbot", 
-      element: 
-      <Wrapper>
-        <ChatBot />
-      </Wrapper>},
-      {
       path: "/account",
       element: < AccountPage/>,
     },
