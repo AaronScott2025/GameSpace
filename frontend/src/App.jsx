@@ -3,6 +3,7 @@ import LandingPage from "./pages/landing-page";
 import LoginPage from "./pages/login-page";
 import SignupPage from "./pages/signup-page";
 import HomePage from "./pages/home-page";
+import DuoMatchmakerPage from "./pages/duo-matchmaker-page";
 import ChatBot from "./pages/chat-bot";
 
 import Wrapper from "./pages/Wrapper";
@@ -24,14 +25,16 @@ function App() {
       element: <SignupPage />,
     },
     {
-      path: "/chatbot", 
-      element: 
-      <Wrapper>
-        <ChatBot />
-      </Wrapper>},
-      {
+      path: "/chatbot",
+      element: (
+        <Wrapper>
+          <ChatBot />
+        </Wrapper>
+      ),
+    },
+    {
       path: "/account",
-      element: < AccountPage/>,
+      element: <AccountPage />,
     },
     {
       path: "/home",
@@ -40,6 +43,10 @@ function App() {
           <HomePage />
         </Wrapper>
       ),
+    },
+    {
+      path: "/partyfinder",
+      element: <DuoMatchmakerPage />,
     },
   ]);
 
