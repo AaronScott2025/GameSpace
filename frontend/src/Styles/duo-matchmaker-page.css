@@ -1,0 +1,304 @@
+.page-layout {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  left: 0;
+  right: 0;
+}
+
+.preferences-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+  gap: 50px;
+}
+
+.title-description {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 10px;
+  margin-left: 60px;
+  padding: 0;
+}
+.info-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 0;
+  font-size: 4rem;
+  color: #d3f114;
+}
+.title-description h2 {
+  font-size: 2rem;
+}
+.how-it-works {
+  font-size: 1.3rem;
+}
+.highlight {
+  color: #d3f114;
+}
+.title-description p {
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  font-size: 1.3rem;
+}
+
+.title-description ol {
+  text-align: left; /* Align the text in the ordered list to the left */
+  padding-left: 20px; /* Add some padding to the left for better readability */
+}
+
+.title-description li {
+  text-align: left; /* Ensure list items are also aligned to the left */
+}
+
+.preferences-form-container {
+  position: relative;
+  top: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+
+  margin-right: 80px;
+  letter-spacing: 0.1rem; /* Add letter spacing */
+  background-color: #f0f0f0;
+  color: #000000;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: #000000 0px 0px 10px;
+  overflow-y: hidden;
+  height: 600px;
+  width: 1200px;
+  max-width: 1200px;
+  max-height: 600px;
+}
+.preferences-form-wrapper {
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.preferences-form {
+  text-align: left;
+  line-height: 2.4;
+
+  padding: 20px;
+  margin: 0px;
+  height: 100%; /* Make the form take up the full height of the container */
+  width: 100%; /* Make the form take up the full width of the container */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.preferences-form h2 {
+  text-align: center;
+}
+.preferences-form .button-container {
+  text-align: center;
+  width: 100%;
+}
+
+.preferences-form button {
+  font: inherit;
+  cursor: pointer;
+  background-color: rgba(181, 103, 250, 1);
+  border-radius: 20px;
+  width: 200px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+.preferences-form label {
+  padding-bottom: 0px;
+}
+.matches-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 50px;
+  align-items: start;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  height: 100vh;
+}
+@media (max-width: 1200px) {
+  .matches-layout {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .matches-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .matches-layout {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (max-height: 991px) {
+  .matches-layout {
+    margin-top: 50px;
+  }
+}
+
+@media (max-height: 776px) {
+  .matches-layout {
+    margin-top: 100px;
+  }
+}
+.screen-size {
+  position: fixed;
+  top: 100px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+.decision-button {
+  font: inherit;
+  line-height: 0.8;
+  font-size: 7rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+.decision-button:hover {
+  transform: scale(1.1);
+}
+
+.decision-button img {
+  width: 150px; /* Set the width of the circle */
+  height: 150px; /* Set the height of the circle */
+}
+
+.No-match,
+.Yes-match {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.No-match h1,
+.Yes-match h1 {
+  font-size: 7rem;
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+.match-profiles-container {
+  display: grid;
+  place-items: center;
+}
+
+.match-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(180deg, #266bff, #a4e4ff);
+  color: #000000;
+  max-height: 800px;
+  max-width: 400px;
+  border-radius: 28px;
+  margin-bottom: 20px; /* Add some space between the cards */
+  grid-column: 1;
+  grid-row: 1;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  cursor: grab;
+}
+.match-profile:active {
+  cursor: grabbing;
+}
+.match-profile.active {
+  opacity: 1; /* Show the active card */
+  z-index: 2; /* Bring the active card to the front */
+}
+@media (max-width: 1200px) {
+  .match-profile {
+    max-width: 350px;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 760px) {
+  .match-profile {
+    max-width: 300px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .match-profile {
+    max-width: 250px;
+    padding: 5px;
+  }
+}
+
+.profile-picture {
+  width: 150px; /* Set the width of the circle */
+  height: 150px; /* Set the height of the circle */
+  border-radius: 50%; /* Make the div a circle */
+  overflow: hidden; /* Ensure the image fits within the circle */
+  border: 10px solid #ffcc00;
+}
+
+.profile-picture img {
+  width: 100%; /* Ensure the image covers the entire div */
+  height: 100%; /* Ensure the image covers the entire div */
+  object-fit: cover; /* Maintain the aspect ratio of the image */
+}
+
+.profile-information {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.top-games,
+.Player-Type,
+.description-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  margin: 0; /* Remove any default margin */
+  padding: 0; /* Remove any default padding */
+}
+.top-games > * {
+  margin: 5px 0; /* Adjust the margin between the elements */
+}
+.Player-Type > * {
+  margin: 5px 0; /* Adjust the margin between the elements */
+}
+
+.description-container p {
+  text-align: left;
+}

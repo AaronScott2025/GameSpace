@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import '/src/style/account-page.css';
+import '/src/styles/account-page.css';
 import {
     getUserInfo,
     handleGameSelection,
@@ -8,7 +8,7 @@ import {
     updateLinkedServices,
     updateUserBio,
 } from '../scripts/account-page-scripts';
-import { UserContext } from "./UserContext";
+import { UserContext } from "./UserContext.jsx";
 import defaultProfilePic from '../assets/default_pfp.jpg';
 
 const AccountPage = () => {

@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { RiAliensFill } from "react-icons/ri"; // Import the icons
 import { IoMdSend } from "react-icons/io";
 import axios from "axios";
-import { UserContext } from "./UserContext";
+import { UserContext } from "./UserContext.jsx";
 
 import "../styles/chat-bot.css";
 

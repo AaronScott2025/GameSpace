@@ -24,6 +24,7 @@ const Navbar = () => {
   const handleMenuToggle = () => {
     setMenuOpen((prevState) => !prevState);
   };
+
   useEffect(() => {
     setMenuOpen(false);
   }, [location]);
