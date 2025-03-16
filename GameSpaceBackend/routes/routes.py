@@ -47,6 +47,10 @@ def chatbot():
             favoritegames=userinfo.get('favoritegames', [])
         )
         message = input_data.get('message', '')
+
+        # Initialize OpenAI API key
+        openai.api_key = OPEN_AI_KEY
+
         response = openai.ChatCompletion.create(
             model="gpt-4",
             messages=[
