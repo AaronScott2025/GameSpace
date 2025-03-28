@@ -34,8 +34,23 @@ def mediaGet():
             return jsonify({"message": "No more posts available"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
+# marketplace get endpoint, will retrieve the first 5 posts from the marketplace table in supabase
+# and return them in a json format. It will also return the next offset for pagination.
+@app.route('/marketplaceGet/', methods=['GET'])
+def marketplaceGet():
+    try:
+        offset = int(request.args.get('offset', 0))  # Default offset is 0
+        response = supabase.table('marketplace').select('*').order('sale_id', desc=False).range(offset, offset + 4).execute()  # Fetch 5 records in ascending order
+        if response.data:
+            return jsonify({
+                "posts": response.data,
+                "next_offset": offset + 5  # Provide the next offset for pagination
+            }), 200
+        else:
+            return jsonify({"message": "No more posts available"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 @app.route('/chatbot/', methods=['POST'])
 def chatbot():
     try:
