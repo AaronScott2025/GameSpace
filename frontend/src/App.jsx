@@ -7,6 +7,7 @@ import DuoMatchmakerPage from "./pages/duo-matchmaker-page";
 import ChatBot from "./pages/chat-bot";
 import Wrapper from "./pages/Wrapper";
 import AccountPage from "./pages/account-page";
+import Marketplace from "./pages/marketplace-home";
 import "./App.css";
 
 function App() {
@@ -34,6 +35,10 @@ function App() {
     {
       path: "/account",
       element: <AccountPage />,
+    },
+    {
+      path: "/marketplace",
+      element: <Marketplace />,
     },
     {
       path: "/chatbot",
