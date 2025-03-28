@@ -12,6 +12,21 @@ def test_media_get():
     print(f"Status Code: {response.status_code}")
     print(f"Response: {response.json()}")
 
+def test_marketplace():
+    url = f"{BASE_URL}/marketplaceGet/"
+    params = {'offset': 0}  # Start with an offset of 0
+    response = requests.get(url, params=params)
+    print("Testing /marketplaceGet endpoint with offset 0")
+    print(f"Status Code: {response.status_code}")
+    print(f"Response: {response.json()}")
+
+    # Test with a different offset ( 5 for the next set of records)
+    params = {'offset': 5}
+    response = requests.get(url, params=params)
+    print("Testing /marketplaceGet endpoint with offset 5")
+    print(f"Status Code: {response.status_code}")
+    print(f"Response: {response.json()}")
+
 def test_chatbot():
     url = f"{BASE_URL}/chatbot/"
     data = {
@@ -47,4 +62,5 @@ def test_matchmaker():
 if __name__ == "__main__":
      #test_media_get()
     # test_chatbot()
-    test_matchmaker()
+    #est_matchmaker()
+    test_marketplace()
