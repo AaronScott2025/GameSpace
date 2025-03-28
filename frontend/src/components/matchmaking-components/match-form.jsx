@@ -1,5 +1,5 @@
 import React from "react";
-
+import { supabase } from "../../../client";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../pages/UserContext";
 import { LuSwords } from "react-icons/lu";
