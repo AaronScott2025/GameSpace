@@ -5,6 +5,7 @@ import SignupPage from "./pages/signup-page";
 import HomePage from "./pages/home-page";
 import DuoMatchmakerPage from "./pages/duo-matchmaker-page";
 import ChatBot from "./pages/chat-bot";
+import DMPage from "./pages/dm-page";
 import Wrapper from "./pages/Wrapper";
 import AccountPage from "./pages/account-page";
 import "./App.css";
@@ -22,6 +23,10 @@ function App() {
     {
       path: "/signup",
       element: <SignupPage />,
+    },
+    {
+      path: "/dm-page",
+      element: <DMPage />,
     },
     {
       path: "/chatbot",
