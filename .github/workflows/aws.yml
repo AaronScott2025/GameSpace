@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.0.2
 
     
       - name: Set up Node.js
@@ -26,14 +26,14 @@ jobs:
           npm run build
 
       - name: Archive Frontend Build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.0.2
         with:
           name: frontend-build
           path: ./frontend/dist
 
 
       - name: Archive Backend Code
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.0.2
         with:
           name: backend-code
           path: ./GameSpaceBackend
@@ -45,13 +45,13 @@ jobs:
     steps:
 
       - name: Download Frontend Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v3.0.2
         with:
           name: frontend-build
           path: ./dist
 
       - name: Download Backend Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v3.0.2
         with:
           name: backend-code
           path: ./backend-code
