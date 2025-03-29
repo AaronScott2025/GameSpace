@@ -9,12 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the entire repository from GitHub
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Deploy the backend and frontend to EC2
-      - name: Deploy to EC2 (Monorepo)
+      - name: Deploy to EC2 (Adjusted Paths)
         uses: appleboy/ssh-action@v0.1.8
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -22,23 +20,23 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            # Navigate to the root of your monorepo and pull the latest changes.
-            cd /GameSpace
+            # Navigate to your repository's location
+            cd ~/GameSpace
             git pull origin main
 
-            # Deploying the Flask Backend
             echo "Deploying Flask Backend using Gunicorn..."
             cd GameSpaceBackend
-            pip install -r requirements.txt
-            # If you use a Python virtual environment, activate it here:
+            # Activate the virtual environment if used:
             # source venv/bin/activate
+            pip install -r requirements.txt
+            sudo systemctl daemon-reload
             sudo systemctl restart gunicorn
 
-            # Deploying the React Frontend
             echo "Deploying React Frontend..."
             cd ../frontend
             npm install
             npm run build
+            sudo systemctl daemon-reload
             sudo systemctl reload nginx
 
             echo "Deployment Complete!"
