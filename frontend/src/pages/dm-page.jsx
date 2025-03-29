@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./dm-page.css";
+import "../styles/dm-page.css";
 
 // might need to change code for adding messages
 const conversations = [
