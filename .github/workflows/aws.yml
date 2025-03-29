@@ -1,0 +1,99 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches:
+      - DeploymentStage
+
+jobs:
+  build:
+    name: Build Artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Build the React Frontend
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install and Build Frontend
+        working-directory: ./frontend
+        run: |
+          npm install
+          npm run build
+
+      - name: Archive Frontend Build
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-build
+          path: ./frontend/dist
+
+      # Package the Flask Backend Code
+      - name: Archive Backend Code
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-code
+          path: ./GameSpaceBackend
+
+  deploy:
+    name: Deploy to AWS EC2
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      # Download artifacts from the build job
+      - name: Download Frontend Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: frontend-build
+          path: ./dist
+
+      - name: Download Backend Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: backend-code
+          path: ./backend-code
+
+      # Deploy Frontend Artifact via SCP
+      - name: Deploy Frontend via SCP
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          source: "dist/**"
+          target: "/var/www/html/dist/"   # Adjust this if your Nginx root is different.
+
+      # Deploy Backend Code via SCP
+      - name: Deploy Backend via SCP
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          # Copy everything inside your backend folder
+          source: "backend-code/GameSpaceBackend/**"
+          target: "/home/ubuntu/GameSpace/GameSpaceBackend/"  # Adjust this path if needed.
+
+      # Restart Services on the Remote EC2 Instance
+      - name: Restart Services on EC2
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            # Change directory to your backend
+            cd /home/ubuntu/GameSpace/GameSpaceBackend
+            # Activate the virtual environment and update dependencies
+            source venv/bin/activate
+            pip install -r ../requirements.txt
+            # Restart Gunicorn (the Flask backend)
+            sudo systemctl restart gunicorn
+            # Reload Nginx, so any new frontend files take effect
+            sudo systemctl reload nginx
