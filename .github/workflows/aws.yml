@@ -23,14 +23,13 @@ jobs:
             # Navigate to your repository's location
             cd ~/GameSpace
 
-            # Configure Git to use fast-forward only to handle divergent branches
-            git config pull.rebase false
-            git pull --ff-only origin main
+            # Force your local repository to match the remote branch:
+            git fetch origin main
+            git reset --hard origin/main
 
             echo "Deploying Flask Backend using Gunicorn..."
             cd GameSpaceBackend
-
-            # Set up and activate a virtual environment if not already present
+            # Set up and activate a virtual environment if not already present:
             if [ ! -d "venv" ]; then
               python3 -m venv venv
             fi
