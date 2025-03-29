@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Deploy both the backend and frontend to EC2
+      # Step 2: Deploy the backend and frontend to EC2
       - name: Deploy to EC2 (Monorepo)
         uses: appleboy/ssh-action@v0.1.8
         with:
