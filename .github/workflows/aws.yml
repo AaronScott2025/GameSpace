@@ -25,13 +25,13 @@ jobs:
           npm run build
 
       - name: Archive Frontend Build
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@<UPLOAD_COMMIT_SHA>   # Replace with a commit SHA for a stable v2 version, e.g., f76229a6df8b01c54667d1e6eb4c597d8a1a3a8f 
         with:
           name: frontend-build
           path: ./frontend/dist
 
       - name: Archive Backend Code
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@<UPLOAD_COMMIT_SHA>  # Use the same commit SHA as above
         with:
           name: backend-code
           path: ./GameSpaceBackend
@@ -42,13 +42,13 @@ jobs:
     needs: build
     steps:
       - name: Download Frontend Artifact
-        uses: actions/download-artifact@v2.3.1
+        uses: actions/download-artifact@<DOWNLOAD_COMMIT_SHA>   # Replace with a commit SHA corresponding to a stable v2 version for download-artifact
         with:
           name: frontend-build
           path: ./dist
 
       - name: Download Backend Artifact
-        uses: actions/download-artifact@v2.3.1
+        uses: actions/download-artifact@<DOWNLOAD_COMMIT_SHA>   # Use the same commit SHA as above
         with:
           name: backend-code
           path: ./backend-code
@@ -88,5 +88,5 @@ jobs:
             pip install -r ../requirements.txt
             # Restart Gunicorn (the Flask backend)
             sudo systemctl restart gunicorn
-            # Reload Nginx so the new frontend files take effect
+            # Reload Nginx so new frontend files take effect
             sudo systemctl reload nginx
