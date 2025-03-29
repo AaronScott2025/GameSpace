@@ -35,7 +35,7 @@ jobs:
             fi
             source venv/bin/activate
             pip install --upgrade pip
-            pip install -r requirements.txt
+            pip install --break-system-packages -r requirements.txt
             sudo systemctl daemon-reload
             sudo systemctl restart gunicorn
 
