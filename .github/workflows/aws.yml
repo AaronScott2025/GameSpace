@@ -22,12 +22,20 @@ jobs:
           script: |
             # Navigate to your repository's location
             cd ~/GameSpace
-            git pull origin main
+
+            # Configure Git to use fast-forward only to handle divergent branches
+            git config pull.rebase false
+            git pull --ff-only origin main
 
             echo "Deploying Flask Backend using Gunicorn..."
             cd GameSpaceBackend
-            # Activate the virtual environment if used:
-            # source venv/bin/activate
+
+            # Set up and activate a virtual environment if not already present
+            if [ ! -d "venv" ]; then
+              python3 -m venv venv
+            fi
+            source venv/bin/activate
+            pip install --upgrade pip
             pip install -r requirements.txt
             sudo systemctl daemon-reload
             sudo systemctl restart gunicorn
