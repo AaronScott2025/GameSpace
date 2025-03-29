@@ -1,92 +1,44 @@
-name: CI/CD Pipeline
+name: CI/CD Deployment to EC2
 
 on:
   pull_request:
-    branches:
-      - DeploymentStage
+    branches: DeploymentStage
 
 jobs:
-  build:
-    name: Build Artifacts
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2.4.0
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2.5.1
-        with:
-          node-version: '18'
-      
-      - name: Install and Build Frontend
-        working-directory: ./frontend
-        run: |
-          npm install
-          npm run build
-
-      - name: Archive Frontend Build
-        uses: actions/upload-artifact@<UPLOAD_COMMIT_SHA>   # Replace with a commit SHA for a stable v2 version, e.g., f76229a6df8b01c54667d1e6eb4c597d8a1a3a8f 
-        with:
-          name: frontend-build
-          path: ./frontend/dist
-
-      - name: Archive Backend Code
-        uses: actions/upload-artifact@<UPLOAD_COMMIT_SHA>  # Use the same commit SHA as above
-        with:
-          name: backend-code
-          path: ./GameSpaceBackend
-
   deploy:
-    name: Deploy to AWS EC2
     runs-on: ubuntu-latest
-    needs: build
+
     steps:
-      - name: Download Frontend Artifact
-        uses: actions/download-artifact@<DOWNLOAD_COMMIT_SHA>   # Replace with a commit SHA corresponding to a stable v2 version for download-artifact
-        with:
-          name: frontend-build
-          path: ./dist
+      # Step 1: Check out the entire repository from GitHub
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      - name: Download Backend Artifact
-        uses: actions/download-artifact@<DOWNLOAD_COMMIT_SHA>   # Use the same commit SHA as above
-        with:
-          name: backend-code
-          path: ./backend-code
-
-      - name: Deploy Frontend via SCP
-        uses: appleboy/scp-action@v0.1.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          source: "dist/**"
-          target: "/var/www/html/dist/"
-
-      - name: Deploy Backend via SCP
-        uses: appleboy/scp-action@v0.1.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          source: "backend-code/GameSpaceBackend/**"
-          target: "/home/ubuntu/GameSpace/GameSpaceBackend/"
-
-      - name: Restart Services on EC2
-        uses: appleboy/ssh-action@v0.1.5
+      # Step 2: Deploy both the backend and frontend to EC2
+      - name: Deploy to EC2 (Monorepo)
+        uses: appleboy/ssh-action@v0.1.8
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            # Change directory to your backend
-            cd /home/ubuntu/GameSpace/GameSpaceBackend
-            # Activate the virtual environment and update dependencies
-            source venv/bin/activate
-            pip install -r ../requirements.txt
-            # Restart Gunicorn (the Flask backend)
+            # Navigate to the root of your monorepo and pull the latest changes.
+            cd /GameSpace
+            git pull origin main
+
+            # Deploying the Flask Backend
+            echo "Deploying Flask Backend using Gunicorn..."
+            cd GameSpaceBackend
+            pip install -r requirements.txt
+            # If you use a Python virtual environment, activate it here:
+            # source venv/bin/activate
             sudo systemctl restart gunicorn
-            # Reload Nginx so new frontend files take effect
+
+            # Deploying the React Frontend
+            echo "Deploying React Frontend..."
+            cd ../frontend
+            npm install
+            npm run build
             sudo systemctl reload nginx
+
+            echo "Deployment Complete!"
