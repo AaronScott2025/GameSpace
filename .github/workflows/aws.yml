@@ -68,8 +68,7 @@ jobs:
 
             echo "Configuring file permissions for static assets..."
             sudo chmod -R 755 ~/GameSpace/frontend/build
-            # If your web server (e.g., Nginx) runs as www-data, you might also need:
-            # sudo chown -R www-data:www-data ~/GameSpace/frontend/build
+            sudo chown -R www-data:www-data ~/GameSpace/frontend/build
 
             echo "Reloading Nginx..."
             sudo systemctl daemon-reload
