@@ -17,6 +17,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Check Node Version
+        run: node -v
+
       - name: Build Frontend
         run: |
           cd frontend
@@ -27,7 +30,7 @@ jobs:
       - name: List Build Artifacts
         run: ls -al frontend/dist
 
-      # Clean remote target directory
+      # Clean remote target directory for frontend files.
       - name: Clean Remote Frontend Build Directory
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -40,7 +43,7 @@ jobs:
             mkdir -p ~/GameSpace/frontend/build
             sudo chown $(whoami):$(whoami) ~/GameSpace/frontend/build
 
-      # Transfer the built frontend files  
+      # Deploy frontend files (archiving the entire "dist" folder while stripping off the "dist" level).
       - name: Deploy Frontend Build to EC2
         uses: appleboy/scp-action@master
         with:
@@ -53,8 +56,9 @@ jobs:
           overwrite: true
           strip_components: '1'
 
-      # Deploy backend and restart services on EC2
-      - name: Deploy Backend and Restart Services on EC2
+      # Deploy backend.
+      # This SSH command now restores the .env file before restarting gunicorn.
+      - name: Deploy and Restart Backend on EC2
         uses: appleboy/ssh-action@v0.1.8
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -66,6 +70,11 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
+            echo "Restoring Backend .env File..."
+            # Write the backend environment file from GitHub Secrets.
+            echo "${{ secrets.BACKEND_ENV_FILE }}" > GameSpaceBackend/.env
+            chmod 600 GameSpaceBackend/.env
+
             echo "Deploying Flask Backend using Gunicorn..."
             cd GameSpaceBackend
             if [ ! -d "venv" ]; then
@@ -74,9 +83,34 @@ jobs:
             source venv/bin/activate
             pip install --upgrade pip
             pip install --break-system-packages -r requirements.txt
+
+            # Now that the .env file is in place, restart gunicorn so it picks up the new values.
             sudo systemctl daemon-reload
             sudo systemctl restart gunicorn
 
+            echo "Deployment of backend complete."
+
+      # If you need a frontend .env file (for example, if your static app reads one at runtime)
+      - name: Restore Frontend .env File
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            echo "${{ secrets.FRONTEND_ENV_FILE }}" > ~/GameSpace/frontend/.env
+            chmod 600 ~/GameSpace/frontend/.env
+
+      # Adjust permissions for the deployed frontend files and reload Nginx.
+      - name: Adjust Permissions and Reload Nginx on EC2
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
             echo "Adjusting file permissions on static files..."
             sudo chmod -R 755 ~/GameSpace/frontend/build
             sudo chown -R www-data:www-data ~/GameSpace/frontend/build
@@ -86,29 +120,3 @@ jobs:
             sudo systemctl reload nginx
 
             echo "Deployment Complete!"
-
-      # Restore .env files using GitHub Secrets
-      - name: Restore Backend .env File
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            # Write the backend environment file
-            echo "${{ secrets.BACKEND_ENV_FILE }}" > ~/GameSpace/GameSpaceBackend/.env
-            # Set appropriate permissions (adjust as needed)
-            chmod 600 ~/GameSpace/GameSpaceBackend/.env
-
-      - name: Restore Frontend .env File
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            # Write the frontend environment file (if needed at runtime)
-            echo "${{ secrets.FRONTEND_ENV_FILE }}" > ~/GameSpace/frontend/.env
-            chmod 600 ~/GameSpace/frontend/.env
