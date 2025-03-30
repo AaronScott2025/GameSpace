@@ -27,6 +27,7 @@ jobs:
         env:
           VITE_SUPABASE_REACT_APP_URL: ${{ secrets.VITE_SUPABASE_REACT_APP_URL }}
           VITE_SUPABASE_REACT_APP_API_KEY: ${{ secrets.VITE_SUPABASE_REACT_APP_API_KEY }}
+          VITE_SUPABASE_REACT_SERVICE_ROLE_KEY: ${{ secrets.VITE_SUPABASE_REACT_SERVICE_ROLE_KEY }}
         run: |
           cd frontend
           npm install
