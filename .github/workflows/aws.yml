@@ -9,9 +9,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Check out the repository
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      # Set up Node.js to a version that meets your dependencies
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -20,6 +22,7 @@ jobs:
       - name: Check Node Version
         run: node -v
 
+      # Build the frontend using your preferred tool (Vite, etc.)
       - name: Build Frontend
         run: |
           cd frontend
@@ -27,10 +30,14 @@ jobs:
           npm run build
           echo "Frontend build complete!"
 
+      # List directories to help us debug (frontend and its built artifacts)
+      - name: List Frontend Directory
+        run: ls -al frontend
+
       - name: List Build Artifacts
         run: ls -al frontend/dist
 
-      # Clean remote target directory for frontend files.
+      # Clean the remote target folder for frontend build files.
       - name: Clean Remote Frontend Build Directory
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -41,9 +48,13 @@ jobs:
           script: |
             sudo rm -rf ~/GameSpace/frontend/build
             mkdir -p ~/GameSpace/frontend/build
+            # Ensure the folder is owned by the current user so SCP can write to it.
             sudo chown $(whoami):$(whoami) ~/GameSpace/frontend/build
 
-      # Deploy frontend files (archiving the entire "dist" folder while stripping off the "dist" level).
+      # Deploy the built frontend files from the local "frontend/dist" folder
+      # to the remote EC2 instance at ~/GameSpace/frontend/build,
+      # stripping off the "dist" directory so files (e.g. index.html, assets/)
+      # land directly in the target folder.
       - name: Deploy Frontend Build to EC2
         uses: appleboy/scp-action@master
         with:
@@ -56,8 +67,7 @@ jobs:
           overwrite: true
           strip_components: '1'
 
-      # Deploy backend.
-      # This SSH command now restores the .env file before restarting gunicorn.
+      # Deploy the backend and restore its .env file before restarting the service.
       - name: Deploy and Restart Backend on EC2
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -71,8 +81,8 @@ jobs:
             git reset --hard origin/main
 
             echo "Restoring Backend .env File..."
-            # Write the backend environment file from GitHub Secrets.
-            echo "${{ secrets.BACKEND_ENV_FILE }}" > GameSpaceBackend/.env
+            # Use `printf` so that quotes stored in the secret are preserved.
+            printf '%s' "${{ secrets.BACKEND_ENV_FILE }}" > GameSpaceBackend/.env
             chmod 600 GameSpaceBackend/.env
 
             echo "Deploying Flask Backend using Gunicorn..."
@@ -84,13 +94,12 @@ jobs:
             pip install --upgrade pip
             pip install --break-system-packages -r requirements.txt
 
-            # Now that the .env file is in place, restart gunicorn so it picks up the new values.
             sudo systemctl daemon-reload
             sudo systemctl restart gunicorn
 
-            echo "Deployment of backend complete."
+            echo "Backend deployment complete."
 
-      # If you need a frontend .env file (for example, if your static app reads one at runtime)
+      # Restore the frontend .env file using `printf` to preserve quotation marks.
       - name: Restore Frontend .env File
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -99,10 +108,10 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            echo "${{ secrets.FRONTEND_ENV_FILE }}" > ~/GameSpace/frontend/.env
+            printf '%s' "${{ secrets.FRONTEND_ENV_FILE }}" > ~/GameSpace/frontend/.env
             chmod 600 ~/GameSpace/frontend/.env
 
-      # Adjust permissions for the deployed frontend files and reload Nginx.
+      # Adjust permissions on the deployed frontend files and reload Nginx.
       - name: Adjust Permissions and Reload Nginx on EC2
         uses: appleboy/ssh-action@v0.1.8
         with:
