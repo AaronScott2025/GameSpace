@@ -1,97 +1,138 @@
-name: CI/CD Pipeline
+name: CI/CD Deployment to EC2
 
 on:
   pull_request:
-    branches:
-      - DeploymentStage
+    branches: DeploymentStage
 
 jobs:
-  build:
-    name: Build Artifacts
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Code
+      # Check out the repository.
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-    
-      - name: Set up Node.js
+      # Set up Node.js so that it meets your dependencies.
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-      
-      - name: Install and Build Frontend
-        working-directory: ./frontend
+          node-version: '20'
+
+      - name: Check Node Version
+        run: node -v
+
+      # Build the frontend with environment variables injected at build time.
+      - name: Build Frontend
+        env:
+          VITE_SUPABASE_REACT_APP_URL: ${{ secrets.VITE_SUPABASE_REACT_APP_URL }}
+          VITE_SUPABASE_REACT_APP_API_KEY: ${{ secrets.VITE_SUPABASE_REACT_APP_API_KEY }}
         run: |
+          cd frontend
           npm install
           npm run build
-
-      - name: Archive Frontend Build
-        uses: actions/upload-artifact@v3
-        with:
-          name: frontend-build
-          path: ./frontend/dist
+          echo "Frontend build complete!"
 
 
-      - name: Archive Backend Code
-        uses: actions/upload-artifact@v3
-        with:
-          name: backend-code
-          path: ./GameSpaceBackend
+      # List directories to verify build output.
+      - name: List Frontend Directory
+        run: ls -al frontend
 
-  deploy:
-    name: Deploy to AWS EC2
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
+      - name: List Build Artifacts
+        run: ls -al frontend/dist
 
-      - name: Download Frontend Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: frontend-build
-          path: ./dist
-
-      - name: Download Backend Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: backend-code
-          path: ./backend-code
-
-
-      - name: Deploy Frontend via SCP
-        uses: appleboy/scp-action@v0.1.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          source: "dist/**"
-          target: "/var/www/html/dist/"  
-
-
-      - name: Deploy Backend via SCP
-        uses: appleboy/scp-action@v0.1.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          source: "backend-code/GameSpaceBackend/**"
-          target: "/home/ubuntu/GameSpace/GameSpaceBackend/" 
-
-      - name: Restart Services on EC2
-        uses: appleboy/ssh-action@v0.1.5
+      # Clean the remote target folder for the frontend build files.
+      - name: Clean Remote Frontend Build Directory
+        uses: appleboy/ssh-action@v0.1.8
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            # Change directory to your backend
-            cd /home/ubuntu/GameSpace/GameSpaceBackend
-            # Activate the virtual environment and update dependencies
+            sudo rm -rf ~/GameSpace/frontend/build
+            mkdir -p ~/GameSpace/frontend/build
+            # Ensure the folder is owned by the current user so SCP can write into it.
+            sudo chown $(whoami):$(whoami) ~/GameSpace/frontend/build
+
+      # Deploy the built frontend files from the local "frontend/dist" folder
+      # to the remote EC2 instance at ~/GameSpace/frontend/build.
+      # We use strip_components: '1' so that the contents of "dist" (like index.html and assets/)
+      # land directly within the build directory.
+      - name: Deploy Frontend Build to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          source: "frontend/dist"
+          target: "~/GameSpace/frontend/build/"
+          overwrite: true
+          strip_components: '1'
+
+      # Deploy the backend by updating the repository,
+      # restoring the backend .env file (using printf to preserve quotes),
+      # and then restarting Gunicorn.
+      - name: Deploy and Restart Backend on EC2
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            cd ~/GameSpace
+            git fetch origin main
+            git reset --hard origin/main
+
+            echo "Restoring Backend .env File..."
+            # Use printf so that embedded quotation marks are preserved.
+            printf '%s' "${{ secrets.BACKEND_ENV_FILE }}" > GameSpaceBackend/.env
+            chmod 600 GameSpaceBackend/.env
+
+            echo "Deploying Flask Backend using Gunicorn..."
+            cd GameSpaceBackend
+            if [ ! -d "venv" ]; then
+              python3 -m venv venv
+            fi
             source venv/bin/activate
-            pip install -r ../requirements.txt
-            # Restart Gunicorn (the Flask backend)
+            pip install --upgrade pip
+            pip install --break-system-packages -r requirements.txt
+            sudo systemctl daemon-reload
             sudo systemctl restart gunicorn
-            # Reload Nginx, so any new frontend files take effect
+            echo "Backend deployment complete."
+
+      # Optionally, restore the frontend .env file (if your app requires a runtime .env)
+      # Make sure that the secret FRONTEND_ENV_FILE contains the following lines:
+      # VITE_SUPABASE_REACT_APP_URL="https://xfmccwekbxjkrjwuheyv.supabase.co/"
+      # VITE_SUPABASE_REACT_APP_API_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmbWNjd2VrYnhqa3Jqd3VoZXl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkzNzk1MzcsImV4cCI6MjA1NDk1NTUzN30.ImuaZwH7dkETwZR_3i4GsTEVhGDev-RjbgnKUX_rLfQ"
+      - name: Restore Frontend .env File
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            printf '%s' "${{ secrets.FRONTEND_ENV_FILE }}" > ~/GameSpace/frontend/.env
+            chmod 600 ~/GameSpace/frontend/.env
+
+      # Adjust permissions on the deployed frontend files and reload Nginx.
+      - name: Adjust Permissions and Reload Nginx on EC2
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            echo "Adjusting file permissions on static files..."
+            sudo chmod -R 755 ~/GameSpace/frontend/build
+            sudo chown -R www-data:www-data ~/GameSpace/frontend/build
+
+            echo "Reloading Nginx..."
+            sudo systemctl daemon-reload
             sudo systemctl reload nginx
+
+            echo "Deployment Complete!"
