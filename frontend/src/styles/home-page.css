@@ -1,36 +1,146 @@
+
+/*//////////////////////////////////////////////////*/
+/* Profile Container (info / sign out) */
+
 .profileinfo-container {
-  display:flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items:center;
-  text-align: center;
-  max-width: 20%;
-  max-height: 85%;
-  display: flex;
-  justify-content: flex-end;
-  position: absolute;
-  left: 5%; /* Ensures it stays at the right edge */
-  top: 10%; /* Centers vertically */
-  border: 1px solid black;
-  padding:5px;
+  position: fixed;
+  bottom: 20px;
+  left: 10px;
+  background: #4a90e2 ; 
+  color:rgb(255, 255, 255);
+  padding: 10px 15px;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 16px;
+  width: 80px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+.profileinfo-container p {
+  margin: 5px 0;
+}
+.profileinfo-container button {
+  margin-top: 10px;
+  width: 90%;
+  padding: 5px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.profileinfo-container button:hover {
+  background-color: #cc0000;
 }
 
-/* Centering the main container */
+/*//////////////////////////////////////////////////*/
+/* Media Container */
+
 .media-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items:center;
-    text-align: center;
-    position:absolute;
-    max-height: 85%;
-    max-width: 33%;
-    height: 85%;
-    width: 33%;
-    top:10%;
-    left:33%;
-    gap:5px;
+  display: flex;
+  flex-direction: column;
+  width: 60vw; 
+  height: calc(95vh - 55px); /* Adjusts height for navbar */
+  margin-top: 75px; /* Moves it down */
+  border: 3px solid #000000;
+  border-radius: 0px;
+  background-color: #d3d3d3;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 15px;
+}
+/* Scrollable Media Box */
+.mediascroll-box {
+  width: 100%; /* Expands to full width of container */
+  height: 100%; /* Takes full height */
+  background-color: #d3d3d3;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 0px;
+  padding: 5px;
+  overflow-y: auto; /* Enables scrolling */
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+/* Individual Post Box */
+.media-box {
+  display: flex;
+  flex-direction: row;  /* Align children (username, content, image) horizontally */
+  align-items: flex-start;  /* Align them to the top */
+  background-color: rgb(255, 255, 255);
+  color: black;
+  padding: 5px;
+  border: 2px solid #000000;
+  border-radius: 0px;
+  font-size: 20px;
+  font-weight: bold;
+  width: 100%; /* Full width */
+  box-sizing: border-box;
+}
+/* Left side - Username and Content */
+.media-left {
+  display: flex;
+  flex-direction: column;  /* Stack username and content vertically */
+  justify-content: flex-start; /* Ensure username is at the top, content at the bottom */
+  width: 50%; /* Increased width of left side for better balance */
+  padding-right: 20px;  /* Reduced padding for better alignment */
+  margin-right: -100px;  /* space between left side n image */
+}
+.username {
+  font-weight: bold;
+  font-size: 25px;
+  width: 20%; /* Adjust width of left side */
+  margin-bottom: 15px; /* Space between username and content */
+}
+.mediapost-content {
+  margin-top: auto; /* Pushes content to the bottom of the container */
+}
+/* Image Inside Post */
+.media-image {
+  height: 200px;  /* Set fixed height for the image */
+  width: 400px;  /* Set fixed width for the image */
+  object-fit: contain; /* Prevent stretching, maintain aspect ratio */
+  border-radius: 5px;
+  margin-left: 90px; /* Add space between the left content and image */
+  flex-shrink: 0;  /* Prevents the image from shrinking */
+  align-self: flex-start; /* Keeps the image aligned with the top */
+  margin-bottom: 0; /* Ensures there's no extra space below the image */
+}
+/* Media Query for smaller screens */
+@media (max-width: 768px) {
+  .media-image {
+    height: 100px;  /* Set fixed height for the image */
+    width: 100%; /* Image will take up full width of container */
   }
+}
+
+/*//////////////////////////////////////////////////*/    
+/* load more button */              
+          
+.pagination-buttons {
+  margin-top: 10px;
+}
+.pagination-buttons button {
+  margin: 5px;
+  padding: 8px 15px;
+  border: none;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+.pagination-buttons button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+.pagination-buttons button:hover:not(:disabled) {
+ background: #0056b3;
+}
+
+/*//////////////////////////////////////////////////*/
+/* Local event box / not in use atm */
 
   .localevents-container {
     display:flex;
@@ -46,32 +156,6 @@
     left: 74%; /* Ensures it stays at the right edge */
     top: 10% /* Centers vertically */
   }
-
-  .profileinfo-box {
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    text-align: center;
-
-  }
-
-  
-  /* Scrollable box */
-  .mediascroll-box {
-    width: max-content;
-    height:100vh;
-    background-color: white;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    padding: 15px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-    
-  }
-
   .localeventsscroll-box {
     width: max-content;
     height:100vh;
@@ -84,15 +168,11 @@
     flex-direction: column;
     gap: 10px;
     margin-top: 20px;
-    
   }
-  
-  /* Individual information container */
-  .media-box {
+    /* Individual information container */
+  .localevent-box {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    position:relative;
     background-color: #4a90e2;
     color: white;
     padding: 15px;
@@ -100,84 +180,17 @@
     font-size: 16px;
     font-weight: bold;
     gap: 50%;
-    width: 33vw;
-  }
-
-  .media-box:hover{
-    filter: brightness(90%);
-  }
-
-    .username {
-      align-self: flex-end; /* Moves it to the right */
-      margin-bottom: 5px; /* Adds spacing between username and post content */
-      border: 0.5px solid white;
-    }
-
-  
+    width: 25vw;
+  }  
   /* Image inside the container */
-  .media-image {
+  .localevent-image {
     width: 50px;
     height: 50px;
     border-radius: 5px;
-  }
-  
+  }  
   /* Content beside the image */
-  .media-content {
+  .localevent-content {
     display: flex;
     flex-direction: column;
-    text-align: center;
-    max-width: 25vw;
-    align-self: flex-end; /* Moves it to the right */
+  text-align: center;
   }
-
-    /* Individual information container */
-    .localevent-box {
-        display: flex;
-        align-items: center;
-        background-color: #4a90e2;
-        color: white;
-        padding: 15px;
-        border-radius: 5px;
-        font-size: 16px;
-        font-weight: bold;
-        gap: 50%;
-        width: 25vw;
-      }
-      
-      /* Image inside the container */
-      .localevent-image {
-        width: 50px;
-        height: 50px;
-        border-radius: 5px;
-      }
-      
-      /* Content beside the image */
-      .localevent-content {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .pagination-buttons {
-        margin-top: 10px;
-    }
-    
-    .pagination-buttons button {
-        margin: 5px;
-        padding: 8px 15px;
-        border: none;
-        background: #007bff;
-        color: white;
-        cursor: pointer;
-        border-radius: 5px;
-        transition: background 0.3s;
-    }
-    
-    .pagination-buttons button:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-    }
-    
-    .pagination-buttons button:hover:not(:disabled) {
-        background: #0056b3;
-    }

@@ -3,7 +3,7 @@ import "/src/styles/home-page.css";
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { supabase } from "../../client";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "./UserContext.jsx";
+import { UserContext } from "./UserContext";
 import axios from "axios";
 
 const items = [
@@ -64,7 +64,7 @@ const HomePage = () => {
   }, []);
 
   const scrollBoxRef = useRef(null);
-
+  
   // Handle "Load More" functionality
     const loadMore = async () => {
       if (!loading && scrollBoxRef.current) {
@@ -90,27 +90,36 @@ const HomePage = () => {
     <div>
       <Navbar />
 
+      {/* Profile info bottom left */}
       <div className="profileinfo-container">
-        <h1>Welcome to the Home Page!</h1>
-        <h1>Logged in as: </h1>
-        <div className="profileinfo-box">
-          <p>Username: {user.username}</p>
-          <p>Email: {user.email}</p>
-          <button onClick={signOut}>sign Out</button>
-        </div>
-      </div>
+       <p>Username : {user.username}</p>
+       <p>Email : {user.email}</p>
+       <button onClick={signOut}>Sign Out</button>
+      </div> 
 
+      {/* Media container */}
       <div className="media-container">
-        <h1>Media Posts</h1>
         <div ref={scrollBoxRef} className="mediascroll-box">
           {loading ? (
             <p>Loading data...</p>
           ) : data && data.length > 0 ? (
             data.map((item, index) => (
+              
+              
               <div key={index} className="media-box">
+                <div className="media-left">
                 <span className = "username">{item.username}</span> {/* Display username */}
                 <p className = "mediapost-content">{item.post_content}</p> {/* Display post content */}
               </div>
+                {item.post_attachment && ( 
+                 <img
+                  src={item.post_attachment}
+                  alt="Attachment"
+                  className="media-image"
+                />
+               )}
+              </div> 
+            
             ))
           ) : (
             <p>{error || "No data fetched yet..."}</p>
@@ -121,29 +130,32 @@ const HomePage = () => {
           <button onClick={loadMore} disabled={loading}>
             {loading ? "Loading..." : "Load More"}
           </button>
-        </div>
+        </div> 
       </div>
 
-      <div className="localevents-container">
-        <h1>Local Events</h1>
-        <div className="localeventsscroll-box">
-          {items.map((item) => (
-            <div key={item.id} className="localevent-box">
-              <img
-                src={item.image}
-                alt={item.title}
-                className="localevent-image"
-              />
-              <div className="localevent-content">
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+
     </div>
   );
 };
 
 export default HomePage;
+
+{/* <div className="localevents-container">
+<h1>Local Events</h1>
+<div className="localeventsscroll-box">
+  {items.map((item) => (
+    <div key={item.id} className="localevent-box">
+      <img
+        src={item.image}
+        alt={item.title}
+        className="localevent-image"
+      />
+      <div className="localevent-content">
+        <h3>{item.title}</h3>
+        <p>{item.description}</p>
+      </div>
+    </div>
+  ))}
+</div>
+</div> */}
+
