@@ -7,7 +7,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -33,7 +33,7 @@ jobs:
       - name: List Build Artifacts
         run: ls -al frontend/dist
 
-      # Clean remote target directory using sudo to avoid permission errors.
+      # Clean the remote target directory and set proper ownership.
       - name: Clean Remote Frontend Build Directory
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -43,9 +43,11 @@ jobs:
           port: 22
           script: |
             sudo rm -rf ~/GameSpace/frontend/build
-            sudo mkdir -p ~/GameSpace/frontend/build
+            mkdir -p ~/GameSpace/frontend/build
+            # Change ownership to the remote user so that SCP can write files.
+            sudo chown $(whoami):$(whoami) ~/GameSpace/frontend/build
 
-      # Transfer and extract the build artifacts while stripping the unwanted directories.
+      # Transfer the built files, archiving the entire "dist" folder and stripping the leading directory.
       - name: Deploy Frontend Build to EC2
         uses: appleboy/scp-action@master
         with:
@@ -53,10 +55,10 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
-          source: "frontend/dist/*"
+          source: "frontend/dist"
           target: "~/GameSpace/frontend/build/"
           overwrite: true
-          strip_components: '2'
+          strip_components: '1'
 
       - name: Deploy Backend and Restart Services on EC2
         uses: appleboy/ssh-action@v0.1.8
