@@ -17,9 +17,6 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Check Node Version
-        run: node -v
-
       - name: Build Frontend
         run: |
           cd frontend
@@ -27,13 +24,10 @@ jobs:
           npm run build
           echo "Frontend build complete!"
 
-      - name: List Frontend Directory
-        run: ls -al frontend
-
       - name: List Build Artifacts
         run: ls -al frontend/dist
 
-      # Clean the remote target directory and set proper ownership.
+      # Clean remote target directory
       - name: Clean Remote Frontend Build Directory
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -44,10 +38,9 @@ jobs:
           script: |
             sudo rm -rf ~/GameSpace/frontend/build
             mkdir -p ~/GameSpace/frontend/build
-            # Change ownership to the remote user so that SCP can write files.
             sudo chown $(whoami):$(whoami) ~/GameSpace/frontend/build
 
-      # Transfer the built files, archiving the entire "dist" folder and stripping the leading directory.
+      # Transfer the built frontend files  
       - name: Deploy Frontend Build to EC2
         uses: appleboy/scp-action@master
         with:
@@ -60,6 +53,7 @@ jobs:
           overwrite: true
           strip_components: '1'
 
+      # Deploy backend and restart services on EC2
       - name: Deploy Backend and Restart Services on EC2
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -92,3 +86,29 @@ jobs:
             sudo systemctl reload nginx
 
             echo "Deployment Complete!"
+
+      # Restore .env files using GitHub Secrets
+      - name: Restore Backend .env File
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            # Write the backend environment file
+            echo "${{ secrets.BACKEND_ENV_FILE }}" > ~/GameSpace/GameSpaceBackend/.env
+            # Set appropriate permissions (adjust as needed)
+            chmod 600 ~/GameSpace/GameSpaceBackend/.env
+
+      - name: Restore Frontend .env File
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            # Write the frontend environment file (if needed at runtime)
+            echo "${{ secrets.FRONTEND_ENV_FILE }}" > ~/GameSpace/frontend/.env
+            chmod 600 ~/GameSpace/frontend/.env
