@@ -15,8 +15,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-
           node-version: '20'
+
+      - name: Check Node Version
+        run: node -v
 
       - name: Build Frontend
         run: |
@@ -25,8 +27,11 @@ jobs:
           npm run build
           echo "Frontend build complete!"
 
+      - name: List Frontend Directory
+        run: ls -al frontend
+
       - name: List Build Artifacts
-        run: ls -al frontend/build
+        run: ls -al frontend/dist
 
       - name: Deploy Frontend Build to EC2
         uses: appleboy/scp-action@master
@@ -35,7 +40,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
-          source: "frontend/build/*"
+          source: "frontend/dist/*"
           target: "~/GameSpace/frontend/build/"
 
       - name: Deploy Backend and Restart Services on EC2
