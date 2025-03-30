@@ -7,17 +7,16 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Set up Node.js for building the frontend locally
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'  
+          node-version: '16'  # Ensure this meets your project's requirements
 
-      # Install and build the React frontend locally on the Actions runner
       - name: Build Frontend
         run: |
           cd frontend
@@ -25,7 +24,9 @@ jobs:
           npm run build
           echo "Frontend build complete!"
 
-      # Transfer the frontend build artifacts to EC2 instance
+      - name: List Build Artifacts
+        run: ls -al frontend/build
+
       - name: Deploy Frontend Build to EC2
         uses: appleboy/scp-action@master
         with:
@@ -33,10 +34,9 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
-          source: "frontend/build/"
+          source: "frontend/build/*"
           target: "~/GameSpace/frontend/build/"
 
-      # Continue with the backend deployment on EC2
       - name: Deploy Backend and Restart Services on EC2
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -45,7 +45,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            # Navigate to your repository's location and update the codebase
             cd ~/GameSpace
             git fetch origin main
             git reset --hard origin/main
@@ -61,7 +60,7 @@ jobs:
             sudo systemctl daemon-reload
             sudo systemctl restart gunicorn
 
-            # Reload nginx so that it picks up the new frontend files
+            echo "Reloading Nginx..."
             sudo systemctl daemon-reload
             sudo systemctl reload nginx
 
