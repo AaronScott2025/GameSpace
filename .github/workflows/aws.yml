@@ -15,7 +15,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Ensure this meets your project's requirements
+          # Updated Node version to satisfy package requirements.
+          node-version: '20'
 
       - name: Build Frontend
         run: |
