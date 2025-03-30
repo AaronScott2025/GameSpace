@@ -33,6 +33,7 @@ jobs:
           npm run build
           echo "Frontend build complete!"
 
+
       # List directories to verify build output.
       - name: List Frontend Directory
         run: ls -al frontend
