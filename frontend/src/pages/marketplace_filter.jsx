@@ -1,5 +1,8 @@
 import React from "react";
 import "../styles/marketplace_filter.css";
+import ButtonModal from "../components/button-modal.jsx";
+
+import { IoMdAdd } from "react-icons/io";
 
 const FilterSection = () => {
   return (
@@ -10,6 +13,16 @@ const FilterSection = () => {
         <input type="text" placeholder="Search" />
       </div>
 
+      {/** add the new listing here */}
+      <ButtonModal
+        buttonText="Create Listing"
+        className="create-listing-button"
+        icon={IoMdAdd}
+        iconSize={24}
+        action={() => console.log("Create Listing Clicked")}
+        id="create-listing-button"
+        araia-label="Create Listing"
+      />
       <div className="filter-category">
         <h3>Categories</h3>
         <ul>
