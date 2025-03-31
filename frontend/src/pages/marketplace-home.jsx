@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../styles/marketplace-home.css";
 import { createClient } from "@supabase/supabase-js";
 import FilterSection from "./marketplace_filter.jsx";
+import { Link } from "react-router-dom"; // <-- Import Link
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_REACT_APP_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_REACT_SERVICE_ROLE_KEY;
@@ -163,7 +164,13 @@ const Marketplace = () => {
     <section className="product-listings">
       <div className="product-listings-grid">
         {visibleGames.map((game) => (
-          <GameListing key={game.id} game={game} />
+          <Link
+          to={`/item/${game.id}`} // Dynamically navigate to item page
+          key={game.id}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <GameListing game={game} />
+        </Link>
         ))}
       </div>
     </section>
