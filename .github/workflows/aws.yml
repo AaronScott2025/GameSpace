@@ -27,6 +27,7 @@ jobs:
         env:
           VITE_SUPABASE_REACT_APP_URL: ${{ secrets.VITE_SUPABASE_REACT_APP_URL }}
           VITE_SUPABASE_REACT_APP_API_KEY: ${{ secrets.VITE_SUPABASE_REACT_APP_API_KEY }}
+          VITE_SUPABASE_REACT_SERVICE_ROLE_KEY: ${{ secrets.VITE_SUPABASE_REACT_SERVICE_ROLE_KEY }}
         run: |
           cd frontend
           npm install
@@ -103,10 +104,6 @@ jobs:
             sudo systemctl restart gunicorn
             echo "Backend deployment complete."
 
-      # Optionally, restore the frontend .env file (if your app requires a runtime .env)
-      # Make sure that the secret FRONTEND_ENV_FILE contains the following lines:
-      # VITE_SUPABASE_REACT_APP_URL="https://xfmccwekbxjkrjwuheyv.supabase.co/"
-      # VITE_SUPABASE_REACT_APP_API_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmbWNjd2VrYnhqa3Jqd3VoZXl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkzNzk1MzcsImV4cCI6MjA1NDk1NTUzN30.ImuaZwH7dkETwZR_3i4GsTEVhGDev-RjbgnKUX_rLfQ"
       - name: Restore Frontend .env File
         uses: appleboy/ssh-action@v0.1.8
         with:
