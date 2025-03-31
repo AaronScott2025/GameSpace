@@ -1,24 +1,24 @@
-
-/*//////////////////////////////////////////////////*/
-/* Profile Container (info / sign out) */
-
+/*///////////////////////////////////////////////////////*/
+/*////////Profile Container (info / sign out)////////////*/
 .profileinfo-container {
   position: fixed;
-  bottom: 20px;
-  left: 10px;
-  background: #4a90e2 ; 
-  color:rgb(255, 255, 255);
-  padding: 10px 15px;
-  border-radius: 10px;
-  text-align: left;
-  font-size: 16px;
-  width: 80px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  bottom: 9px;
+  left: 18px;
+  border: 3px solid #000000;
+  background: linear-gradient(to bottom, #d3d3d3, #ffffff); 
+  padding: 55px 125px;
+  border-radius: 0px;
+  text-align: center;
+  font-size: 20px;
+  width: 90px;
 }
 .profileinfo-container p {
-  margin: 5px 0;
+  margin: 10px 0;
+  color: black; /* Set text color to black */
 }
 .profileinfo-container button {
+  font-size: 20px; 
+  font-family: "Jersey 10", sans-serif;
   margin-top: 10px;
   width: 90%;
   padding: 5px;
@@ -31,43 +31,189 @@
 .profileinfo-container button:hover {
   background-color: #cc0000;
 }
+@media (max-width: 1206px) {
+  .profileinfo-container {
+    padding: 40px 100px; /* Reduce padding */
+    width: 80px; /* Adjust width */
+    font-size: 15px; /* Slightly smaller font */
+  }
+  .profileinfo-container button {
+    font-size: 18px;
+    padding: 4px;
+  }
+}
+@media (max-width: 999px) {
+  .profileinfo-container {
+    padding: 60px 65px; /* Reduce padding */
+    width: 70px; /* Adjust width */
+    font-size: 14px; /* Decrease font size */
+  }
+  .profileinfo-container button {
+    font-size: 16px; /* Reduce button text size */
+    padding: 3px;
+  }
+}
+@media (max-width: 900px) {
+  .profileinfo-container {
+    padding: 50px 40px; /* Reduce padding */
+    width: 60px; /* Adjust width */
+    font-size: 13px;
+  }
+  .profileinfo-container button {
+    font-size: 15px;
+    padding: 3px;
+  }
+}
+@media (max-width: 666px) {
+  .profileinfo-container {
+    padding: 45px 30px; /* Reduce padding even more */
+    width: 50px; /* Make it even smaller */
+    font-size: 12px;
+  }
+  .profileinfo-container button {
+    font-size: 14px;
+    padding: 2px;
+  }
+}
+
+
 
 /*//////////////////////////////////////////////////*/
-/* Media Container */
+/*//////////Post Container - toggle & Post//////////*/
+.toggle-post-button {
+  position: fixed;
+  bottom: 25px;
+  left: 410px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 4px 9px;
+  cursor: pointer;
+  font-size: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+.toggle-post-button:hover {
+  background-color: #0056b3;
+}
+/* Post Container - Post Textbox, Image, and Post Button */
+.post-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 20.2vw; /* width for post box */
+  padding: 15px;
+  border: 3px solid #000000;
+  background: linear-gradient(to bottom, #666666, #d2d2d2);
+  border-radius: 0px;
+  position: fixed; /* position to stay on left */
+  top: 83px;
+  left: 18px;
+  transition: transform 0.3s ease; /* transition for showing/hiding */
+}
+.post-content {
+  font-size: 13px; 
+  font-family: "Jersey 10", sans-serif;
+  width: 93%;
+  height: 150px;
+  padding: 10px;
+  border-radius: 0px;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+  font-size: 16px;
+  display: flex;
+  resize: none; /* Prevent resize */
+  text-align: center; /* center the text */
+  justify-content: center; /* center the text */
+  align-items: center;
+}
+/* Custom file input button */
+.custom-file-button {
+  background: #007bff;
+  color: white;
+  padding: 8px 33px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  display: inline-block;
+  margin-top: 10px;
+  margin-left: auto; /* Center  */
+  margin-right: auto; /* Center  */
+}
+.custom-file-button:hover {
+  background-color: #0056b3;
+}
+/* Dont think im using this / 'No file chosen' text */
+.post-image-info {
+  font-size: 18px; 
+  margin-top: 10px; /* Space below the input */
+  color: #303030; /* Lighter text color */
+  margin-left: 6px; /* Move the text to the right a bit */
+  margin-left: auto; /* Center horizontally */
+  margin-right: auto; /* Center horizontally */
+}
+/* Remove/Hide default file button it from the layout flow */
+.post-image-input {
+  display: none; /* Hide the file input */
+  position: absolute; /* Remove it from the layout flow */
+  opacity: 0; /* Make it fully transparent */
+}
+/* Styling for the "Post" button */
+.post-button {
+  font-size: 16px;
+  font-family: "Jersey 10", sans-serif;
+  background: #007bff;
+  color: white;
+  padding: 12px 55px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px; /* Push post button down */
+  margin-left: auto; /* Center horizontally */
+  margin-right: auto; /* Center horizontally */
+  display: block;
+}
+.post-button:hover {
+  background: #0056b3;
+}
 
+
+
+/*/////////////////////////////////////////////////////*/
+/*////////////////Media Container//////////////////////*/
 .media-container {
   display: flex;
   flex-direction: column;
-  width: 60vw; 
-  height: calc(95vh - 55px); /* Adjusts height for navbar */
-  margin-top: 75px; /* Moves it down */
+  width: 53vw; 
+  height: calc(95vh - 55px); 
+  margin-top: 75px; 
   border: 3px solid #000000;
   border-radius: 0px;
-  background-color: #d3d3d3;
+  background: linear-gradient(to bottom, #737373, #a4a4a4, #d2d2d2, #ffffff);
   box-sizing: border-box;
   align-items: center;
   justify-content: flex-start;
   padding: 15px;
 }
-/* Scrollable Media Box */
 .mediascroll-box {
-  width: 100%; /* Expands to full width of container */
-  height: 100%; /* Takes full height */
+  width: 100%;
+  height: 100%;
   background-color: #d3d3d3;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 0px;
   padding: 5px;
-  overflow-y: auto; /* Enables scrolling */
+  overflow-y: auto;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-/* Individual Post Box */
 .media-box {
   display: flex;
-  flex-direction: row;  /* Align children (username, content, image) horizontally */
-  align-items: flex-start;  /* Align them to the top */
+  flex-direction: row;  
+  align-items: flex-start;
   background-color: rgb(255, 255, 255);
   color: black;
   padding: 5px;
@@ -75,55 +221,55 @@
   border-radius: 0px;
   font-size: 20px;
   font-weight: bold;
-  width: 100%; /* Full width */
+  width: 100%;
   box-sizing: border-box;
 }
-/* Left side - Username and Content */
 .media-left {
   display: flex;
-  flex-direction: column;  /* Stack username and content vertically */
-  justify-content: flex-start; /* Ensure username is at the top, content at the bottom */
-  width: 50%; /* Increased width of left side for better balance */
-  padding-right: 20px;  /* Reduced padding for better alignment */
-  margin-right: -100px;  /* space between left side n image */
+  flex-direction: column;  
+  justify-content: flex-start; 
+  width: 50%;
+  padding-right: 20px;
+  margin-right: -100px; 
 }
 .username {
   font-weight: bold;
   font-size: 25px;
-  width: 20%; /* Adjust width of left side */
-  margin-bottom: 15px; /* Space between username and content */
+  width: 20%;
+  margin-bottom: 15px;
 }
 .mediapost-content {
-  margin-top: auto; /* Pushes content to the bottom of the container */
+  margin-top: auto;
 }
-/* Image Inside Post */
 .media-image {
-  height: 200px;  /* Set fixed height for the image */
-  width: 400px;  /* Set fixed width for the image */
-  object-fit: contain; /* Prevent stretching, maintain aspect ratio */
+  height: 200px;
+  width: 400px;
+  object-fit: contain;
   border-radius: 5px;
-  margin-left: 90px; /* Add space between the left content and image */
-  flex-shrink: 0;  /* Prevents the image from shrinking */
-  align-self: flex-start; /* Keeps the image aligned with the top */
-  margin-bottom: 0; /* Ensures there's no extra space below the image */
+  margin-left: 90px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-bottom: 0;
 }
-/* Media Query for smaller screens */
 @media (max-width: 768px) {
   .media-image {
-    height: 100px;  /* Set fixed height for the image */
-    width: 100%; /* Image will take up full width of container */
+    height: 100px;
+    width: 100%;
   }
 }
 
-/*//////////////////////////////////////////////////*/    
-/* load more button */              
-          
+
+
+/*//////////////////////////////////////////////////*/
+/*////////////// Refresh Button //////////////////*/    
 .pagination-buttons {
-  margin-top: 10px;
+  margin-top: 9px;
 }
 .pagination-buttons button {
-  margin: 5px;
-  padding: 8px 15px;
+  font-size: 16px;
+  font-family: "Jersey 10", sans-serif;
+  margin: 0px;
+  padding: 12px 15px;
   border: none;
   background: #007bff;
   color: white;
@@ -136,61 +282,59 @@
   cursor: not-allowed;
 }
 .pagination-buttons button:hover:not(:disabled) {
- background: #0056b3;
+  background: #0056b3;
 }
 
-/*//////////////////////////////////////////////////*/
-/* Local event box / not in use atm */
 
-  .localevents-container {
-    display:flex;
-    flex-direction: column;
-    align-items:center;
-    text-align: center;
-    max-width: 20%;
-    max-height: 85%;
-    width: 20%;
-    height: 85%;
-    justify-content: flex-end;
-    position: absolute;
-    left: 74%; /* Ensures it stays at the right edge */
-    top: 10% /* Centers vertically */
-  }
-  .localeventsscroll-box {
-    width: max-content;
-    height:100vh;
-    background-color: white;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    padding: 15px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-  }
-    /* Individual information container */
-  .localevent-box {
-    display: flex;
-    align-items: center;
-    background-color: #4a90e2;
-    color: white;
-    padding: 15px;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
-    gap: 50%;
-    width: 25vw;
-  }  
-  /* Image inside the container */
-  .localevent-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 5px;
-  }  
-  /* Content beside the image */
-  .localevent-content {
-    display: flex;
-    flex-direction: column;
+
+/*//////////////////////////////////////////////////*/
+/* Local Event Box (not in use atm) */
+.localevents-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  }
+  max-width: 20%;
+  max-height: 85%;
+  width: 20%;
+  height: 85%;
+  justify-content: flex-end;
+  position: absolute;
+  left: 74%;
+  top: 10%;
+}
+.localeventsscroll-box {
+  width: max-content;
+  height: 100vh;
+  background-color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+.localevent-box {
+  display: flex;
+  align-items: center;
+  background-color: #4a90e2;
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  gap: 50%;
+  width: 25vw;
+}
+.localevent-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+}
+.localevent-content {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
