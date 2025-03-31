@@ -95,22 +95,3 @@ jobs:
           script: |
             printf '%s' "${{ secrets.FRONTEND_ENV_FILE }}" > ~/GameSpace/frontend/.env
             chmod 600 ~/GameSpace/frontend/.env
-
-      # # Adjust permissions on the deployed frontend files and reload Nginx.
-      # - name: Adjust Permissions and Reload Nginx on EC2
-      #   uses: appleboy/ssh-action@v0.1.8
-      #   with:
-      #     host: ${{ secrets.EC2_HOST }}
-      #     username: ${{ secrets.EC2_USER }}
-      #     key: ${{ secrets.EC2_SSH_KEY }}
-      #     port: 22
-      #     script: |
-      #       echo "Adjusting file permissions on static files..."
-      #       sudo chmod -R 755 ~/GameSpace/frontend/build
-      #       sudo chown -R www-data:www-data ~/GameSpace/frontend/build
-
-      #       echo "Reloading Nginx..."
-      #       sudo systemctl daemon-reload
-      #       sudo systemctl reload nginx
-
-      #       echo "Deployment Complete!"
