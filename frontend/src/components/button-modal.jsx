@@ -8,7 +8,9 @@
  * - action: The action to be performed when the button is clicked.
  * - ...props: Additional props like className, id, etc.
  */
-import React from "react";
+import React, { act } from "react";
+import "/src/styles/modal.css"; // Import the CSS file for styling
+import { useState } from "react";
 
 function ButtonModal({
   buttonText,
@@ -16,24 +18,92 @@ function ButtonModal({
   iconSize = 16,
   style,
   action,
+  inputs = [], // Array of input objects { label: string, type: string, name: string }
+  onSubmit,
   ...props
 }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({});
+
+  const handleButtonClick = () => {
+    setIsModalOpen(true);
+    if (action) action();
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (onSubmit) {
+      onSubmit(formData); // Call the onSubmit function with form data
+    }
+    setFormData({}); // Reset form data after submission
+    setIsModalOpen(false);
+  };
+
   return (
-    <button
-      onClick={action}
-      style={{
-        display: "flex", // Use flexbox for alignment
-        alignItems: "center", // Center icon and text vertically
-        ...style, // Spread the passed styles
-      }}
-      {...props} // Spread other props (like className, id, etc.)
-    >
-      {Icon && (
-        <Icon style={{ marginRight: "8px", fontSize: `${iconSize}px` }} />
-      )}{" "}
-      {/* Icon with spacing */}
-      {buttonText} {/* Button text */}
-    </button>
+    <>
+      {/** button */}
+      <button
+        onClick={handleButtonClick} // Open modal on click
+        style={{
+          display: "flex", // Use flexbox for alignment
+          alignItems: "center", // Center icon and text vertically
+          ...style, // Spread the passed styles
+        }}
+        {...props} // Spread other props (like className, id, etc.)
+      >
+        {Icon && (
+          <Icon style={{ marginRight: "8px", fontSize: `${iconSize}px` }} />
+        )}{" "}
+        {/* Icon with spacing */}
+        {buttonText} {/* Button text */}
+      </button>
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button className="close-button" onClick={handleCloseModal}>
+              &times;
+            </button>
+            <h2>{props.title || "Form"}</h2>
+            <form onSubmit={handleFormSubmit}>
+              {inputs.map((input, index) => (
+                <label key={index}>
+                  {input.label}
+                  <input
+                    type={input.type || "text"}
+                    name={input.name}
+                    value={formData[input.name] || ""}
+                    onChange={handleInputChange}
+                    required={input.required || false}
+                  />
+                </label>
+              ))}
+              <div className="form-buttons">
+                <button
+                  type="button"
+                  className="close-modal-button"
+                  onClick={handleCloseModal}
+                >
+                  Close
+                </button>
+                <button type="submit" className="submit-button">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 export default ButtonModal;
