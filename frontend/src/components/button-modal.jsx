@@ -1,11 +1,17 @@
 /**
  * ButtonModal component
+ * component that combines a button with a modal form.
+ * It allows users to input data and submit it through the modal.
  * This component creates a button that can optionally include an icon.
  * Props:
  * - buttonText: The text to be displayed on the button.
  * - icon: A React component for the icon (optional).
  * - style: Inline styles for the button.
  * - action: The action to be performed when the button is clicked.
+ * - inputs: An array of input objects for the modal form.
+ *  Each input object should have the following properties:
+ *  - label: The label for the input field.
+ * - type: The type of the input field (e.g., text, number, etc.).
  * - ...props: Additional props like className, id, etc.
  */
 import React, { act } from "react";
