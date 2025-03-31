@@ -85,14 +85,3 @@ jobs:
             sudo systemctl daemon-reload
             sudo systemctl restart gunicorn
             echo "Backend deployment complete."
-
-      # - name: Restore Frontend .env File
-      #   uses: appleboy/ssh-action@v0.1.8
-      #   with:
-      #     host: ${{ secrets.EC2_HOST }}
-      #     username: ${{ secrets.EC2_USER }}
-      #     key: ${{ secrets.EC2_SSH_KEY }}
-      #     port: 22
-      #     script: |
-      #       printf '%s' "${{ secrets.FRONTEND_ENV_FILE }}" > ~/GameSpace/frontend/.env
-      #       chmod 600 ~/GameSpace/frontend/.env
