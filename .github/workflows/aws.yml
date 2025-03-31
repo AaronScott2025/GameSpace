@@ -19,9 +19,6 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Check Node Version
-        run: node -v
-
       # Build the frontend with environment variables injected at build time.
       - name: Build Frontend
         env:
@@ -34,14 +31,6 @@ jobs:
           npm run build
           echo "Frontend build complete!"
 
-
-      # List directories to verify build output.
-      - name: List Frontend Directory
-        run: ls -al frontend
-
-      - name: List Build Artifacts
-        run: ls -al frontend/dist
-
       # Clean the remote target folder for the frontend build files.
       - name: Clean Remote Frontend Build Directory
         uses: appleboy/ssh-action@v0.1.8
@@ -53,13 +42,9 @@ jobs:
           script: |
             sudo rm -rf ~/GameSpace/frontend/build
             mkdir -p ~/GameSpace/frontend/build
-            # Ensure the folder is owned by the current user so SCP can write into it.
             sudo chown $(whoami):$(whoami) ~/GameSpace/frontend/build
 
       # Deploy the built frontend files from the local "frontend/dist" folder
-      # to the remote EC2 instance at ~/GameSpace/frontend/build.
-      # We use strip_components: '1' so that the contents of "dist" (like index.html and assets/)
-      # land directly within the build directory.
       - name: Deploy Frontend Build to EC2
         uses: appleboy/scp-action@master
         with:
@@ -73,8 +58,7 @@ jobs:
           strip_components: '1'
 
       # Deploy the backend by updating the repository,
-      # restoring the backend .env file (using printf to preserve quotes),
-      # and then restarting Gunicorn.
+      # restoring the backend .env file
       - name: Deploy and Restart Backend on EC2
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -86,12 +70,9 @@ jobs:
             cd ~/GameSpace
             git fetch origin main
             git reset --hard origin/main
-
             echo "Restoring Backend .env File..."
-            # Use printf so that embedded quotation marks are preserved.
             printf '%s' "${{ secrets.BACKEND_ENV_FILE }}" > GameSpaceBackend/.env
             chmod 600 GameSpaceBackend/.env
-
             echo "Deploying Flask Backend using Gunicorn..."
             cd GameSpaceBackend
             if [ ! -d "venv" ]; then
@@ -115,21 +96,21 @@ jobs:
             printf '%s' "${{ secrets.FRONTEND_ENV_FILE }}" > ~/GameSpace/frontend/.env
             chmod 600 ~/GameSpace/frontend/.env
 
-      # Adjust permissions on the deployed frontend files and reload Nginx.
-      - name: Adjust Permissions and Reload Nginx on EC2
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            echo "Adjusting file permissions on static files..."
-            sudo chmod -R 755 ~/GameSpace/frontend/build
-            sudo chown -R www-data:www-data ~/GameSpace/frontend/build
+      # # Adjust permissions on the deployed frontend files and reload Nginx.
+      # - name: Adjust Permissions and Reload Nginx on EC2
+      #   uses: appleboy/ssh-action@v0.1.8
+      #   with:
+      #     host: ${{ secrets.EC2_HOST }}
+      #     username: ${{ secrets.EC2_USER }}
+      #     key: ${{ secrets.EC2_SSH_KEY }}
+      #     port: 22
+      #     script: |
+      #       echo "Adjusting file permissions on static files..."
+      #       sudo chmod -R 755 ~/GameSpace/frontend/build
+      #       sudo chown -R www-data:www-data ~/GameSpace/frontend/build
 
-            echo "Reloading Nginx..."
-            sudo systemctl daemon-reload
-            sudo systemctl reload nginx
+      #       echo "Reloading Nginx..."
+      #       sudo systemctl daemon-reload
+      #       sudo systemctl reload nginx
 
-            echo "Deployment Complete!"
+      #       echo "Deployment Complete!"
