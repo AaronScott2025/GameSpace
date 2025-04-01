@@ -188,7 +188,7 @@
 /* Local Event Box */
 .localevents-container {
   position: fixed;
-  top: -2px; /* Align with media-container */
+  top: 83px; /* Align with media-container */
   left: calc(50% + 26.35vw); /* Position it next to media-container */
   width: 20.4vw;
   height: 400px;
