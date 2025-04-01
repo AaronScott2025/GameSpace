@@ -143,6 +143,31 @@ const handlePostClick = async () => {
     }
   };
 
+//////////////////////////////////////////////////////////////
+///////////////////Set local events///////////////////////////
+
+const items = [
+  {
+    id: 1,
+    title: "Fifa Tournament",
+    description: "Join the biggest Fifa event of the year!",
+  //  image: "/planet.png",
+  },
+  {
+    id: 2,
+    title: "Game Consol Expo",
+    description: "Explore the newest gaming consols at any best buy.",
+  //  image: "/planet.png",
+  },
+  {
+    id: 3,
+    title: "Fortnite Event",
+    description: "Join the latest global fortnite update ",
+  //  image: "/planet.png",
+  },
+
+];
+
 
 //////////////////////////////////////////////////////////////
 ///////////////////For user context///////////////////////////
@@ -156,18 +181,17 @@ if (!user) {
 //////////////////////////////////////////////////////////////
 
 
-
-  return (
-    <div>
-      <Navbar />
-
+  return ( 
+    <div> 
+      <Navbar /> 
+      
       {/* Profile info section */}
       <div className="profileinfo-container">
         <p>Username : {user.username}</p>
         <p>Email : {user.email}</p>
         <button onClick={signOut}>Sign Out</button>
       </div>
-
+      
       {/* Toggle Button */}
       <button onClick={togglePostContainer} className="toggle-post-button">
         <BsFillPostcardFill size={30} /> {/* Icon for the button */}
@@ -220,6 +244,21 @@ if (!user) {
             <p>{error || "No data fetched yet..."}</p>
           )}
         </div>
+      
+      {/* Local events container posts */}
+      <div className="localevents-container">
+        <h1>Local Events</h1>
+        <div className="localeventsscroll-box">
+          {items.map((item) => (
+            <div key={item.id} className="localevent-box">
+              <div className="localevent-content">
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
         {/* Refresh button */}
         <div className="pagination-buttons">

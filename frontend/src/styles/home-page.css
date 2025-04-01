@@ -55,7 +55,7 @@
 }
 @media (max-width: 900px) {
   .profileinfo-container {
-    padding: 50px 40px; /* Reduce padding */
+    padding: 50px 48px; /* Reduce padding */
     width: 60px; /* Adjust width */
     font-size: 13px;
   }
@@ -92,6 +92,7 @@
   cursor: pointer;
   font-size: 20px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000; /* Ensure it stays on top */
 }
 .toggle-post-button:hover {
   background-color: #0056b3;
@@ -160,7 +161,7 @@
   position: absolute; /* Remove it from the layout flow */
   opacity: 0; /* Make it fully transparent */
 }
-/* Styling for the "Post" button */
+/* Styling for the "Post/submit" button */
 .post-button {
   font-size: 16px;
   font-family: "Jersey 10", sans-serif;
@@ -181,14 +182,71 @@
 
 
 
+/*//////////////////////////////////////////////////*/
+/* Local Event Box */
+.localevents-container {
+  position: fixed;
+  top: -2px; /* Align with media-container */
+  left: calc(50% + 26.35vw); /* Position it next to media-container */
+  width: 20.4vw;
+  height: 400px;
+  padding: 15px;
+  border: 3px solid #000000;
+  background: linear-gradient(to bottom, #7a7a7a, #a7a7a7, #ededed);
+  border-radius: 0px;
+  transition: transform 0.3s ease;
+  overflow: hidden;
+}
+.localevents-container h1 {
+  margin: 1px 0; /* Reduce spacing around the title */
+  text-align: center;
+  font-size: 30px;
+}
+
+.localeventsscroll-box {
+  width: 100%;
+  height: 90%; /* Make it take full height of parent */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-right: 7px; /* Prevents scrollbar from overlapping content */
+}
+.localeventsscroll-box::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+.localevent-box {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  color: black;
+  padding: 5px;
+  border: 2px solid #000;
+  font-size: 16px;
+  font-weight: bold;
+  width: 100%;
+  box-sizing: border-box;
+}
+.localevent-content {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+
+
 /*/////////////////////////////////////////////////////*/
 /*////////////////Media Container//////////////////////*/
 .media-container {
+  position: fixed;
+  top: 83px; /* Adjust based on layout */
+  left: 50%;
+  transform: translateX(-50%); /* Centers the container */
   display: flex;
   flex-direction: column;
-  width: 53vw; 
-  height: calc(95vh - 55px); 
-  margin-top: 75px; 
+  width: 53vw;
+  height: calc(95vh - 55px);
   border: 3px solid #000000;
   border-radius: 0px;
   background: linear-gradient(to bottom, #737373, #a4a4a4, #d2d2d2, #ffffff);
@@ -286,55 +344,3 @@
 }
 
 
-
-/*//////////////////////////////////////////////////*/
-/* Local Event Box (not in use atm) */
-.localevents-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  max-width: 20%;
-  max-height: 85%;
-  width: 20%;
-  height: 85%;
-  justify-content: flex-end;
-  position: absolute;
-  left: 74%;
-  top: 10%;
-}
-.localeventsscroll-box {
-  width: max-content;
-  height: 100vh;
-  background-color: white;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  padding: 15px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
-}
-.localevent-box {
-  display: flex;
-  align-items: center;
-  background-color: #4a90e2;
-  color: white;
-  padding: 15px;
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: bold;
-  gap: 50%;
-  width: 25vw;
-}
-.localevent-image {
-  width: 50px;
-  height: 50px;
-  border-radius: 5px;
-}
-.localevent-content {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-}
