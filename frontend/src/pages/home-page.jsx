@@ -223,6 +223,21 @@ if (!user) {
         </div>
       )}
 
+      {/* Local events container posts */}
+      <div className="localevents-container">
+        <h1>Local Events</h1>
+        <div className="localeventsscroll-box">
+          {items.map((item) => (
+            <div key={item.id} className="localevent-box">
+              <div className="localevent-content">
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Media container displaying posts */}
       <div className="media-container">
         <div ref={scrollBoxRef} className="mediascroll-box">
@@ -245,28 +260,13 @@ if (!user) {
           )}
         </div>
       
-      {/* Local events container posts */}
-      <div className="localevents-container">
-        <h1>Local Events</h1>
-        <div className="localeventsscroll-box">
-          {items.map((item) => (
-            <div key={item.id} className="localevent-box">
-              <div className="localevent-content">
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-        {/* Refresh button */}
-        <div className="pagination-buttons">
-          <button onClick={refreshPosts} disabled={loading}>
-            {loading ? "Refreshing..." : "Refresh"}
-          </button>
-        </div>
-      </div>
+        {/* Refresh button */} 
+        <div className="pagination-buttons"> 
+          <button onClick={refreshPosts} disabled={loading}> 
+            {loading ? "Refreshing..." : "Refresh"} 
+          </button> 
+        </div> 
+      </div> 
     </div>
   );
 };
