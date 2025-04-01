@@ -132,3 +132,41 @@ input[type="number"]:focus {
   border-color: #007bff; /* Highlight border on focus */
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Optional focus shadow */
 }
+textarea {
+  background-color: #ffffff; /* Light background */
+  color: #000000; /* Dark text */
+  border: 1px solid #ccc; /* Border color */
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box; /* Include padding in width/height */
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #007bff; /* Highlight border on focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Optional focus shadow */
+}
+.custom-modal-style {
+  background-color: rgba(255, 255, 255, 0.9); /* Light blue background */
+
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.custom-modal-style h2 {
+  color: #044999; /* Custom heading color */
+}
+
+.custom-form-style label {
+  color: #044999; /* Custom label color */
+  font-weight: bold;
+}
+form input[type="file"] {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
