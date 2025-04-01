@@ -26,6 +26,8 @@ function ButtonModal({
   action,
   inputs = [], // Array of input objects { label: string, type: string, name: string }
   onSubmit,
+  formClassName,
+  modalClassName,
   ...props
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -75,37 +77,61 @@ function ButtonModal({
       {/* Modal */}
       {isModalOpen && (
         <div className="modal-overlay">
-          <div className="modal-content">
+          <div className={`modal-content ${modalClassName}`}>
             <button className="close-button" onClick={handleCloseModal}>
               &times;
             </button>
             <h2>{props.title || "Form"}</h2>
-            <form onSubmit={handleFormSubmit}>
-              {inputs.map((input, index) => (
-                <label key={index}>
-                  {input.label}
-                  <input
-                    type={input.type || "text"}
-                    name={input.name}
-                    value={formData[input.name] || ""}
-                    onChange={handleInputChange}
-                    required={input.required || false}
-                  />
-                </label>
-              ))}
-              <div className="form-buttons">
-                <button
-                  type="button"
-                  className="close-modal-button"
-                  onClick={handleCloseModal}
-                >
-                  Close
-                </button>
-                <button type="submit" className="submit-button">
-                  Submit
-                </button>
-              </div>
-            </form>
+            <div className="modal-form-wrapper">
+              <form onSubmit={handleFormSubmit} className={formClassName}>
+                {inputs.map((input, index) => (
+                  <label key={index}>
+                    {input.label}
+                    {input.type === "textarea" ? (
+                      <textarea
+                        name={input.name}
+                        value={formData[input.name] || ""}
+                        onChange={handleInputChange}
+                        required={input.required || false}
+                        style={{ height: "100px", resize: "horizontal" }}
+                      />
+                    ) : input.type === "file" ? (
+                      <input
+                        type="file"
+                        name={input.name}
+                        onChange={(e) =>
+                          setFormData((prevData) => ({
+                            ...prevData,
+                            [input.name]: e.target.files[0], // Store the file object
+                          }))
+                        }
+                        required={input.required || false}
+                      />
+                    ) : (
+                      <input
+                        type={input.type || "text"}
+                        name={input.name}
+                        value={formData[input.name] || ""}
+                        onChange={handleInputChange}
+                        required={input.required || false}
+                      />
+                    )}
+                  </label>
+                ))}
+                <div className="form-buttons">
+                  <button
+                    type="button"
+                    className="close-modal-button"
+                    onClick={handleCloseModal}
+                  >
+                    Close
+                  </button>
+                  <button type="submit" className="submit-button">
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}

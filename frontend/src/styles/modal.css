@@ -27,6 +27,10 @@
   box-sizing: border-box; /* Ensure padding is included in width/height */
 }
 
+.modal-form-wrapper {
+  padding: 20px; /* Add padding for better spacing */
+}
+
 .close-button {
   position: absolute;
   top: 10px;
@@ -52,7 +56,8 @@ form label {
   text-align: left;
 }
 
-form input {
+form input,
+form textarea {
   width: 100%; /* Make inputs take full width */
   padding: 8px;
   margin-top: 5px;
@@ -60,6 +65,7 @@ form input {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
+  box-sizing: border-box; /* Include padding in width/height */
 }
 
 .form-buttons {
@@ -94,4 +100,10 @@ form input {
 
 .close-modal-button:hover {
   background-color: #e60000; /* Darker red on hover */
+}
+textarea {
+  height: 100px; /* Set the desired height for textarea */
+  resize: horizontal; /* Allow horizontal resizing only */
+  background-color: #ffffff; /* Match the background color of other elements */
+  color: #333; /* Match the text color of other elements */
 }
