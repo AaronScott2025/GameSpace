@@ -78,6 +78,7 @@
 
 
 
+
 /*//////////////////////////////////////////////////*/
 /*//////////Post Container - toggle & Post//////////*/
 .toggle-post-button {
@@ -146,7 +147,7 @@
 .custom-file-button:hover {
   background-color: #0056b3;
 }
-/* Dont think im using this / 'No file chosen' text */
+/* 'No file chosen' text */
 .post-image-info {
   font-size: 18px; 
   margin-top: 10px; /* Space below the input */
@@ -154,12 +155,6 @@
   margin-left: 6px; /* Move the text to the right a bit */
   margin-left: auto; /* Center horizontally */
   margin-right: auto; /* Center horizontally */
-}
-/* Remove/Hide default file button it from the layout flow */
-.post-image-input {
-  display: none; /* Hide the file input */
-  position: absolute; /* Remove it from the layout flow */
-  opacity: 0; /* Make it fully transparent */
 }
 /* Styling for the "Post/submit" button */
 .post-button {
@@ -179,6 +174,13 @@
 .post-button:hover {
   background: #0056b3;
 }
+/* Remove/Hide default file button it from the layout flow */
+.post-image-input {
+  display: none; /* Hide the file input */
+  position: absolute; /* Remove it from the layout flow */
+  opacity: 0; /* Make it fully transparent */
+}
+
 
 
 
@@ -233,6 +235,7 @@
   flex-direction: column;
   text-align: center;
 }
+
 
 
 
@@ -318,6 +321,7 @@
 
 
 
+
 /*//////////////////////////////////////////////////*/
 /*////////////// Refresh Button //////////////////*/    
 .pagination-buttons {
@@ -342,5 +346,3 @@
 .pagination-buttons button:hover:not(:disabled) {
   background: #0056b3;
 }
-
-
