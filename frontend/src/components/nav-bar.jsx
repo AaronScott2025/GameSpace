@@ -61,7 +61,7 @@ const Navbar = () => {
           </li>
           <li>
             <NavLink
-              to="/market"
+              to="/marketplace"
               className={({ isActive }) => (isActive ? "active-link" : "")}
             >
               <CiShoppingCart /> Market
