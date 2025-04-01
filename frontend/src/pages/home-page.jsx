@@ -155,16 +155,29 @@ const items = [
   },
   {
     id: 2,
-    title: "Game Consol Expo",
-    description: "Explore the newest gaming consols at any best buy.",
-  //  image: "/planet.png",
-  },
-  {
-    id: 3,
     title: "Fortnite Event",
     description: "Join the latest global fortnite update ",
   //  image: "/planet.png",
   },
+  {
+    id: 3,
+    title: "Gaming Event",
+    description: "Join The Biggest Gaming Event Of The Month!",
+  //  image: "/planet.png",
+  },
+  {
+    id: 4,
+    title: "Gaming Event",
+    description: "Join The Biggest Gaming Event Of The Month!",
+  //  image: "/planet.png",
+  },
+  {
+    id: 5,
+    title: "Gaming Event",
+    description: "Join The Biggest Gaming Event Of The Month!",
+  //  image: "/planet.png",
+  },
+
 
 ];
 
