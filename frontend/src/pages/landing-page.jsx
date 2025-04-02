@@ -16,6 +16,9 @@ const LandingPage = () => {
   const goToLogin = () => {
     navigate("/login"); // Navigate to Login page
   };
+  const goToMarket = () => {
+    navigate("/marketplace")
+  }
   return (
     <div className="landing-page">
       <div className="planet-container">
@@ -32,7 +35,7 @@ const LandingPage = () => {
           <GiAstronautHelmet size={50} />
           <span className="tooltip">LogIn</span>
         </div>
-        <div className="icon store">
+        <div className="icon store" onClick={goToMarket}>
           <CiShoppingCart size={50} />
           <span className="tooltip">Market</span>
         </div>
