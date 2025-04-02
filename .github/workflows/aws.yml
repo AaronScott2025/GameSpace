@@ -1,0 +1,87 @@
+name: CI/CD Deployment to EC2
+
+on:
+  pull_request:
+    branches: DeploymentStage
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the repository.
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # Build the frontend with environment variables injected at build time.
+      - name: Build Frontend
+        env:
+          VITE_SUPABASE_REACT_APP_URL: ${{ secrets.VITE_SUPABASE_REACT_APP_URL }}
+          VITE_SUPABASE_REACT_APP_API_KEY: ${{ secrets.VITE_SUPABASE_REACT_APP_API_KEY }}
+          VITE_SUPABASE_REACT_SERVICE_ROLE_KEY: ${{ secrets.VITE_SUPABASE_REACT_SERVICE_ROLE_KEY }}
+        run: |
+          cd frontend
+          npm install
+          npm run build
+          echo "Frontend build complete!"
+
+
+      # Clean the remote target folder for the frontend build files.
+      - name: Clean Remote Frontend Build Directory
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            sudo rm -rf ~/GameSpace/frontend/build
+            mkdir -p ~/GameSpace/frontend/build
+            sudo chown $(whoami):$(whoami) ~/GameSpace/frontend/build
+
+      # Deploy the built frontend files from the local "frontend/dist" folder
+      - name: Deploy Frontend Build to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          source: "frontend/dist"
+          target: "~/GameSpace/frontend/build/"
+          overwrite: true
+          strip_components: '1'
+
+      # Deploy the backend by updating the repository,
+      # restoring the backend .env file
+      - name: Deploy and Restart Backend on EC2
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            cd ~/GameSpace
+            git fetch origin main
+            git reset --hard origin/main
+            echo "Restoring Backend .env File..."
+            printf '%s' "${{ secrets.BACKEND_ENV_FILE }}" > GameSpaceBackend/.env
+            chmod 600 GameSpaceBackend/.env
+            echo "Deploying Flask Backend using Gunicorn..."
+            cd GameSpaceBackend
+            if [ ! -d "venv" ]; then
+              python3 -m venv venv
+            fi
+            source venv/bin/activate
+            pip install --upgrade pip
+            pip install --break-system-packages -r requirements.txt
+            sudo systemctl daemon-reload
+            sudo systemctl restart gunicorn
+            echo "Backend deployment complete."

@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 from dotenv import load_dotenv
@@ -15,7 +16,7 @@ SUPABASE_API_KEY = os.getenv("SUPABASE")
 OPEN_AI_KEY = os.getenv("OPEN_AI")
 
 app = Flask(__name__)
-
+socketio = SocketIO(app)
 supabase = create_client("https://xfmccwekbxjkrjwuheyv.supabase.co", SUPABASE_API_KEY)
 
 
@@ -33,8 +34,23 @@ def mediaGet():
             return jsonify({"message": "No more posts available"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
+# marketplace get endpoint, will retrieve the first 5 posts from the marketplace table in supabase
+# and return them in a json format. It will also return the next offset for pagination.
+@app.route('/marketplaceGet/', methods=['GET'])
+def marketplaceGet():
+    try:
+        offset = int(request.args.get('offset', 0))  # Default offset is 0
+        response = supabase.table('marketplace').select('*').order('sale_id', desc=False).range(offset, offset + 4).execute()  # Fetch 5 records in ascending order
+        if response.data:
+            return jsonify({
+                "posts": response.data,
+                "next_offset": offset + 5  # Provide the next offset for pagination
+            }), 200
+        else:
+            return jsonify({"message": "No more posts available"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 @app.route('/chatbot/', methods=['POST'])
 def chatbot():
     try:
@@ -90,6 +106,77 @@ def matchmaker():
         return jsonify({'error': str(e)}), 400
 
 
+@app.route('/logogen/', methods=['GET'])
+def logo():
+    try:
+        prompt = request.args.get('prompt')
+        response = openai.Image.create(
+            prompt=prompt,
+            n=4,
+            size="1000x1000"
+        )
+        images = {
+            "generated": [
+                {"image_number": i + 1, "url": data['url']} for i, data in enumerate(response['data'])
+            ]
+        }
+        jsonimages = json.dumps(images)
+        return jsonimages, 200
+    except Exception as e:
+        error_message = {"error": str(e)}
+        return json.dumps(error_message), 500
+
+
+@app.route('/namegen/', methods=['POST'])
+def namegen():
+    try:
+        previous = request.args.get('previous')
+
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo-0125",
+            messages=[
+                {"role": "system", "content": (
+                    "Generate 5 Gaming clan names. Exclude the following, previously generated names:"
+                    f"{previous}"
+                )},
+            ]
+        )
+        reply = response['choices'][0]['message']['content']
+        return jsonify({"response": reply}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/sendmessage/', methods=['POST'])
+def send_message():
+    try:
+        data = request.json
+        response = supabase.table('Messages').insert({
+            'sender_id': data['sender_id'],
+            'receiver_id': data['receiver_id'],
+            'message_content': data['message_content']
+        }).execute()
+        return jsonify(response.data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/getmessage/', methods=['GET'])
+def get_messages():
+    print("wip")
+
+@socketio.on('send_message')
+def handle_send_message(data):
+    # Save message to database (Supabase)
+    supabase.table('Messages').insert({
+        'sender_id': data['sender_id'],
+        'receiver_id': data['receiver_id'],
+        'message_content': data['message_content']
+    }).execute()
+
+    # Broadcast the message to the receiver
+    emit('receive_message', data, room=data['receiver_id'])
+
 
 if __name__ == '__main__':
     app.run(debug=True)
+    socketio.run(app, debug=True)
