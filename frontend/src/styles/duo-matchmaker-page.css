@@ -302,3 +302,24 @@
 .description-container p {
   text-align: left;
 }
+.top-5-games-input {
+  background-color: #f0f0f0;
+  color: #000000;
+  border: 2px solid #ccc; /* Subtle border color */
+}
+/* Add a hover effect */
+.top-5-games-input:hover {
+  border-color: #888; /* Darker border on hover */
+}
+.description-input-ta {
+  width: 100%; /* Make textareas take full width */
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background-color: #f9f9f9; /* Light background for textareas */
+  color: #000000;
+}
