@@ -1,15 +1,15 @@
 .dm-button {
-    z-index: 50;
-    position: fixed;
-    bottom: 40px;
-    right: 95px;
-    color: #ffffff;
-    font-size: 10vw; /* Make the font size relative to the viewport width */
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out, font-size 0.2s ease-in-out; /* Add transition for font size */
-  }
- 
-  .dm-button:hover {
-    transform: scale(1.15);
-    color: #d3d3d3;
-  }
+  z-index: 50;
+  position: fixed;
+  bottom: 5px; /* Adjust the position for larger screens */
+  right: 30px;
+  color: #ffffff;
+  font-size: 3vw; /* Make the font size relative to the viewport width */
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, font-size 0.2s ease-in-out; /* Add transition for font size */
+}
+
+.dm-button:hover {
+  transform: scale(1.15);
+  color: #d3d3d3;
+}
