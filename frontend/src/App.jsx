@@ -5,6 +5,7 @@ import SignupPage from "./pages/signup-page";
 import HomePage from "./pages/home-page";
 import DuoMatchmakerPage from "./pages/duo-matchmaker-page";
 import ChatBot from "./pages/chat-bot";
+import DMPage from "./pages/dm-page";
 import Wrapper from "./pages/Wrapper";
 import AccountPage from "./pages/account-page";
 import Marketplace from "./pages/marketplace-home";
@@ -31,6 +32,14 @@ function App() {
       element: (
         <Wrapper>
           <ChatBot />
+        </Wrapper>
+      ),
+    },
+    {
+      path: "/dm-page",
+      element: (
+        <Wrapper>
+          <DMPage />
         </Wrapper>
       ),
     },
