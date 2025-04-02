@@ -42,19 +42,10 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.search-bar::before {
-  content: "🔍";
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-  font-size: 1rem;
-}
 
 .create-listing-button {
   background-color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 10px;
+  margin: 0 auto 10px;
   padding: 10px;
   border-radius: 5px;
   font: inherit;
@@ -64,9 +55,16 @@
   display: flex;
   letter-spacing: 1px;
   font-size: 1.2rem;
-  padding: auto;
-  margin-right: 9px;
+  width: 100%;
+  justify-content: center;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
+
+.create-listing-button:hover {
+  background-color: #ffeb3b; /* Yellow background on hover */
+  transform: translateY(-2px); /* Slight elevation effect */
+}
+
 
 .filter-category,
 .filter-ratings {
