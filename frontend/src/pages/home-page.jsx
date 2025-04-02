@@ -1,4 +1,5 @@
 import Navbar from "../components/nav-bar"; 
+import DMButton from "../components/dm-nav";
 import "/src/styles/home-page.css"; 
 import { BsFillPostcardFill } from "react-icons/bs"; 
 import { useContext, useState, useEffect, useRef } from "react";  
@@ -197,7 +198,8 @@ if (!user) {
   return ( 
     <div> 
       <Navbar /> 
-      
+      <DMButton />
+
       {/* Profile info section */}
       <div className="profileinfo-container">
         <p>Username : {user.username}</p>
