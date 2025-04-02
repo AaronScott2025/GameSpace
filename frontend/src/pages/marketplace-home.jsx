@@ -1,110 +1,84 @@
 import React, { useState, useEffect } from "react";
 import "../styles/marketplace-home.css";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "../../client.js"; // Shared client
 import FilterSection from "./marketplace_filter.jsx";
-import { Link } from "react-router-dom"; // <-- Import Link
+import { Link } from "react-router-dom";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_REACT_APP_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_REACT_SERVICE_ROLE_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-const GameListing = ({ game }) => {
-  if (!game) {
+const ListingCard = ({ listing }) => {
+  if (!listing) {
     return (
-      <div className="game-card placeholder">
-        <p>Game unavailable</p>
+      <div className="listing-card placeholder">
+        <p>Listing unavailable</p>
       </div>
     );
   }
   return (
-    <div className="game-card">
-      <div className="game-poster">
-        {game.cover_art_url ? (
+    <div className="listing-card">
+      <div className="listing-picture">
+        {listing.picture ? (
           <img
-            src={game.cover_art_url}
-            alt={`${game.title} cover art`}
+            src={listing.picture}
+            alt={`${listing.title} image`}
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         ) : (
           <p>No Image</p>
         )}
       </div>
-      <div className="game-info">
-        <h3>{game.title}</h3>
-        <p className="price">${game.price}</p>
+      <div className="listing-info">
+        <h3>{listing.title}</h3>
+        <p className="price">${listing.listing_price}</p>
       </div>
     </div>
   );
 };
 
 const Marketplace = () => {
-  const [games, setGames] = useState([]);
+  const [listings, setListings] = useState([]);
   const [visibleCount, setVisibleCount] = useState(0);
   const [loadIncrement, setLoadIncrement] = useState(12);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Function to determine how many games to show based on screen width
-  const calculateGamesToShow = () => {
+  // Function to determine how many listings to show based on screen width
+  const calculateListingsToShow = () => {
     const width = window.innerWidth;
-
-    if (width >= 1900) {
-      return 24; // 6 columns x 4 rows for extra large screens
-    } else if (width >= 1600) {
-      return 20; // 5 columns x 4 rows for large screens
-    } else if (width >= 1200) {
-      return 16; // 4 columns x 4 rows for medium-large screens
-    } else if (width >= 768) {
-      return 12; // 3 columns x 4 rows for medium screens
-    } else {
-      return 8; // 2 columns x 4 rows or less for small screens
-    }
+    if (width >= 1900) return 24;
+    else if (width >= 1600) return 20;
+    else if (width >= 1200) return 16;
+    else if (width >= 768) return 12;
+    else return 8;
   };
 
   // Function to determine load increment based on screen width
   const calculateLoadIncrement = () => {
     const width = window.innerWidth;
-
-    if (width >= 1900) {
-      return 18; // 6 columns x 3 rows
-    } else if (width >= 1600) {
-      return 15; // 5 columns x 3 rows
-    } else if (width >= 1200) {
-      return 12; // 4 columns x 3 rows
-    } else {
-      return 9; // 3 columns x 3 rows or less
-    }
+    if (width >= 1900) return 18;
+    else if (width >= 1600) return 15;
+    else if (width >= 1200) return 12;
+    else return 9;
   };
 
-  // Initial setup and resize handler
   useEffect(() => {
     const handleResize = () => {
-      setVisibleCount(calculateGamesToShow());
+      setVisibleCount(calculateListingsToShow());
       setLoadIncrement(calculateLoadIncrement());
     };
 
-    // Set initial values
     handleResize();
-
-    // Add resize listener
-    window.addEventListener('resize', handleResize);
-
-    // Clean up
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Fetch games data
+  // Fetch listings data from the "listings" table
   useEffect(() => {
-    const fetchGames = async () => {
+    const fetchListings = async () => {
       setIsLoading(true);
       try {
-        console.log("Supabase URL:", supabaseUrl);
-        console.log("Attempting to fetch games...");
+        console.log("Fetching listings...");
         const { data, error } = await supabase
-          .from("games")
-          .select("id, title, price, cover_art_url");
-
-        console.log("Fetch result:", { data, error });
+          .from("listings")
+          .select("listing_id, title, listing_price, picture");
 
         if (error) {
           console.error("Supabase error:", error);
@@ -112,31 +86,31 @@ const Marketplace = () => {
         }
 
         if (!data || data.length === 0) {
-          console.warn("No games found");
+          console.warn("No listings found");
         }
 
-        setGames(data || []);
-        setIsLoading(false);
+        setListings(data || []);
       } catch (err) {
-        console.error("Error in fetchGames:", err);
+        console.error("Error fetching listings:", err);
         setError(err.message);
+      } finally {
         setIsLoading(false);
       }
     };
 
-    fetchGames();
+    fetchListings();
   }, []);
 
   const handleLoadMore = () => {
     setVisibleCount((prevCount) => prevCount + loadIncrement);
   };
 
-  const visibleGames = games.slice(0, visibleCount);
+  const visibleListings = listings.slice(0, visibleCount);
 
   if (isLoading) {
     return (
       <div className="marketplace-container">
-        <p>Loading games...</p>
+        <p>Loading listings...</p>
       </div>
     );
   }
@@ -144,44 +118,43 @@ const Marketplace = () => {
   if (error) {
     return (
       <div className="marketplace-container">
-        <p>Error loading games: {error}</p>
+        <p>Error loading listings: {error}</p>
       </div>
     );
   }
 
-  if (games.length === 0) {
+  if (listings.length === 0) {
     return (
       <div className="marketplace-container">
-        <p>No games found in the database.</p>
+        <p>No listings found in the database.</p>
       </div>
     );
   }
 
   return (
     <div className="marketplace-container">
-  <FilterSection />
-  <div className="product-listings-wrapper">
-    <section className="product-listings">
-      <div className="product-listings-grid">
-        {visibleGames.map((game) => (
-          <Link
-          to={`/item/${game.id}`} // Dynamically navigate to item page
-          key={game.id}
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
-          <GameListing game={game} />
-        </Link>
-        ))}
+      <FilterSection />
+      <div className="product-listings-wrapper">
+        <section className="product-listings">
+          <div className="product-listings-grid">
+            {visibleListings.map((listing) => (
+              <Link
+                to={`/item/${listing.listing_id}`}
+                key={listing.listing_id}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <ListingCard listing={listing} />
+              </Link>
+            ))}
+          </div>
+        </section>
+        {visibleCount < listings.length && (
+          <div className="load-more-container">
+            <button onClick={handleLoadMore}>Load More</button>
+          </div>
+        )}
       </div>
-    </section>
-    {visibleCount < games.length && (
-      <div className="load-more-container">
-        <button onClick={handleLoadMore}>Load More</button>
-      </div>
-    )}
-  </div>
-</div>
-
+    </div>
   );
 };
 
