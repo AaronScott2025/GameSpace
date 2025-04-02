@@ -1,8 +1,8 @@
 import React from "react";
 
-const FormButton = ({ text, route }) => {
+const FormButton = ({ text, route, className }) => {
   return (
-    <button className="form-button" type="submit" onClick={route}>
+    <button className={className} type="submit" onClick={route}>
       {text}
     </button>
   );
