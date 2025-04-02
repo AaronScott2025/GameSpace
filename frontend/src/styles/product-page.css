@@ -1,0 +1,93 @@
+/* item-page.css */
+.item-page-layout {
+    display: flex;
+    gap: 1vw; /* Space between filter and game details */
+    justify-content: flex-start; /* Align items to the left */
+    align-items: flex-start; /* Align content to the top */
+    height: 100vh; /* Full viewport height */
+    padding: 20px;
+    max-width: 90vw;
+    margin: 0 auto; /* Center the layout horizontally */
+    padding-top: 15vh;
+  }
+
+
+.item-page-container {
+  flex-grow: 1; /* Takes up remaining space */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: flex-start; /* Center vertically */
+  height: 100vh; /* Full height to center vertically */
+  width: 100vw;
+  padding-top: 5vh;
+  }
+  
+  .game-details-card {
+  display: flex;
+  flex-direction: row; /* Poster and info side by side */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  gap: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  background: linear-gradient(180deg, #0074E4 0%, #044999 100%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 80vw; /* Restrict width */
+
+  }
+  
+  .game-poster {
+  display: flex; /* Enable flexbox */
+  justify-content: center; /* Horizontally center */
+  align-items: center; /* Vertically center */
+  width: 100%;
+  height: 100%;
+  max-width: 300px; /* Restrict poster width */
+  background-color: #f4f4f4; /* Optional background */
+  border-radius: 8px;
+
+    
+  }
+  
+  .game-poster img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+  
+  .game-info {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    line-height: 0.5;
+    background: linear-gradient(180deg, #0074E4 0%, #044999 100%);
+    
+    
+  }
+  
+  .game-info h2 {
+    font-size: 26px;
+  }
+  
+  .summary {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  .release-date,
+  .ratings,
+  .esrb-rating,
+  .price,
+  .created-at {
+    font-size: 14px;
+  }
+  
+  .price {
+    font-size: 18px;
+    color: #4caf50;
+    font-weight: bold;
+  }
