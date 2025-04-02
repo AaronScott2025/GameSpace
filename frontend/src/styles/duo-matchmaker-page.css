@@ -303,9 +303,11 @@
   text-align: left;
 }
 .top-5-games-input {
-  background-color: #f0f0f0;
+  background-color: #f9f9f9;
   color: #000000;
-  border: 2px solid #ccc; /* Subtle border color */
+  border: 1px solid #ccc;
+  padding: 5px;
+  width: 100%; /* Make inputs take full width */
 }
 /* Add a hover effect */
 .top-5-games-input:hover {
