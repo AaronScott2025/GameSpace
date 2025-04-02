@@ -9,7 +9,6 @@
   padding-top: 70px;
 }
 
-/* Wrapper for the product listings and the load more button */
 .product-listings-wrapper {
   flex-grow: 1;
   display: flex;
@@ -17,7 +16,7 @@
   height: 100%;
 }
 
-/* Scrollable area for the product grid */
+
 .product-listings {
   flex-grow: 1;
   padding: 2rem;
@@ -25,7 +24,6 @@
   overflow-y: auto;
 }
 
-/* Custom scrollbar styling */
 .product-listings::-webkit-scrollbar {
   width: 8px;
 }
@@ -44,7 +42,7 @@
   background: #a8a8a8;
 }
 
-/* Grid layout for game cards */
+
 .product-listings-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -52,14 +50,14 @@
   justify-content: center;
 }
 
-/* Ensure at least 4 columns when space allows */
+
 @media (min-width: 1200px) {
   .product-listings-grid {
     grid-template-columns: repeat(4, minmax(220px, 1fr));
   }
 }
 
-/* For even wider screens, add more columns */
+
 @media (min-width: 1600px) {
   .product-listings-grid {
     grid-template-columns: repeat(5, minmax(220px, 1fr));
@@ -72,8 +70,8 @@
   }
 }
 
-/* Game card styling */
-.game-card {
+
+.listing-card {
   width: 100%;
   border-radius: 12px;
   overflow: hidden;
@@ -82,12 +80,13 @@
   cursor: pointer;
 }
 
-.game-card:hover {
+.listing-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
-.game-poster {
+
+.listing-picture {
   background-color: #e0e0e0;
   width: 100%;
   height: 200px;
@@ -98,16 +97,17 @@
   color: #555;
 }
 
-.game-info {
-  background-color: #444;
+
+.listing-info {
+  background-color: #0074e4;
   color: #fff;
   padding: 0.5rem 1rem;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.game-info h3 {
+.listing-info h3 {
   margin: 0;
   font-size: 1rem;
   white-space: nowrap;
@@ -115,13 +115,14 @@
   text-overflow: ellipsis;
 }
 
-.game-info .price {
+.listing-info .price {
   font-weight: bold;
   font-size: 1.1rem;
   color: #ffd700;
 }
 
-.game-card.placeholder {
+
+.listing-card.placeholder {
   background-color: #ddd;
   display: flex;
   justify-content: center;
@@ -130,7 +131,7 @@
   font-style: italic;
 }
 
-/* Load More button container */
+
 .load-more-container {
   text-align: center;
   padding: 1rem;
