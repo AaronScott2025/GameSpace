@@ -39,12 +39,13 @@ function App() {
     },
     {
       path: "/marketplace",
-      element: <Marketplace />,
+      element: (
+        <Wrapper>
+          <Marketplace />,
+        </Wrapper>
+      ),
     },
-    {
-      path: "/chatbot",
-      element: < ChatBot/>,
-    },
+
     {
       path: "/home",
       element: (
@@ -59,9 +60,12 @@ function App() {
     },
     {
       path: "/item/:id", // <-- Add this route for item details
-      element: <ProductPage />,
+      element: (
+        <Wrapper>
+          <ProductPage />,
+        </Wrapper>
+      ),
     },
-
   ]);
 
   return (
