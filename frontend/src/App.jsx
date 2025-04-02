@@ -8,6 +8,8 @@ import ChatBot from "./pages/chat-bot";
 import DMPage from "./pages/dm-page";
 import Wrapper from "./pages/Wrapper";
 import AccountPage from "./pages/account-page";
+import Marketplace from "./pages/marketplace-home";
+import ProductPage from "./pages/product-page";
 import "./App.css";
 
 function App() {
@@ -45,6 +47,10 @@ function App() {
       element: <AccountPage />,
     },
     {
+      path: "/marketplace",
+      element: <Marketplace />,
+    },
+    {
       path: "/chatbot",
       element: < ChatBot/>,
     },
@@ -60,6 +66,11 @@ function App() {
       path: "/partyfinder",
       element: <DuoMatchmakerPage />,
     },
+    {
+      path: "/item/:id", // <-- Add this route for item details
+      element: <ProductPage />,
+    },
+
   ]);
 
   return (
