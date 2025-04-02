@@ -231,6 +231,7 @@ const PreferencesForm = ({ onSubmit }) => {
                   type="text"
                   id="Top5Games"
                   name="top5Games"
+                  className="top-5-games-input"
                   value={preferences.top5games}
                   onChange={handleChange}
                   required
@@ -240,14 +241,15 @@ const PreferencesForm = ({ onSubmit }) => {
             <label>
               please provide a brief description of yourself:
               <div>
-                <input
-                  type="text"
+                <textarea
+                  type="textarea"
                   id="Description"
                   name="description"
+                  className="description-input-ta"
                   value={preferences.description}
                   onChange={handleChange}
                   required
-                ></input>
+                ></textarea>
               </div>
             </label>
             <div className="button-container">

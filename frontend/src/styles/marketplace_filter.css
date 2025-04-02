@@ -42,7 +42,6 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-
 .create-listing-button {
   background-color: rgba(255, 255, 255, 0.9);
   margin: 0 auto 10px;
@@ -64,7 +63,6 @@
   background-color: #ffeb3b; /* Yellow background on hover */
   transform: translateY(-2px); /* Slight elevation effect */
 }
-
 
 .filter-category,
 .filter-ratings {
@@ -114,57 +112,76 @@
 .filter-ratings li:active {
   background-color: #d0e8ff;
 }
-
-input[type="text"],
-input[type="number"] {
-  background-color: #ffffff; /* Light background */
-  color: #000000; /* Dark text */
-  border: 1px solid #ccc; /* Border color */
-  padding: 8px;
-  border-radius: 4px;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus {
-  outline: none;
-  border-color: #007bff; /* Highlight border on focus */
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Optional focus shadow */
-}
-textarea {
-  background-color: #ffffff; /* Light background */
-  color: #000000; /* Dark text */
-  border: 1px solid #ccc; /* Border color */
-  padding: 8px;
-  border-radius: 4px;
-  font-size: 1rem;
-  box-sizing: border-box; /* Include padding in width/height */
-}
-
-textarea:focus {
-  outline: none;
-  border-color: #007bff; /* Highlight border on focus */
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Optional focus shadow */
-}
-.custom-modal-style {
-  background-color: rgba(255, 255, 255, 0.9); /* Light blue background */
-
-  border-radius: 12px;
+.listing-modal {
+  background: white;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  overflow-y: auto; /* Enable vertical scrolling if content overflows */
+  overflow-x: hidden; /* Hide horizontal overflow */
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: #044999; /* Ensure text color is visible */
+  font-family: Arial, sans-serif; /* Set a readable font */
+  box-sizing: border-box; /* Ensure padding is included in width/height */
+}
+.listing-modal h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #044999; /* Dark blue color for the title */
+}
+.listing-modal label {
+  display: block; /* Ensure labels are block elements */
+  margin-bottom: 10px; /* Add spacing below each label */
+  font-weight: bold; /* Make labels bold for better visibility */
+
+  text-align: left;
 }
 
-.custom-modal-style h2 {
-  color: #044999; /* Custom heading color */
-}
-
-.custom-form-style label {
-  color: #044999; /* Custom label color */
-  font-weight: bold;
-}
-form input[type="file"] {
-  padding: 5px;
+.listing-form input {
+  width: 100%; /* Make inputs take full width */
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
   box-sizing: border-box;
+  background-color: #f9f9f9; /* Light background for inputs */
+}
+.listing-form textarea {
+  width: 100%; /* Make textareas take full width */
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background-color: #f9f9f9; /* Light background for textareas */
+}
+.listing-buttons {
+  display: flex;
+  justify-content: center; /* Align buttons to the right */
+  gap: 10px; /* Add spacing between buttons */
+}
+.submit-listing-button {
+  background-color: #044999; /* Blue color for the submit button */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.submit-listing-button:hover {
+  background-color: #033f7d;
+}
+.close-listing-button {
+  background-color: #ff4d4d; /* Red color for the close button */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
 }
