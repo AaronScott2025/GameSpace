@@ -9,6 +9,7 @@ import Wrapper from "./pages/Wrapper";
 import AccountPage from "./pages/account-page";
 import Marketplace from "./pages/marketplace-home";
 import ProductPage from "./pages/product-page";
+import ErrorPage from "./pages/error-page";
 import MatchmakingFormPage from "./pages/matchmaking-form-page";
 import "./App.css";
 
@@ -40,12 +41,13 @@ function App() {
     },
     {
       path: "/marketplace",
-      element: <Marketplace />,
+      element: (
+        <Wrapper>
+          <Marketplace />,
+        </Wrapper>
+      ),
     },
-    {
-      path: "/chatbot",
-      element: <ChatBot />,
-    },
+
     {
       path: "/home",
       element: (
@@ -66,7 +68,15 @@ function App() {
     },
     {
       path: "/item/:id", // <-- Add this route for item details
-      element: <ProductPage />,
+      element: (
+        <Wrapper>
+          <ProductPage />,
+        </Wrapper>
+      ),
+    },
+    {
+      path: "*",
+      element: <ErrorPage />,
     },
   ]);
 
