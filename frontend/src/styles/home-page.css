@@ -5,7 +5,7 @@
   bottom: 9px;
   left: 18px;
   border: 3px solid #000000;
-  background: linear-gradient(to bottom, #d3d3d3, #ffffff); 
+  background: linear-gradient(to bottom, #d3d3d3, #ffffff);
   padding: 55px 125px;
   border-radius: 0px;
   text-align: center;
@@ -17,7 +17,7 @@
   color: black; /* Set text color to black */
 }
 .profileinfo-container button {
-  font-size: 20px; 
+  font-size: 20px;
   font-family: "Jersey 10", sans-serif;
   margin-top: 10px;
   width: 90%;
@@ -76,9 +76,6 @@
   }
 }
 
-
-
-
 /*//////////////////////////////////////////////////*/
 /*//////////Post Container - toggle & Post//////////*/
 .toggle-post-button {
@@ -115,7 +112,7 @@
   transition: transform 0.3s ease; /* transition for showing/hiding */
 }
 .post-content {
-  font-size: 13px; 
+  font-size: 13px;
   font-family: "Jersey 10", sans-serif;
   width: 93%;
   height: 150px;
@@ -126,9 +123,11 @@
   font-size: 16px;
   display: flex;
   resize: none; /* Prevent resize */
-  text-align: center; /* center the text */
+  text-align: left; /* center the text */
   justify-content: center; /* center the text */
   align-items: center;
+  background-color: white;
+  color: #303030; /* Lighter text color */
 }
 /* Custom file input button */
 .custom-file-button {
@@ -149,7 +148,7 @@
 }
 /* 'No file chosen' text */
 .post-image-info {
-  font-size: 18px; 
+  font-size: 18px;
   margin-top: 10px; /* Space below the input */
   color: #303030; /* Lighter text color */
   margin-left: 6px; /* Move the text to the right a bit */
@@ -180,9 +179,6 @@
   position: absolute; /* Remove it from the layout flow */
   opacity: 0; /* Make it fully transparent */
 }
-
-
-
 
 /*//////////////////////////////////////////////////*/
 /* Local Event Box */
@@ -236,9 +232,6 @@
   text-align: center;
 }
 
-
-
-
 /*/////////////////////////////////////////////////////*/
 /*////////////////Media Container//////////////////////*/
 .media-container {
@@ -273,7 +266,7 @@
 }
 .media-box {
   display: flex;
-  flex-direction: row;  
+  flex-direction: row;
   align-items: flex-start;
   background-color: rgb(255, 255, 255);
   color: black;
@@ -287,11 +280,11 @@
 }
 .media-left {
   display: flex;
-  flex-direction: column;  
-  justify-content: flex-start; 
+  flex-direction: column;
+  justify-content: flex-start;
   width: 50%;
   padding-right: 20px;
-  margin-right: -100px; 
+  margin-right: -100px;
 }
 .username {
   font-weight: bold;
@@ -319,11 +312,8 @@
   }
 }
 
-
-
-
 /*//////////////////////////////////////////////////*/
-/*////////////// Refresh Button //////////////////*/    
+/*////////////// Refresh Button //////////////////*/
 .pagination-buttons {
   margin-top: 9px;
 }
