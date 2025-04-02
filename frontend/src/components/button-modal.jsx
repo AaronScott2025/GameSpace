@@ -28,6 +28,9 @@ function ButtonModal({
   onSubmit,
   formClassName,
   modalClassName,
+  buttonsClassName,
+  closeButtonClassName,
+  submitButtonClassName,
   ...props
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -77,7 +80,7 @@ function ButtonModal({
       {/* Modal */}
       {isModalOpen && (
         <div className="modal-overlay">
-          <div className={`modal-content ${modalClassName}`}>
+          <div className={modalClassName}>
             <button className="close-button" onClick={handleCloseModal}>
               &times;
             </button>
@@ -118,15 +121,15 @@ function ButtonModal({
                     )}
                   </label>
                 ))}
-                <div className="form-buttons">
+                <div className={buttonsClassName}>
                   <button
                     type="button"
-                    className="close-modal-button"
+                    className={closeButtonClassName}
                     onClick={handleCloseModal}
                   >
                     Close
                   </button>
-                  <button type="submit" className="submit-button">
+                  <button type="submit" className={submitButtonClassName}>
                     Submit
                   </button>
                 </div>

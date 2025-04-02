@@ -77,8 +77,11 @@ const FilterSection = () => {
         onSubmit={handleCreateListing}
         id="create-listing-button"
         araia-label="Create Listing"
-        formClassName={"custom-form-style"}
-        modalClassName={"custom-modal-style"}
+        formClassName={"listing-form"}
+        modalClassName={"listing-modal"}
+        submitButtonClassName={"submit-listing-button"}
+        closeButtonClassName={"close-listing-button"}
+        buttonsClassName={"listing-buttons"}
       />
       {/**End of buttonModal  */}
       <div className="filter-category">
