@@ -16,7 +16,6 @@
   height: 100%;
 }
 
-
 .product-listings {
   flex-grow: 1;
   padding: 2rem;
@@ -42,7 +41,6 @@
   background: #a8a8a8;
 }
 
-
 .product-listings-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -50,13 +48,11 @@
   justify-content: center;
 }
 
-
 @media (min-width: 1200px) {
   .product-listings-grid {
     grid-template-columns: repeat(4, minmax(220px, 1fr));
   }
 }
-
 
 @media (min-width: 1600px) {
   .product-listings-grid {
@@ -69,7 +65,6 @@
     grid-template-columns: repeat(6, minmax(220px, 1fr));
   }
 }
-
 
 .listing-card {
   width: 100%;
@@ -85,7 +80,6 @@
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
-
 .listing-picture {
   background-color: #e0e0e0;
   width: 100%;
@@ -97,7 +91,7 @@
   color: #555;
 }
 
-
+/* Listing info container */
 .listing-info {
   background-color: #0074e4;
   color: #fff;
@@ -109,18 +103,28 @@
 
 .listing-info h3 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.3rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.listing-info .price {
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: #ffd700;
+/* Seller and Price container */
+.seller-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
+.seller-price .seller {
+  font-size: 1.1rem;
+}
+
+.seller-price .price {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #ffd700;
+}
 
 .listing-card.placeholder {
   background-color: #ddd;
@@ -130,7 +134,6 @@
   color: #555;
   font-style: italic;
 }
-
 
 .load-more-container {
   text-align: center;
