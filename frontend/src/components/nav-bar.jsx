@@ -11,6 +11,7 @@ import {
 import { FaUsers } from "react-icons/fa";
 import { RiAliensFill } from "react-icons/ri";
 import { CiShoppingCart } from "react-icons/ci";
+import { TiMessages } from "react-icons/ti";
 import "./nav-bar.css";
 
 /* FOR NAVBAR U NEED TO ADD THESE TO the PAGES/GUI'S WHERE U WANT THE NAVBAR :
@@ -88,15 +89,15 @@ const Navbar = () => {
               to="/clans"
               className={({ isActive }) => (isActive ? "active-link" : "")}
             >
-              <FaUsers /> Clans
+              <FaUsers /> Events
             </NavLink>
           </li>
           <li>
             <NavLink
-              to="/coaching"
+              to="/dm-page"
               className={({ isActive }) => (isActive ? "active-link" : "")}
             >
-              <GiWhistle /> Coaching
+              <TiMessages /> DM's
             </NavLink>
           </li>
         </ul>
