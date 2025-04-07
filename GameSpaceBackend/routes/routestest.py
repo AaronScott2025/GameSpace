@@ -57,10 +57,24 @@ def test_matchmaker():
     print(f"Status Code: {response.status_code}")
     print(f"Response: {response.json()}")
 
-
+def test_logo_gen():
+    url = f"{BASE_URL}/logogen/"
+    params = {
+        'prompt': 'a like fortnite'
+    }
+    response = requests.get(url, params=params)
+    print("Testing /logoGen endpoint")
+    print(f"Status Code: {response.status_code}")
+    try:
+        print(f"Response: {response.json()}")
+    except json.JSONDecodeError:
+        print("Response is not in JSON format")
+        print(f"Response Text: {response.text}")
+    
 
 if __name__ == "__main__":
      #test_media_get()
     # test_chatbot()
     #est_matchmaker()
-    test_marketplace()
+    #test_marketplace()
+    test_logo_gen()
