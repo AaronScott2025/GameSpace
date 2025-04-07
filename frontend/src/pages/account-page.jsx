@@ -7,6 +7,7 @@ import {
   uploadProfilePic,
   updateLinkedServices,
   updateUserBio,
+  generateProfilePic,
 } from "../scripts/account-page-scripts";
 import { UserContext } from "./UserContext.jsx";
 import defaultProfilePic from "../assets/default_pfp.jpg";
@@ -89,6 +90,27 @@ const AccountPage = () => {
     setLoading(false);
   };
 
+  const handleGenerateProfilePic = async () => {
+    setLoading(true);
+    const prompt = "A alien gamer"; // Example prompt
+    try {
+      const newProfilePic = await generateProfilePic(user.id, prompt);
+      console.log("Response from generateProfilePic:", newProfilePic);
+
+      if (newProfilePic) {
+        const uniqueUrl = `${newProfilePic}?t=${new Date().getTime()}`; // Append a timestamp to the URL
+        setProfilePic(""); // Temporarily clear the profile picture
+        setTimeout(() => setProfilePic(uniqueUrl), 0); // Update with the new picture
+        console.log("Profile picture generated:", uniqueUrl);
+      } else {
+        setError("Failed to generate profile picture.");
+      }
+    } catch (err) {
+      console.error("Error generating profile picture:", err);
+      setError("An error occurred while generating the profile picture.");
+    }
+    setLoading(false);
+  };
   const handleLinkedServicesUpdate = async () => {
     setLoading(true);
     const success = await updateLinkedServices(user.id, {
@@ -126,7 +148,7 @@ const AccountPage = () => {
       <div className="account-page">
         <div className="profile-section">
           <div className="profile-picture">
-            <img src={profilePic} alt="Profile" />
+            <img key={profilePic} src={profilePic} alt="Profile" />
           </div>
           <input
             id="profilePicInput"
@@ -135,9 +157,19 @@ const AccountPage = () => {
             onChange={handleProfilePicUpload}
             style={{ display: "none" }}
           />
+          <input
+            id="generatePicInput"
+            type="button"
+            value="Generate Profile Picture"
+            onClick={handleGenerateProfilePic}
+            style={{ display: "none" }}
+          />
           <div className="Edit-or-genereate-pfp">
             <label htmlFor="profilePicInput" className="action-button">
               Edit Profile Picture
+            </label>
+            <label htmlFor="generatePicInput" className="action-button">
+              Generate Profile Picture
             </label>
           </div>
         </div>

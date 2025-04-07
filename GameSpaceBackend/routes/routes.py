@@ -110,7 +110,11 @@ def matchmaker():
 def logo():
     try:
         openai.api_key = OPEN_AI_KEY
-        prompt = request.args.get('prompt')
+        data = request.get_json()  # Get JSON data from the request body
+        prompt = data.get('prompt')  # Extract the prompt
+        if not prompt:
+            return {"error": "Prompt is required"}, 400
+
         response = openai.Image.create(
             prompt=prompt,
             n=1,
@@ -121,11 +125,10 @@ def logo():
                 {"image_number": i + 1, "url": data['url']} for i, data in enumerate(response['data'])
             ]
         }
-        jsonimages = json.dumps(images)
-        return jsonimages, 200
+        return images, 200
     except Exception as e:
-        error_message = {"error": str(e)}
-        return json.dumps(error_message), 500
+        print(f"Error in /logogen/: {e}")
+        return {"error": str(e)}, 500
 
 
 @app.route('/namegen/', methods=['POST'])
