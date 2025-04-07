@@ -106,7 +106,7 @@ def matchmaker():
         return jsonify({'error': str(e)}), 400
 
 
-@app.route('/logogen/', methods=['GET'])
+@app.route('/logogen/', methods=['POST'])
 def logo():
     try:
         openai.api_key = OPEN_AI_KEY
