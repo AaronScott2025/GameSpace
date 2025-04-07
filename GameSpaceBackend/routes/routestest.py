@@ -65,9 +65,9 @@ def test_matchmaker():
 def test_logo_gen():
     url = f"{BASE_URL}/logogen/"
     params = {
-        'prompt': 'profile picture about call of duty'
+        'prompt': 'profile picture about call of duty'  # Replace with your desired prompt
     }
-    response = requests.get(url, params=params)
+    response = requests.post(url, params=params)  # Use params for query parameters
     print("Testing /logogen endpoint")
     print(f"Status Code: {response.status_code}")
     try:
@@ -75,7 +75,6 @@ def test_logo_gen():
     except json.JSONDecodeError:
         print("Response is not in JSON format")
         print(f"Response Text: {response.text}")
-    
 
 if __name__ == "__main__":
      #test_media_get()
