@@ -1,8 +1,13 @@
 import requests
 import json
-
+import os
+from dotenv import load_dotenv
+import openai
+env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.env'))
+load_dotenv(dotenv_path=env_path)
 
 BASE_URL = "http://127.0.0.1:5000"
+OPEN_AI_KEY = os.getenv("OPEN_AI")
 
 def test_media_get():
     url = f"{BASE_URL}/mediaGet/"
@@ -60,10 +65,10 @@ def test_matchmaker():
 def test_logo_gen():
     url = f"{BASE_URL}/logogen/"
     params = {
-        'prompt': 'a like fortnite'
+        'prompt': 'profile picture about call of duty'
     }
     response = requests.get(url, params=params)
-    print("Testing /logoGen endpoint")
+    print("Testing /logogen endpoint")
     print(f"Status Code: {response.status_code}")
     try:
         print(f"Response: {response.json()}")

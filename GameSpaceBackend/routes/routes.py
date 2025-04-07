@@ -109,11 +109,12 @@ def matchmaker():
 @app.route('/logogen/', methods=['GET'])
 def logo():
     try:
+        openai.api_key = OPEN_AI_KEY
         prompt = request.args.get('prompt')
         response = openai.Image.create(
             prompt=prompt,
-            n=4,
-            size="1000x1000"
+            n=1,
+            size="1024x1024"
         )
         images = {
             "generated": [
@@ -130,6 +131,7 @@ def logo():
 @app.route('/namegen/', methods=['POST'])
 def namegen():
     try:
+        openai.api_key = OPEN_AI_KEY
         previous = request.args.get('previous')
 
         response = openai.ChatCompletion.create(
