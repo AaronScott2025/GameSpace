@@ -179,7 +179,7 @@ const AccountPage = () => {
           </div>
 
           {showPromptInput && (
-            <div>
+            <div className="prompt-input-container">
               <input
                 type="text"
                 className="prompt-input"
@@ -187,15 +187,26 @@ const AccountPage = () => {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
               />
-              <button
-                className="action-button"
-                onClick={async () => {
-                  await handleGenerateProfilePic(prompt);
-                  setShowPromptInput(false);
-                }}
-              >
-                Generate
-              </button>
+              <div className="prompt-input-buttons">
+                <button
+                  className="action-button-generate"
+                  onClick={async () => {
+                    await handleGenerateProfilePic(prompt);
+                    setShowPromptInput(false);
+                  }}
+                >
+                  Generate
+                </button>
+                <button
+                  className="action-button-generate"
+                  onClick={() => {
+                    setPrompt(""); // Clear the input field
+                    setShowPromptInput(false); // Hide the container
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           )}
         </div>
