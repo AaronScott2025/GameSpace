@@ -162,28 +162,40 @@ export const generateProfilePic = async (userId, prompt) => {
   }
 };
 
-export const generateUsername = async (userId, prompt) => {
+export const generateUsername = async (userId, message) => {
+  if (!message || typeof message !== "string") {
+    console.error("Invalid message provided:", message);
+    return null;
+  }
+
   try {
-    const response = await axios.post("/api/namegen", {
-      prompt,
-    });
-    const newUsername = response.data.generated?.[0]?.name;
+    console.log("Sending payload to /api/namegen/:", { message });
+    const response = await axios.post("/api/namegen/", { message });
+
+    console.log("API response:", response.data);
+    const newUsername = response.data.response?.trim(); // Extract and trim the username
     if (!newUsername) {
       console.error("Error: No username returned from API.");
       return null;
     }
+
     // Update the user's username in the database
     const { error } = await supabase
       .from("profiles")
       .update({ username: newUsername })
       .eq("id", userId);
+
     if (error) {
       console.error("Error updating username:", error.message);
       return null;
     }
+
     return newUsername;
   } catch (err) {
-    console.error("Unexpected error in generateUsername:", err);
+    console.error(
+      "Unexpected error in generateUsername:",
+      err.response?.data || err.message
+    );
     return null;
   }
 };

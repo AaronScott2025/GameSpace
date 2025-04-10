@@ -132,6 +132,9 @@ const AccountPage = () => {
     } catch (err) {
       console.error("Error generating username:", err);
       setError("An error occurred while generating the username.");
+    } finally {
+      setIsUsernameGenerating(false); // Hide loading animation
+      setShowUsernamePrompt(false); // Hide the container
     }
   };
 
@@ -270,7 +273,7 @@ const AccountPage = () => {
                   <Tooltip
                     id="generate-icon-tooltip"
                     place="top"
-                    content="Generate Username"
+                    content="Generate a new Username"
                     type="dark"
                     effect="solid"
                   />
