@@ -41,6 +41,7 @@ const AccountPage = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [usernamePrompt, setUsernamePrompt] = useState("");
   const [isUsernameGenerating, setIsUsernameGenerating] = useState(false);
+  const [showUsernamePrompt, setShowUsernamePrompt] = useState(false); // State to toggle input field
 
   useEffect(() => {
     const loadUserInfo = async () => {
@@ -117,9 +118,9 @@ const AccountPage = () => {
       setError("An error occurred while generating the profile picture.");
     }
   };
-  const handleGenerateUsername = async (prompt) => {
+  const handleGenerateUsername = async (message) => {
     try {
-      const newUsername = await generateUsername(user.id, prompt);
+      const newUsername = await generateUsername(user.id, message);
       if (newUsername) {
         console.log("Generated username:", newUsername);
         setUsername(newUsername);
@@ -133,6 +134,7 @@ const AccountPage = () => {
       setError("An error occurred while generating the username.");
     }
   };
+
   const handleLinkedServicesUpdate = async () => {
     setLoading(true);
     const success = await updateLinkedServices(user.id, {
@@ -261,6 +263,9 @@ const AccountPage = () => {
                     size={23}
                     className="generate-icon"
                     data-tooltip-id="generate-icon-tooltip"
+                    onClick={() => {
+                      setShowUsernamePrompt(!showUsernamePrompt); // Toggle input field visibility
+                    }}
                   />
                   <Tooltip
                     id="generate-icon-tooltip"
@@ -279,6 +284,45 @@ const AccountPage = () => {
                   disabled
                 />
               </div>
+              {
+                showUsernamePrompt && (
+                  <div className="prompt-input-container">
+                    {" "}
+                    {!isUsernameGenerating ? (
+                      <>
+                        <input
+                          type="text"
+                          className="prompt-input"
+                          placeholder="Enter a prompt to generate a username"
+                          value={usernamePrompt}
+                          onChange={(e) => setUsernamePrompt(e.target.value)}
+                        />
+                        <div className="prompt-input-buttons">
+                          {" "}
+                          <button
+                            className="action-button-generate"
+                            onClick={() =>
+                              handleGenerateUsername(usernamePrompt)
+                            } // Pass the prompt explicitly
+                            disabled={isUsernameGenerating}
+                          >
+                            Generate
+                          </button>
+                          <button
+                            className="action-button-generate"
+                            onClick={() => setShowUsernamePrompt(false)}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <LoadingAnimation />
+                    )}
+                  </div>
+                ) //close showUsernamePrompt parenthesis
+              }
+
               <div className="info-row" style={{ justifyContent: "center" }}>
                 {!showPasswordChange && (
                   <span
