@@ -51,49 +51,49 @@ const Navbar = () => {
           <li>
             <NavLink
               to="/home"
-              className={({ isActive }) => (isActive ? "active-link" : "")}
-            >
+              className={({ isActive }) => `${isActive ? "active-link" : ""} nav-home`}
+              >
               <BsRocket /> Home
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/marketplace"
-              className={({ isActive }) => (isActive ? "active-link" : "")}
-            >
+              className={({ isActive }) => `${isActive ? "active-link" : ""} nav-market`}
+              >
               <CiShoppingCart /> Market
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/partyfinder"
-              className={({ isActive }) => (isActive ? "active-link" : "")}
-            >
+              className={({ isActive }) => `${isActive ? "active-link" : ""} nav-party`}
+              >
               <GiSatelliteCommunication /> PartyFinder
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/chatbot"
-              className={({ isActive }) => (isActive ? "active-link" : "")}
-            >
+              className={({ isActive }) => `${isActive ? "active-link" : ""} nav-chatbot`}
+              >
               <RiAliensFill /> Chatbot
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/clans"
-              className={({ isActive }) => (isActive ? "active-link" : "")}
-            >
+              className={({ isActive }) => `${isActive ? "active-link" : ""} nav-events`}
+              >
               <FaUsers /> Events
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/dm-page"
-              className={({ isActive }) => (isActive ? "active-link" : "")}
-            >
-              <TiMessages /> DM's
+              className={({ isActive }) => `${isActive ? "active-link" : ""} nav-dm`}
+              >
+              <TiMessages /> Messages
             </NavLink>
           </li>
         </ul>
