@@ -104,9 +104,9 @@ import Navbar from "../components/nav-bar";
   position: fixed;
   border: clear;
   top: 80px;
-  left: -300px; /*  off-screen */
-  width: 290px; /* size */
-  height: 60%;
+  left: -380px; /*  off-screen */
+  width: 360px; /* size */
+  height: 61%;
   background-color: #d3d3d3; /* Lighter grey background */
   transition: left 0.3s ease-in-out;
   z-index:50;

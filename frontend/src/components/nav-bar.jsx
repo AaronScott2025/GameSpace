@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 //import { BiSolidJoystickButton } from "react-icons/bi";
 //import { BiSolidDownArrow } from "react-icons/bi";
 import { BsJoystick, BsRocket } from "react-icons/bs";
-import {
-  GiAstronautHelmet,
-  GiWhistle,
-  GiSatelliteCommunication,
-} from "react-icons/gi";
+import { GiAstronautHelmet, GiSatelliteCommunication} from "react-icons/gi";
 import { FaUsers } from "react-icons/fa";
 import { RiAliensFill } from "react-icons/ri";
 import { CiShoppingCart } from "react-icons/ci";
