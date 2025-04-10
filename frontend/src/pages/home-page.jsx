@@ -1,5 +1,5 @@
 import Navbar from "../components/nav-bar";
-
+import PostSignupPopup from "../components/postSignupPopup.jsx";
 import "/src/styles/home-page.css";
 import { BsFillPostcardFill } from "react-icons/bs";
 import { useContext, useState, useEffect, useRef } from "react";
@@ -189,6 +189,7 @@ const HomePage = () => {
 
   return (
     <div>
+      <PostSignupPopup />
       {/* Profile info section */}
       <div className="profileinfo-container">
         <p>Username : {user.username}</p>
