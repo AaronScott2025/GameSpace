@@ -139,11 +139,13 @@ export const generateProfilePic = async (userId, prompt) => {
       console.error("Error: No image URL returned from API.");
       return null;
     }
-    //update the user's profile picture in the database
+
+    // Update the user's profile picture in the database
     const { error } = await supabase
       .from("profiles")
       .update({ profile_pic: imageUrl })
       .eq("id", userId);
+
     if (error) {
       console.error(
         "Error updating profile with generated image:",
@@ -151,6 +153,9 @@ export const generateProfilePic = async (userId, prompt) => {
       );
       return null;
     }
+
+    // Return the generated image URL
+    return imageUrl;
   } catch (err) {
     console.error("Unexpected error in generateProfilePic:", err);
     return null;

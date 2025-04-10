@@ -11,6 +11,7 @@ import {
 } from "../scripts/account-page-scripts";
 import { UserContext } from "./UserContext.jsx";
 import defaultProfilePic from "../assets/default_pfp.jpg";
+import LoadingAnimation from "../components/loading-animation.jsx";
 
 const AccountPage = () => {
   const { user } = useContext(UserContext);
@@ -33,6 +34,7 @@ const AccountPage = () => {
   const [discord, setDiscord] = useState("");
   const [showPromptInput, setShowPromptInput] = useState(false);
   const [prompt, setPrompt] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     const loadUserInfo = async () => {
@@ -93,25 +95,21 @@ const AccountPage = () => {
   };
 
   const handleGenerateProfilePic = async (prompt) => {
-    setLoading(true);
-
     try {
       const newProfilePic = await generateProfilePic(user.id, prompt);
-      console.log("Response from generateProfilePic:", newProfilePic);
 
       if (newProfilePic) {
-        const uniqueUrl = `${newProfilePic}?t=${new Date().getTime()}`; // Append a timestamp to the URL
-        setProfilePic(""); // Temporarily clear the profile picture
-        setTimeout(() => setProfilePic(uniqueUrl), 0); // Update with the new picture
-        console.log("Profile picture generated:", uniqueUrl);
+        console.log("Generated profile picture URL:", newProfilePic);
+        setProfilePic(newProfilePic);
+        setPrompt(""); // Clear the input field
       } else {
         setError("Failed to generate profile picture.");
+        console.error("Failed to generate profile picture.");
       }
     } catch (err) {
       console.error("Error generating profile picture:", err);
       setError("An error occurred while generating the profile picture.");
     }
-    setLoading(false);
   };
   const handleLinkedServicesUpdate = async () => {
     setLoading(true);
@@ -180,33 +178,41 @@ const AccountPage = () => {
 
           {showPromptInput && (
             <div className="prompt-input-container">
-              <input
-                type="text"
-                className="prompt-input"
-                placeholder="Enter prompt for profile picture generation"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-              />
-              <div className="prompt-input-buttons">
-                <button
-                  className="action-button-generate"
-                  onClick={async () => {
-                    await handleGenerateProfilePic(prompt);
-                    setShowPromptInput(false);
-                  }}
-                >
-                  Generate
-                </button>
-                <button
-                  className="action-button-generate"
-                  onClick={() => {
-                    setPrompt(""); // Clear the input field
-                    setShowPromptInput(false); // Hide the container
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
+              {!isGenerating ? (
+                <>
+                  <input
+                    type="text"
+                    className="prompt-input"
+                    placeholder="Enter prompt for profile picture generation"
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                  />
+                  <div className="prompt-input-buttons">
+                    <button
+                      className="action-button-generate"
+                      onClick={async () => {
+                        setIsGenerating(true); // Show loading animation
+                        await handleGenerateProfilePic(prompt);
+                        setIsGenerating(false); // Hide loading animation
+                        setShowPromptInput(false); // Hide the container
+                      }}
+                    >
+                      Generate
+                    </button>
+                    <button
+                      className="action-button-generate"
+                      onClick={() => {
+                        setPrompt(""); // Clear the input field
+                        setShowPromptInput(false); // Hide the container
+                      }}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <LoadingAnimation /> // Show loading animation
+              )}
             </div>
           )}
         </div>
