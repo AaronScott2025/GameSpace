@@ -14,6 +14,8 @@ import { UserContext } from "./UserContext.jsx";
 import defaultProfilePic from "../assets/default_pfp.jpg";
 import LoadingAnimation from "../components/loading-animation.jsx";
 import { RiAiGenerate2 } from "react-icons/ri";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 const AccountPage = () => {
   const { user } = useContext(UserContext);
@@ -253,8 +255,21 @@ const AccountPage = () => {
                 />
               </div>
               <div className="info-row">
-                <RiAiGenerate2 size={20} />
                 <label className="info-label">Username</label>
+                <div className="tooltip-container">
+                  <RiAiGenerate2
+                    size={23}
+                    className="generate-icon"
+                    data-tooltip-id="generate-icon-tooltip"
+                  />
+                  <Tooltip
+                    id="generate-icon-tooltip"
+                    place="top"
+                    content="Generate Username"
+                    type="dark"
+                    effect="solid"
+                  />
+                </div>
 
                 <input
                   type="text"
