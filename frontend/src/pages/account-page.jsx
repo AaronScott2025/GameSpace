@@ -31,6 +31,8 @@ const AccountPage = () => {
   const [psn, setPsn] = useState("");
   const [xbox, setXbox] = useState("");
   const [discord, setDiscord] = useState("");
+  const [showPromptInput, setShowPromptInput] = useState(false);
+  const [prompt, setPrompt] = useState("");
 
   useEffect(() => {
     const loadUserInfo = async () => {
@@ -90,9 +92,9 @@ const AccountPage = () => {
     setLoading(false);
   };
 
-  const handleGenerateProfilePic = async () => {
+  const handleGenerateProfilePic = async (prompt) => {
     setLoading(true);
-    const prompt = "A alien gamer"; // Example prompt
+
     try {
       const newProfilePic = await generateProfilePic(user.id, prompt);
       console.log("Response from generateProfilePic:", newProfilePic);
@@ -168,10 +170,34 @@ const AccountPage = () => {
             <label htmlFor="profilePicInput" className="action-button">
               Edit Profile Picture
             </label>
-            <label htmlFor="generatePicInput" className="action-button">
+            <label
+              onClick={() => setShowPromptInput(!showPromptInput)}
+              className="action-button"
+            >
               Generate Profile Picture
             </label>
           </div>
+
+          {showPromptInput && (
+            <div>
+              <input
+                type="text"
+                className="prompt-input"
+                placeholder="Enter prompt for profile picture generation"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+              />
+              <button
+                className="action-button"
+                onClick={async () => {
+                  await handleGenerateProfilePic(prompt);
+                  setShowPromptInput(false);
+                }}
+              >
+                Generate
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="account-info-section">
