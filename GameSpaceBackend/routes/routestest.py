@@ -76,9 +76,24 @@ def test_logo_gen():
         print("Response is not in JSON format")
         print(f"Response Text: {response.text}")
 
+def test_name_gen():
+    url = f"{BASE_URL}/namegen/"
+    data = {
+        'message': 'Generate a unique gamer name'  # Replace with your desired message
+    }
+    response = requests.post(url, json=data)  # Use json=data to send JSON in the request body
+    print("Testing /namegen endpoint")
+    print(f"Status Code: {response.status_code}")
+    try:
+        print(f"Response: {response.json()}")
+    except json.JSONDecodeError:
+        print("Response is not in JSON format")
+        print(f"Response Text: {response.text}")
+
 if __name__ == "__main__":
      #test_media_get()
     # test_chatbot()
     #est_matchmaker()
     #test_marketplace()
-    test_logo_gen()
+    #test_logo_gen()
+    test_name_gen()

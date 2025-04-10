@@ -161,3 +161,29 @@ export const generateProfilePic = async (userId, prompt) => {
     return null;
   }
 };
+
+export const generateUsername = async (userId, prompt) => {
+  try {
+    const response = await axios.post("/api/namegen", {
+      prompt,
+    });
+    const newUsername = response.data.generated?.[0]?.name;
+    if (!newUsername) {
+      console.error("Error: No username returned from API.");
+      return null;
+    }
+    // Update the user's username in the database
+    const { error } = await supabase
+      .from("profiles")
+      .update({ username: newUsername })
+      .eq("id", userId);
+    if (error) {
+      console.error("Error updating username:", error.message);
+      return null;
+    }
+    return newUsername;
+  } catch (err) {
+    console.error("Unexpected error in generateUsername:", err);
+    return null;
+  }
+};

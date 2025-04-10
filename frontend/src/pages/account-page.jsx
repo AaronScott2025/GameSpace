@@ -8,10 +8,12 @@ import {
   updateLinkedServices,
   updateUserBio,
   generateProfilePic,
+  generateUsername,
 } from "../scripts/account-page-scripts";
 import { UserContext } from "./UserContext.jsx";
 import defaultProfilePic from "../assets/default_pfp.jpg";
 import LoadingAnimation from "../components/loading-animation.jsx";
+import { RiAiGenerate2 } from "react-icons/ri";
 
 const AccountPage = () => {
   const { user } = useContext(UserContext);
@@ -35,6 +37,8 @@ const AccountPage = () => {
   const [showPromptInput, setShowPromptInput] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [usernamePrompt, setUsernamePrompt] = useState("");
+  const [isUsernameGenerating, setIsUsernameGenerating] = useState(false);
 
   useEffect(() => {
     const loadUserInfo = async () => {
@@ -109,6 +113,22 @@ const AccountPage = () => {
     } catch (err) {
       console.error("Error generating profile picture:", err);
       setError("An error occurred while generating the profile picture.");
+    }
+  };
+  const handleGenerateUsername = async (prompt) => {
+    try {
+      const newUsername = await generateUsername(user.id, prompt);
+      if (newUsername) {
+        console.log("Generated username:", newUsername);
+        setUsername(newUsername);
+        setUsernamePrompt(""); // Clear the input field
+      } else {
+        setError("Failed to generate username.");
+        console.error("Failed to generate username.");
+      }
+    } catch (err) {
+      console.error("Error generating username:", err);
+      setError("An error occurred while generating the username.");
     }
   };
   const handleLinkedServicesUpdate = async () => {
@@ -233,7 +253,9 @@ const AccountPage = () => {
                 />
               </div>
               <div className="info-row">
+                <RiAiGenerate2 size={20} />
                 <label className="info-label">Username</label>
+
                 <input
                   type="text"
                   className="info-input"

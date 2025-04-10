@@ -135,14 +135,20 @@ def logo():
 def namegen():
     try:
         openai.api_key = OPEN_AI_KEY
-        previous = request.args.get('previous')
+        data = request.get_json()  # Get JSON data from the request body
+        message = data.get('message')  # Extract the message
+
+        if not message:
+            return {"error": "Message is required"}, 400
+
+        
 
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0125",
             messages=[
                 {"role": "system", "content": (
-                    "Generate 5 Gaming clan names. Exclude the following, previously generated names:"
-                    f"{previous}"
+                    "Generate a username for a user on the Game Space Application. Format it similarly to how most gamer-tags are made. Single expression with no spaces, limit to 20 characters"
+                    f"{message}"
                 )},
             ]
         )
