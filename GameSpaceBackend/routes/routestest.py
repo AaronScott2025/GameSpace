@@ -1,8 +1,13 @@
 import requests
 import json
-
+import os
+from dotenv import load_dotenv
+import openai
+env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.env'))
+load_dotenv(dotenv_path=env_path)
 
 BASE_URL = "http://127.0.0.1:5000"
+OPEN_AI_KEY = os.getenv("OPEN_AI")
 
 def test_media_get():
     url = f"{BASE_URL}/mediaGet/"
@@ -57,10 +62,38 @@ def test_matchmaker():
     print(f"Status Code: {response.status_code}")
     print(f"Response: {response.json()}")
 
+def test_logo_gen():
+    url = f"{BASE_URL}/logogen/"
+    params = {
+        'prompt': 'profile picture about call of duty'  # Replace with your desired prompt
+    }
+    response = requests.post(url, params=params)  # Use params for query parameters
+    print("Testing /logogen endpoint")
+    print(f"Status Code: {response.status_code}")
+    try:
+        print(f"Response: {response.json()}")
+    except json.JSONDecodeError:
+        print("Response is not in JSON format")
+        print(f"Response Text: {response.text}")
 
+def test_name_gen():
+    url = f"{BASE_URL}/namegen/"
+    data = {
+        'message': 'Generate a unique gamer name'  # Replace with your desired message
+    }
+    response = requests.post(url, json=data)  # Use json=data to send JSON in the request body
+    print("Testing /namegen endpoint")
+    print(f"Status Code: {response.status_code}")
+    try:
+        print(f"Response: {response.json()}")
+    except json.JSONDecodeError:
+        print("Response is not in JSON format")
+        print(f"Response Text: {response.text}")
 
 if __name__ == "__main__":
      #test_media_get()
     # test_chatbot()
     #est_matchmaker()
-    test_marketplace()
+    #test_marketplace()
+    #test_logo_gen()
+    test_name_gen()

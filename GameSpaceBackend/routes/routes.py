@@ -106,38 +106,49 @@ def matchmaker():
         return jsonify({'error': str(e)}), 400
 
 
-@app.route('/logogen/', methods=['GET'])
+@app.route('/logogen/', methods=['POST'])
 def logo():
     try:
-        prompt = request.args.get('prompt')
+        openai.api_key = OPEN_AI_KEY
+        data = request.get_json()  # Get JSON data from the request body
+        prompt = data.get('prompt')  # Extract the prompt
+        if not prompt:
+            return {"error": "Prompt is required"}, 400
+
         response = openai.Image.create(
             prompt=prompt,
-            n=4,
-            size="1000x1000"
+            n=1,
+            size="1024x1024"
         )
         images = {
             "generated": [
                 {"image_number": i + 1, "url": data['url']} for i, data in enumerate(response['data'])
             ]
         }
-        jsonimages = json.dumps(images)
-        return jsonimages, 200
+        return images, 200
     except Exception as e:
-        error_message = {"error": str(e)}
-        return json.dumps(error_message), 500
+        print(f"Error in /logogen/: {e}")
+        return {"error": str(e)}, 500
 
 
 @app.route('/namegen/', methods=['POST'])
 def namegen():
     try:
-        previous = request.args.get('previous')
+        openai.api_key = OPEN_AI_KEY
+        data = request.get_json()  # Get JSON data from the request body
+        message = data.get('message')  # Extract the message
+
+        if not message:
+            return {"error": "Message is required"}, 400
+
+        
 
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0125",
             messages=[
                 {"role": "system", "content": (
-                    "Generate 5 Gaming clan names. Exclude the following, previously generated names:"
-                    f"{previous}"
+                    "Generate a username for a user on the Game Space Application. Format it similarly to how most gamer-tags are made. Single expression with no spaces, limit to 20 characters"
+                    f"{message}"
                 )},
             ]
         )
