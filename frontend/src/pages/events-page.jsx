@@ -4,10 +4,10 @@ import { supabase } from "../../client.js"; // Shared client
 import ButtonModal from "../components/button-modal";
 import { IoMdAdd } from "react-icons/io";
 import { createRoot } from "react-dom/client";
-import { APIProvider, Map } from "@vis.gl/react-google-maps";
+import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 
 function EventsPage() {
-  const postion = [40.47, -73.42]; // Default position for the map
+  const postion = { lat: 40.7540817261, lng: -73.4263687134 }; // Default position for the map
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAP_API_KEY}>
       <div className="events-page">
@@ -42,11 +42,14 @@ function EventsPage() {
           <span>Your location should be here</span>
           <Map
             style={{ width: "80vw", height: "70vh" }}
-            defaultCenter={{ lat: 40.7540817261, lng: -73.4263687134 }}
+            center={postion}
             defaultZoom={9}
             gestureHandling={"greedy"}
             disableDefaultUI={true}
-          />
+            mapId={import.meta.env.VITE_GOOGLE_MAP_ID}
+          >
+            <AdvancedMarker id="marker-1" position={postion}></AdvancedMarker>
+          </Map>
         </main>
       </div>
     </APIProvider>
