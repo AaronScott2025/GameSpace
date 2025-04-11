@@ -3,7 +3,7 @@ import "../styles/events-page.css"; // Import your CSS file for styling
 import { supabase } from "../../client.js"; // Shared client
 import ButtonModal from "../components/button-modal";
 import { IoMdAdd } from "react-icons/io";
-import { createRoot } from "react-dom/client";
+import EventsCard from "../components/event-card.jsx";
 import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 
 function EventsPage() {
@@ -31,12 +31,11 @@ function EventsPage() {
             ]}
             formClassName={"event-form"}
           />
-          <ul className="events-list">
-            <li>Event 1</li>
-            <li>Event 2</li>
-            <li>Event 3</li>
-            {/* Add more events as needed */}
-          </ul>
+          <EventsCard
+            eventName={"Anime Expo"}
+            date={"2023-10-01"}
+            location={"123st Street, Los Angeles, CA, USA"}
+          />
         </aside>
         <main className="events-content">
           <span>Your location should be here</span>
