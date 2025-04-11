@@ -11,7 +11,7 @@ import Navbar from "../components/nav-bar";
     justify-content: space-between;
     align-items: center;
     padding: 40px 15px;  
-    background: linear-gradient(to right, #1048c9, #3b74d6, #5aa0ff);
+    background: linear-gradient(to right, #000000, #343434, #5c5c5c, #343434, #000000);
     position: fixed;
     width: 100%;
     top: 0;
@@ -20,7 +20,7 @@ import Navbar from "../components/nav-bar";
 }
 .logo {   /* Game Space */
     position: absolute;
-    left: 10%;
+    left: 10.3%;
     top: -41%;
     transform: translate(-30%, 0%);
     display: flex;
@@ -44,7 +44,7 @@ import Navbar from "../components/nav-bar";
   .nav-button {   /* arrow */
     display: flex;
     position: absolute;
-    background: rgba(49, 115, 230, 0.8);
+    background: rgba(92, 92, 92, 0.8);
     color: #ffffff;
     padding: 5px;
     font-size: 1rem;
