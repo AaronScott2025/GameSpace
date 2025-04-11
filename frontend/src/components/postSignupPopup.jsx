@@ -1,24 +1,29 @@
 import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../pages/UserContext.jsx";
 import "../styles/postSignupPopup.css";
+import FavoriteGamesPopUp from "./favoriteGamesPopUp.jsx"; // Import the new component
 
 const PostSignupPopup = () => {
   const { user } = useContext(UserContext);
   const [showPopup, setShowPopup] = useState(false);
+
+  // State for game popup
+  const [showGamePopup, setShowGamePopup] = useState(false);
+  const [currentGameSlot, setCurrentGameSlot] = useState(null);
 
   // Form state (for UI only, no functionality implemented)
   const [age, setAge] = useState("");
   const [pronouns, setPronouns] = useState("");
   const [bio, setBio] = useState("");
 
-  // For favorite games - these would eventually trigger selection popups
+  // For favorite games - with proper structure
   const [favoriteGames, setFavoriteGames] = useState({
-    game1: "",
-    game2: "",
-    game3: "",
-    game4: "",
-    game5: "",
-    game6: ""
+    game1: null,
+    game2: null,
+    game3: null,
+    game4: null,
+    game5: null,
+    game6: null
   });
 
   // Optional gaming accounts
@@ -39,16 +44,23 @@ const PostSignupPopup = () => {
     }
   }, [user]);
 
-  // Handle changes to favorite games (placeholder function)
+  // Open game selection popup
   const handleGameClick = (gameNumber) => {
-    console.log(`Open game selection popup for favorite game ${gameNumber}`);
-    setFavoriteGames({
-      ...favoriteGames,
-      [`game${gameNumber}`]: `Game ${gameNumber} (selected)`
-    });
+    setCurrentGameSlot(`game${gameNumber}`);
+    setShowGamePopup(true);
+  };
+
+  // Handle game selection from popup
+  const handleSelectGame = (game, gameSlot) => {
+    setFavoriteGames(prevGames => ({
+      ...prevGames,
+      [gameSlot]: game
+    }));
   };
 
   const handleSaveProfile = () => {
+    // Here you'd save all the profile data including favorite games
+    console.log("Saving profile with favorite games:", favoriteGames);
     setShowPopup(false);
   };
 
@@ -122,7 +134,9 @@ const PostSignupPopup = () => {
                     className="game-select-button"
                     onClick={() => handleGameClick(num)}
                   >
-                    {favoriteGames[`game${num}`] || `Game ${num}`}
+                    {favoriteGames[`game${num}`] ?
+                      favoriteGames[`game${num}`].title :
+                      `Select Game ${num}`}
                     <span className="selector-icon">+</span>
                   </button>
                 </div>
@@ -193,6 +207,14 @@ const PostSignupPopup = () => {
           </button>
         </div>
       </div>
+
+      {/* Game Selection Popup */}
+      <FavoriteGamesPopUp
+        isOpen={showGamePopup}
+        onClose={() => setShowGamePopup(false)}
+        onSelectGame={handleSelectGame}
+        gameSlot={currentGameSlot}
+      />
     </div>
   );
 };
