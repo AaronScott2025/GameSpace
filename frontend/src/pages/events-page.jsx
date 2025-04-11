@@ -7,7 +7,14 @@ import EventsCard from "../components/event-card.jsx";
 import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 
 function EventsPage() {
-  const postion = { lat: 40.7540817261, lng: -73.4263687134 }; // Default position for the map
+  const postion = { lat: 40.7540817261, lng: -73.4263687134 }; // farmigdale, NY,
+  // TODO:
+  // Figure out how to get the user location
+  // and set the map center to that location
+  // const [position, setPosition] = useState({ lat: 0, lng: 0 });
+  // advancedMarker for user location
+  // place events location on the map with the AdvancedMarker component
+
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAP_API_KEY}>
       <div className="events-page">
@@ -16,9 +23,18 @@ function EventsPage() {
           <div className="search-bar">
             <input type="text" placeholder="Search" />
           </div>
-          {/* ButtonModal will change to handle tags */}
+          {/**
+           * ButtonModal will change to handle tags
+           * TODO:
+           * MAKE THE MODAL WORK LOL
+           * style the modal with the form
+           * allow the user to select multiple tags
+           * maybe allow the user to create new tags
+           * better way to handle location
+           *  */}
           <ButtonModal
             buttonText={"Create Event"}
+            modalClassName={"create-event-modal"}
             className={"create-event-button"}
             icon={IoMdAdd}
             iconSize={24}
@@ -31,24 +47,66 @@ function EventsPage() {
             ]}
             formClassName={"event-form"}
           />
-          <EventsCard
-            eventName={"Anime Expo"}
-            date={"2023-10-01"}
-            location={"123st Street, Los Angeles, CA, USA"}
-          />
+          <div className="events-cards-container">
+            {/**
+             * TODO:
+             * Fetch events from the database and display them here
+             * Use the EventsCard component to display each event
+             * Make sure to pass the correct props to the EventsCard component
+             * Use the supabase client to fetch the events from the database
+             * allow scrolling to load more events, without allowing the cards to overflow out of the container
+             */}
+            <EventsCard
+              eventName={"Anime Expo"}
+              date={"2023-10-01"}
+              location={"123st Street, Los Angeles, CA, USA"}
+              tags={["Anime", "Expo", "Cosplay"]}
+            />
+            <EventsCard
+              eventName={"Anime Expo"}
+              date={"2023-10-01"}
+              location={"123st Street, Los Angeles, CA, USA"}
+              tags={["Anime", "Expo", "Cosplay"]}
+            />
+            <EventsCard
+              eventName={"Anime Expo"}
+              date={"2023-10-01"}
+              location={"123st Street, Los Angeles, CA, USA"}
+              tags={["Anime", "Expo", "Cosplay"]}
+            />
+            <EventsCard
+              eventName={"Anime Expo"}
+              date={"2023-10-01"}
+              location={"123st Street, Los Angeles, CA, USA"}
+              tags={["Anime", "Expo", "Cosplay"]}
+            />
+            <EventsCard
+              eventName={"Anime Expo"}
+              date={"2023-10-01"}
+              location={"123st Street, Los Angeles, CA, USA"}
+              tags={["Anime", "Expo", "Cosplay"]}
+            />
+          </div>
         </aside>
-        <main className="events-content">
+        <main>
           <span>Your location should be here</span>
-          <Map
-            style={{ width: "80vw", height: "70vh" }}
-            center={postion}
-            defaultZoom={9}
-            gestureHandling={"greedy"}
-            disableDefaultUI={true}
-            mapId={import.meta.env.VITE_GOOGLE_MAP_ID}
-          >
-            <AdvancedMarker id="marker-1" position={postion}></AdvancedMarker>
-          </Map>
+          <div className="map-container">
+            <Map
+              style={{
+                width: "70vw",
+                height: "75vh",
+                position: "relative",
+                zIndex: 0, // Ensure the map stays behind the modal
+              }}
+              center={postion}
+              defaultZoom={9}
+              gestureHandling={"greedy"}
+              disableDefaultUI={true}
+              mapId={import.meta.env.VITE_GOOGLE_MAP_ID}
+            >
+              <AdvancedMarker id="marker-1" position={postion}></AdvancedMarker>
+            </Map>
+          </div>
         </main>
       </div>
     </APIProvider>

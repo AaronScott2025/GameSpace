@@ -27,9 +27,39 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin: 0;
+  margin-bottom: 0.5rem;
   padding: 0;
 }
 .events-card-header-and-date h3 {
   margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.events-tags {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping to the next row */
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0;
+
+  width: 100%; /* Ensure it takes the full width of the parent */
+}
+
+.tags {
+  background-color: #0074e4;
+  flex: 1 1 calc(33.33% - 0.5rem); /* Each tag takes 1/3 of the row minus the gap */
+  max-width: calc(33.33% - 0.5rem); /* Ensure no tag exceeds 1/3 of the row */
+  padding: 0.3rem 0.6rem;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  text-align: center;
+  white-space: nowrap; /* Prevent text from breaking inside tags */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+.events-location {
+  padding: 0.5rem 0;
 }
