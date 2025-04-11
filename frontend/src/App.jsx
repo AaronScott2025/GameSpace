@@ -11,6 +11,7 @@ import AccountPage from "./pages/account-page";
 import Marketplace from "./pages/marketplace-home";
 import ProductPage from "./pages/product-page";
 import ErrorPage from "./pages/error-page";
+import EventsPage from "./pages/events-page";
 import "./App.css";
 
 function App() {
@@ -73,6 +74,14 @@ function App() {
       element: (
         <Wrapper>
           <ProductPage />,
+        </Wrapper>
+      ),
+    },
+    {
+      path: "/events",
+      element: (
+        <Wrapper>
+          <EventsPage />
         </Wrapper>
       ),
     },
