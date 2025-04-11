@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@supabase/supabase-js": "^2.49.3"
+    "@supabase/supabase-js": "^2.49.3",
+    "react-tooltip": "^5.28.1"
   }
 }
