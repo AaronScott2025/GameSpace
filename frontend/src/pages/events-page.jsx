@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, use } from "react";
 import "../styles/events-page.css"; // Import your CSS file for styling
 import { supabase } from "../../client.js"; // Shared client
 import ButtonModal from "../components/button-modal";
@@ -7,13 +7,35 @@ import EventsCard from "../components/event-card.jsx";
 import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 
 function EventsPage() {
-  const postion = { lat: 40.7540817261, lng: -73.4263687134 }; // farmigdale, NY,
+  const [position, setPosition] = useState({
+    lat: 40.7540817261,
+    lng: -73.4263687134,
+  }); // farmigdale, NY,
+
   // TODO:
   // Figure out how to get the user location
   // and set the map center to that location
   // const [position, setPosition] = useState({ lat: 0, lng: 0 });
   // advancedMarker for user location
   // place events location on the map with the AdvancedMarker component
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setPosition({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Error getting location: ", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }, []);
 
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAP_API_KEY}>
@@ -98,13 +120,16 @@ function EventsPage() {
                 position: "relative",
                 zIndex: 0, // Ensure the map stays behind the modal
               }}
-              center={postion}
+              center={position}
               defaultZoom={9}
               gestureHandling={"greedy"}
               disableDefaultUI={true}
               mapId={import.meta.env.VITE_GOOGLE_MAP_ID}
             >
-              <AdvancedMarker id="marker-1" position={postion}></AdvancedMarker>
+              <AdvancedMarker
+                id="marker-1"
+                position={position}
+              ></AdvancedMarker>
             </Map>
           </div>
         </main>
