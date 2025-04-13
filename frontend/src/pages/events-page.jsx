@@ -22,6 +22,11 @@ function EventsPage() {
   const { location, error: reverseGeoError } = useReverseGeocoding(position);
   const { data: events, error: tableWithTagsError } = useEventswithTags();
   const { geolocations, error: evntGeoError } = useEventsToGeo();
+  const [selectedFilter, setSelectedFilter] = useState("all-events"); // Default filter
+
+  const handleFilterChange = (filterName) => {
+    setSelectedFilter(filterName); // Update the selected filter
+  };
 
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAP_API_KEY}>
@@ -75,7 +80,8 @@ function EventsPage() {
               type="checkbox"
               name="all-events"
               id="all-events"
-              checked={true} // Set default checked state
+              checked={selectedFilter === "all-events"}
+              onChange={() => handleFilterChange("all-events")}
             />
             <span>All Events</span>
             <input
@@ -83,6 +89,8 @@ function EventsPage() {
               type="checkbox"
               name="online"
               id="online"
+              checked={selectedFilter === "online"}
+              onChange={() => handleFilterChange("online")}
             />
             <span>Online</span>
             <input
@@ -90,6 +98,8 @@ function EventsPage() {
               type="checkbox"
               name="in-person"
               id="in-person"
+              checked={selectedFilter === "in-person"}
+              onChange={() => handleFilterChange("in-person")}
             />
             <span>In-Person</span>
           </div>
