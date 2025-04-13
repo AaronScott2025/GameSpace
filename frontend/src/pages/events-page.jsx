@@ -92,7 +92,7 @@ function EventsPage() {
                 position: "relative",
                 zIndex: 0, // Ensure the map stays behind the modal
               }}
-              center={position}
+              defaultCenter={position}
               defaultZoom={9}
               gestureHandling={"greedy"}
               disableDefaultUI={true}
