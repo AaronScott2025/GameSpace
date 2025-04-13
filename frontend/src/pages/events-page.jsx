@@ -7,16 +7,15 @@ import EventsCard from "../components/event-card.jsx";
 import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 import { FaLocationDot } from "react-icons/fa6";
 import { useGeolocation, useReverseGeocoding } from "../hooks/geolocation.jsx";
+import { useEventsTable } from "../hooks/events-supabase.jsx";
 import axios from "axios";
 
 function EventsPage() {
   const { position, error, geoError } = useGeolocation();
   const { location, error: reverseGeoError } = useReverseGeocoding(position);
+  const { data: events, error: supabaseError } = useEventsTable("events");
+
   // TODO:
-  // Figure out how to get the user location
-  // and set the map center to that location
-  // const [position, setPosition] = useState({ lat: 0, lng: 0 });
-  // advancedMarker for user location
   // place events location on the map with the AdvancedMarker component
 
   return (
@@ -62,36 +61,16 @@ function EventsPage() {
              * Use the supabase client to fetch the events from the database
              * allow scrolling to load more events, without allowing the cards to overflow out of the container
              */}
-            <EventsCard
-              eventName={"Anime Expo"}
-              date={"2023-10-01"}
-              location={"123st Street, Los Angeles, CA, USA"}
-              tags={["Anime", "Expo", "Cosplay"]}
-            />
-            <EventsCard
-              eventName={"Anime Expo"}
-              date={"2023-10-01"}
-              location={"123st Street, Los Angeles, CA, USA"}
-              tags={["Anime", "Expo", "Cosplay"]}
-            />
-            <EventsCard
-              eventName={"Anime Expo"}
-              date={"2023-10-01"}
-              location={"123st Street, Los Angeles, CA, USA"}
-              tags={["Anime", "Expo", "Cosplay"]}
-            />
-            <EventsCard
-              eventName={"Anime Expo"}
-              date={"2023-10-01"}
-              location={"123st Street, Los Angeles, CA, USA"}
-              tags={["Anime", "Expo", "Cosplay"]}
-            />
-            <EventsCard
-              eventName={"Anime Expo"}
-              date={"2023-10-01"}
-              location={"123st Street, Los Angeles, CA, USA"}
-              tags={["Anime", "Expo", "Cosplay"]}
-            />
+            {events.map((event) => (
+              <EventsCard
+                key={event.id}
+                eventId={event.id}
+                eventName={event.title}
+                date={event.date}
+                location={`${event.street_address}, ${event.location_city}, ${event.location_state}`}
+                tags={["tag1", "tag2"]}
+              />
+            ))}
           </div>
         </aside>
         <main>
