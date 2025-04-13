@@ -22,14 +22,17 @@ function EventsPage() {
   const { location, error: reverseGeoError } = useReverseGeocoding(position);
   const { data: events, error: tableWithTagsError } = useEventswithTags();
   const { geolocations, error: evntGeoError } = useEventsToGeo();
-  // TODO:
-  // place events location on the map with the AdvancedMarker component
 
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAP_API_KEY}>
       <div className="events-page">
         <aside className="events-sidebar">
           <h2 className="events-title">Events</h2>
+          {/**
+           * TODO:
+           * Make the search bar work
+           * allow the user to search for events by name, location, or tags
+           */}
           <div className="search-bar">
             <input type="text" placeholder="Search" />
           </div>
@@ -60,14 +63,48 @@ function EventsPage() {
             ]}
             formClassName={"event-form"}
           />
+          <div className="events-filter">
+            {/**
+             * TODO:
+             * Make the filters work
+             * allow user to use one filter at a time
+             * make the default filter "All Events"
+             */}
+            <input
+              className="events-filter-checkbox"
+              type="checkbox"
+              name="all-events"
+              id="all-events"
+              checked={true} // Set default checked state
+            />
+            <span>All Events</span>
+            <input
+              className="events-filter-checkbox"
+              type="checkbox"
+              name="online"
+              id="online"
+            />
+            <span>Online</span>
+            <input
+              className="events-filter-checkbox"
+              type="checkbox"
+              name="in-person"
+              id="in-person"
+            />
+            <span>In-Person</span>
+          </div>
           <div className="events-cards-container">
             {/**
              * TODO:
              * allow scrolling to load more events, without allowing the cards to overflow out of the container( Lazy Loading)
+             * the cards should be displayed in order of most close to the user
+             * when clicking on a card, it should make the map center and zoom in on the event
+             *
              */}
             {events.map((event) => (
               <EventsCard
-                key={event.id}
+                is_Online={event.is_online} //remember this is a boolean
+                key={`${event.event_id}-card`}
                 eventName={event.title}
                 date={event.date}
                 location={`${event.street_address}, ${event.location_city}, ${event.location_state}`}
@@ -90,7 +127,7 @@ function EventsPage() {
                 width: "70vw",
                 height: "75vh",
                 position: "relative",
-                zIndex: 0, // Ensure the map stays behind the modal
+                zIndex: 0, // Ensure the map stays behind the modal. this didn't work
               }}
               defaultCenter={position}
               defaultZoom={9}
@@ -102,10 +139,15 @@ function EventsPage() {
                 id="Your-Location"
                 position={position}
               ></AdvancedMarker>
+              {/**
+               * style the markers to be more visible
+               * TODO:
+               * add a popup to the markers that shows the event name and date
+               */}
               {geolocations.map((event) =>
                 event.lat && event.lng ? (
                   <AdvancedMarker
-                    key={event.event_id}
+                    key={`${event.event_id}-marker`}
                     id={`${event.event_id}-marker`}
                     position={{ lat: event.lat, lng: event.lng }}
                   ></AdvancedMarker>

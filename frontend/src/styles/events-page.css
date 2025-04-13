@@ -95,6 +95,25 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
 }
+
+.events-filter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Style for checked checkboxes */
+.events-filter-checkbox:checked {
+  background-color: #0074e4; /* Blue background for checked state */
+  border-color: #044999; /* Darker border for checked state */
+}
+
+/* Optional: Add a hover effect */
+.events-filter-checkbox:hover {
+  border-color: #888; /* Change border color on hover */
+}
 .events-cards-container {
   display: flex;
   flex-direction: column;

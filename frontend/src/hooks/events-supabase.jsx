@@ -33,6 +33,7 @@ export const useEventswithTags = () => {
           `
               event_id,
               title,
+              is_online,
               street_address,
               location_state,
               location_city,
@@ -49,6 +50,7 @@ export const useEventswithTags = () => {
         const transformedData = data.map((event) => ({
           event_id: event.event_id,
           title: event.title,
+          is_online: event.is_online,
           street_address: event.street_address,
           location_state: event.location_state,
           location_city: event.location_city,
