@@ -27,17 +27,33 @@ function EventsPage() {
   const handleFilterChange = (filterName) => {
     setSelectedFilter(filterName); // Update the selected filter
   };
+  // Error handling logic
+  const renderErrors = () => {
+    const errors = [];
+    if (geoError) errors.push(`Geolocation Error: ${geoError.message}`);
+    if (reverseGeoError)
+      errors.push(`Reverse Geocoding Error: ${reverseGeoError.message}`);
+    if (tableWithTagsError)
+      errors.push(`Events with Tags Error: ${tableWithTagsError.message}`);
+    if (evntGeoError)
+      errors.push(`Event Geolocations Error: ${evntGeoError.message}`);
+    return errors.length > 0 ? (
+      <div className="error-messages">
+        {errors.map((err, index) => (
+          <p key={index} className="error-text">
+            {err}
+          </p>
+        ))}
+      </div>
+    ) : null;
+  };
 
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAP_API_KEY}>
       <div className="events-page">
+        {renderErrors()} {/* Display errors at the top of the page */}
         <aside className="events-sidebar">
           <h2 className="events-title">Events</h2>
-          {/**
-           * TODO:
-           * Make the search bar work
-           * allow the user to search for events by name, location, or tags
-           */}
           <div className="search-bar">
             <input type="text" placeholder="Search" />
           </div>
