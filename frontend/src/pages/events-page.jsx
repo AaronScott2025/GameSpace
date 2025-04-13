@@ -7,13 +7,17 @@ import EventsCard from "../components/event-card.jsx";
 import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 import { FaLocationDot } from "react-icons/fa6";
 import { useGeolocation, useReverseGeocoding } from "../hooks/geolocation.jsx";
-import { useEventsTable } from "../hooks/events-supabase.jsx";
+import {
+  useEventsTable,
+  useEventswithTags,
+} from "../hooks/events-supabase.jsx";
 import axios from "axios";
 
 function EventsPage() {
   const { position, error, geoError } = useGeolocation();
   const { location, error: reverseGeoError } = useReverseGeocoding(position);
-  const { data: events, error: supabaseError } = useEventsTable("events");
+
+  const { data: events, error: tableWithTagsError } = useEventswithTags();
 
   // TODO:
   // place events location on the map with the AdvancedMarker component
@@ -33,8 +37,9 @@ function EventsPage() {
            * style the modal with the form
            * allow the user to select multiple tags
            * maybe allow the user to create new tags
-           * better way to handle location
+           *
            * OR
+           *
            * create a new modal, pop up or page to create a new event up to whoever is developing this
            *  */}
           <ButtonModal
@@ -55,11 +60,7 @@ function EventsPage() {
           <div className="events-cards-container">
             {/**
              * TODO:
-             * Fetch events from the database and display them here
-             * Use the EventsCard component to display each event
-             * Make sure to pass the correct props to the EventsCard component
-             * Use the supabase client to fetch the events from the database
-             * allow scrolling to load more events, without allowing the cards to overflow out of the container
+             * allow scrolling to load more events, without allowing the cards to overflow out of the container( Lazy Loading)
              */}
             {events.map((event) => (
               <EventsCard
@@ -68,7 +69,7 @@ function EventsPage() {
                 eventName={event.title}
                 date={event.date}
                 location={`${event.street_address}, ${event.location_city}, ${event.location_state}`}
-                tags={["tag1", "tag2"]}
+                tags={event.tag_names}
               />
             ))}
           </div>
@@ -96,7 +97,7 @@ function EventsPage() {
               mapId={import.meta.env.VITE_GOOGLE_MAP_ID}
             >
               <AdvancedMarker
-                id="marker-1"
+                id="Your-Location"
                 position={position}
               ></AdvancedMarker>
             </Map>
