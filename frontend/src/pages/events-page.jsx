@@ -6,7 +6,11 @@ import { IoMdAdd } from "react-icons/io";
 import EventsCard from "../components/event-card.jsx";
 import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 import { FaLocationDot } from "react-icons/fa6";
-import { useGeolocation, useReverseGeocoding } from "../hooks/geolocation.jsx";
+import {
+  useGeolocation,
+  useReverseGeocoding,
+  useEventsToGeo,
+} from "../hooks/geolocation.jsx";
 import {
   useEventsTable,
   useEventswithTags,
@@ -16,9 +20,8 @@ import axios from "axios";
 function EventsPage() {
   const { position, error, geoError } = useGeolocation();
   const { location, error: reverseGeoError } = useReverseGeocoding(position);
-
   const { data: events, error: tableWithTagsError } = useEventswithTags();
-
+  const { geolocations, error: evntGeoError } = useEventsToGeo();
   // TODO:
   // place events location on the map with the AdvancedMarker component
 
@@ -65,7 +68,6 @@ function EventsPage() {
             {events.map((event) => (
               <EventsCard
                 key={event.id}
-                eventId={event.id}
                 eventName={event.title}
                 date={event.date}
                 location={`${event.street_address}, ${event.location_city}, ${event.location_state}`}
@@ -100,6 +102,15 @@ function EventsPage() {
                 id="Your-Location"
                 position={position}
               ></AdvancedMarker>
+              {geolocations.map((event) =>
+                event.lat && event.lng ? (
+                  <AdvancedMarker
+                    key={event.event_id}
+                    id={`${event.event_id}-marker`}
+                    position={{ lat: event.lat, lng: event.lng }}
+                  ></AdvancedMarker>
+                ) : null
+              )}
             </Map>
           </div>
         </main>
