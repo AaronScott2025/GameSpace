@@ -9,7 +9,6 @@ const FavoriteGamesPopUp = ({ isOpen, onClose, onSelectGame, gameSlot }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("all");
 
-  // Categories for the navigation bar - simplified for cleaner UI
   const categories = [
     { id: "all", name: "All" },
     { id: "action", name: "Action" },
@@ -19,7 +18,6 @@ const FavoriteGamesPopUp = ({ isOpen, onClose, onSelectGame, gameSlot }) => {
     { id: "strategy", name: "Strategy" }
   ];
 
-  // Fetch games from database when component mounts
   useEffect(() => {
     const fetchGames = async () => {
       setIsLoading(true);
@@ -33,7 +31,6 @@ const FavoriteGamesPopUp = ({ isOpen, onClose, onSelectGame, gameSlot }) => {
           throw error;
         }
 
-        // If database doesn't have data yet, use placeholder data
         if (!data || data.length === 0) {
           const placeholderGames = generatePlaceholderGames();
           setGames(placeholderGames);
@@ -57,7 +54,6 @@ const FavoriteGamesPopUp = ({ isOpen, onClose, onSelectGame, gameSlot }) => {
     }
   }, [isOpen]);
 
-  // Simple search filtering only (category filtering to be implemented later)
   useEffect(() => {
     if (searchQuery) {
       const filtered = games.filter(game =>
@@ -69,13 +65,11 @@ const FavoriteGamesPopUp = ({ isOpen, onClose, onSelectGame, gameSlot }) => {
     }
   }, [searchQuery, games]);
 
-  // Handle game selection
   const handleSelectGame = (game) => {
     onSelectGame(game, gameSlot);
     onClose();
   };
 
-  // Generate placeholder games if database is empty
   const generatePlaceholderGames = () => {
     const genres = ["Action", "Adventure", "RPG", "Strategy", "Sports", "Simulation"];
     return Array.from({ length: 30 }, (_, i) => ({

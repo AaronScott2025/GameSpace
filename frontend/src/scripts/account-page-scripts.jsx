@@ -21,8 +21,57 @@ export const updateUserPassword = async (newPassword) => {
   }
 };
 
-export const handleGameSelection = (gameName) => {
-  console.log("Selected favorite game:", gameName);
+export const handleGameSelection = async (userId, username, gameId, rank) => {
+  try {
+    const { data: existingEntry, error: fetchError } = await supabase
+      .from("favorite_games")
+      .select("*")
+      .eq("profile_id", userId)
+      .eq("profile_username", username)
+      .eq("rank", rank)
+      .single();
+
+    if (fetchError && fetchError.code !== 'PGRST116') {
+      console.error("Error checking for existing favorite game:", fetchError);
+      return { success: false, error: fetchError };
+    }
+
+    if (existingEntry) {
+      const { error: updateError } = await supabase
+        .from("favorite_games")
+        .update({ game_id: gameId })
+        .eq("profile_id", userId)
+        .eq("profile_username", username)
+        .eq("rank", rank);
+
+      if (updateError) {
+        console.error("Error updating favorite game:", updateError);
+        return { success: false, error: updateError };
+      }
+    } else {
+      // Otherwise, insert a new entry
+      const { error: insertError } = await supabase
+        .from("favorite_games")
+        .insert([
+          {
+            profile_id: userId,
+            profile_username: username,
+            game_id: gameId,
+            rank: rank
+          }
+        ]);
+
+      if (insertError) {
+        console.error("Error adding favorite game:", insertError);
+        return { success: false, error: insertError };
+      }
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error("Unexpected error in handleGameSelection:", err);
+    return { success: false, error: err };
+  }
 };
 
 export const uploadProfilePic = async (userId, file) => {
@@ -140,7 +189,6 @@ export const generateProfilePic = async (userId, prompt) => {
       return null;
     }
 
-    // Update the user's profile picture in the database
     const { error } = await supabase
       .from("profiles")
       .update({ profile_pic: imageUrl })
@@ -154,7 +202,6 @@ export const generateProfilePic = async (userId, prompt) => {
       return null;
     }
 
-    // Return the generated image URL
     return imageUrl;
   } catch (err) {
     console.error("Unexpected error in generateProfilePic:", err);
@@ -179,7 +226,6 @@ export const generateUsername = async (userId, message) => {
       return null;
     }
 
-    // Update the user's username in the database
     const { error } = await supabase
       .from("profiles")
       .update({ username: newUsername })
@@ -197,5 +243,64 @@ export const generateUsername = async (userId, message) => {
       err.response?.data || err.message
     );
     return null;
+  }
+};
+
+export const getFavoriteGames = async (userId, username) => {
+  try {
+    const { data, error } = await supabase
+      .from("favorite_games")
+      .select(`
+        rank,
+        games:game_id (
+          id,
+          title,
+          cover_art_url
+        )
+      `)
+      .eq("profile_id", userId)
+      .eq("profile_username", username)
+      .order("rank", { ascending: true });
+
+    if (error) {
+      console.error("Error fetching favorite games:", error);
+      return null;
+    }
+
+    const formattedGames = {};
+
+    for (let i = 1; i <= 6; i++) {
+      formattedGames[i] = null;
+    }
+
+    data.forEach(item => {
+      formattedGames[item.rank] = item.games;
+    });
+
+    return formattedGames;
+  } catch (err) {
+    console.error("Unexpected error fetching favorite games:", err);
+    return null;
+  }
+};
+
+export const removeFavoriteGame = async (userId, username, rank) => {
+  try {
+    const { error } = await supabase
+      .from("favorite_games")
+      .delete()
+      .eq("profile_id", userId)
+      .eq("profile_username", username)
+      .eq("rank", rank);
+
+    if (error) {
+      console.error("Error removing favorite game:", error);
+      return false;
+    }
+
+    return true;
+  } catch (err) {
+    console.error("Unexpected error removing favorite game:", err);
+    return false;
   }
 };
