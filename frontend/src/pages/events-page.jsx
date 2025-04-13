@@ -5,37 +5,19 @@ import ButtonModal from "../components/button-modal";
 import { IoMdAdd } from "react-icons/io";
 import EventsCard from "../components/event-card.jsx";
 import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
+import { FaLocationDot } from "react-icons/fa6";
+import { useGeolocation, useReverseGeocoding } from "../hooks/geolocation.jsx";
+import axios from "axios";
 
 function EventsPage() {
-  const [position, setPosition] = useState({
-    lat: 40.7540817261,
-    lng: -73.4263687134,
-  }); // farmigdale, NY,
-
+  const { position, error, geoError } = useGeolocation();
+  const { location, error: reverseGeoError } = useReverseGeocoding(position);
   // TODO:
   // Figure out how to get the user location
   // and set the map center to that location
   // const [position, setPosition] = useState({ lat: 0, lng: 0 });
   // advancedMarker for user location
   // place events location on the map with the AdvancedMarker component
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setPosition({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-          });
-        },
-        (error) => {
-          console.error("Error getting location: ", error);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-  }, []);
 
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAP_API_KEY}>
@@ -53,6 +35,8 @@ function EventsPage() {
            * allow the user to select multiple tags
            * maybe allow the user to create new tags
            * better way to handle location
+           * OR
+           * create a new modal, pop up or page to create a new event up to whoever is developing this
            *  */}
           <ButtonModal
             buttonText={"Create Event"}
@@ -111,7 +95,13 @@ function EventsPage() {
           </div>
         </aside>
         <main>
-          <span>Your location should be here</span>
+          <header className="map-header">
+            <FaLocationDot color="red" />
+            <span>
+              {`${location.city}, ${location.state}` || "fetching address.."}
+            </span>
+          </header>
+
           <div className="map-container">
             <Map
               style={{
