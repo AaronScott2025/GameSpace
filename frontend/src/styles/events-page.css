@@ -76,6 +76,22 @@
   transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
   cursor: pointer;
 }
+
+.search-bar input {
+  color: #000000; /* Set the text color to black */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* Optional: Set a light background */
+  border: 1px solid #cccccc; /* Optional: Add a border */
+
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
 .create-event-button {
   background-color: rgba(255, 255, 255, 0.95);
   margin: 0 auto 12px;

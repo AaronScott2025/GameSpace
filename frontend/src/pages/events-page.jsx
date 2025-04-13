@@ -169,6 +169,7 @@ function EventsPage() {
                * style the markers to be more visible
                * TODO:
                * add a popup to the markers that shows the event name and date
+               * limit the number of markers and calls to the api.
                */}
               {geolocations.map((event) =>
                 event.lat && event.lng ? (
