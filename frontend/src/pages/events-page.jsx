@@ -1,10 +1,9 @@
-import React, { useState, useEffect, use } from "react";
-import "../styles/events-page.css"; // Import your CSS file for styling
+import React, { useState, useEffect } from "react";
+import "../styles/events-page.css"; // Import CSS with new modal styles
 import { supabase } from "../../client.js"; // Shared client
-import ButtonModal from "../components/button-modal";
 import { IoMdAdd } from "react-icons/io";
 import EventsCard from "../components/event-card.jsx";
-import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
+import { APIProvider, Map, AdvancedMarker, InfoWindow } from "@vis.gl/react-google-maps";
 import { FaLocationDot } from "react-icons/fa6";
 import {
   useGeolocation,
@@ -15,18 +14,112 @@ import {
   useEventsTable,
   useEventswithTags,
 } from "../hooks/events-supabase.jsx";
-import axios from "axios";
+import CreateEventModal from "../components/create-event-modal"; // Import the new modal component
 
 function EventsPage() {
   const { position, error, geoError } = useGeolocation();
   const { location, error: reverseGeoError } = useReverseGeocoding(position);
-  const { data: events, error: tableWithTagsError } = useEventswithTags();
+  const { data: events, error: tableWithTagsError, refetchEvents } = useEventswithTags();
   const { geolocations, error: evntGeoError } = useEventsToGeo();
   const [selectedFilter, setSelectedFilter] = useState("all-events"); // Default filter
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [mapInstance, setMapInstance] = useState(null);
+
+  // Filter events based on selected filter
+  useEffect(() => {
+    if (!events) return;
+
+    if (selectedFilter === "all-events") {
+      setFilteredEvents(events);
+    } else if (selectedFilter === "online") {
+      setFilteredEvents(events.filter(event => event.is_online));
+    } else if (selectedFilter === "in-person") {
+      setFilteredEvents(events.filter(event => !event.is_online));
+    }
+  }, [selectedFilter, events]);
 
   const handleFilterChange = (filterName) => {
     setSelectedFilter(filterName); // Update the selected filter
   };
+
+  // Handle event creation submission
+  const handleEventSubmit = async (formData) => {
+    try {
+      // Format the data for Supabase
+      const eventData = {
+        title: formData.title,
+        date: formData.date,
+        time: formData.time,
+        description: formData.description,
+        is_online: formData.is_online,
+        street_address: formData.street_address,
+        location_city: formData.location_city,
+        location_state: formData.location_state,
+        created_at: new Date().toISOString(),
+      };
+
+      // Insert the event into the events table
+      const { data: eventInsert, error: eventError } = await supabase
+        .from('events')
+        .insert(eventData)
+        .select();
+
+      if (eventError) throw eventError;
+
+      // If there are tags selected, add them to the event_tags junction table
+      if (formData.tags && formData.tags.length > 0) {
+        // First get the tag IDs from the tag names
+        const { data: tagData, error: tagError } = await supabase
+          .from('tags')
+          .select('tag_id, name')
+          .in('name', formData.tags);
+
+        if (tagError) throw tagError;
+
+        // Create tag-event relationships in the junction table
+        if (tagData && tagData.length > 0) {
+          const eventTagRelations = tagData.map(tag => ({
+            event_id: eventInsert[0].event_id,
+            tag_id: tag.tag_id
+          }));
+
+          const { error: relationError } = await supabase
+            .from('event_tags')
+            .insert(eventTagRelations);
+
+          if (relationError) throw relationError;
+        }
+      }
+
+      // Refetch events to update the UI
+      refetchEvents();
+
+      alert('Event created successfully!');
+    } catch (error) {
+      console.error('Error creating event:', error);
+      alert('Failed to create event. Please try again.');
+    }
+  };
+
+  // Handle clicking on an event card
+  const handleEventCardClick = (event) => {
+    setSelectedEvent(event);
+
+    // Find the corresponding marker
+    const eventLocation = geolocations.find(loc => loc.event_id === event.event_id);
+
+    if (eventLocation && mapInstance) {
+      // Center map on the event location
+      mapInstance.panTo({ lat: eventLocation.lat, lng: eventLocation.lng });
+      mapInstance.setZoom(13);
+
+      // Set the selected marker to show info window
+      setSelectedMarker(eventLocation);
+    }
+  };
+
   // Error handling logic
   const renderErrors = () => {
     const errors = [];
@@ -57,40 +150,11 @@ function EventsPage() {
           <div className="search-bar">
             <input type="text" placeholder="Search" />
           </div>
-          {/**
-           * ButtonModal will change to handle tags
-           * TODO:
-           * MAKE THE MODAL WORK LOL
-           * style the modal with the form
-           * allow the user to select multiple tags
-           * maybe allow the user to create new tags
-           *
-           * OR
-           *
-           * create a new modal, pop up or page to create a new event up to whoever is developing this
-           *  */}
-          <ButtonModal
-            buttonText={"Create Event"}
-            modalClassName={"create-event-modal"}
-            className={"create-event-button"}
-            icon={IoMdAdd}
-            iconSize={24}
-            title={"Create New Event"}
-            inputs={[
-              { label: "Event Name", type: "text", name: "event_name" },
-              { label: "Date", type: "date", name: "date" },
-              { label: "Location", type: "text", name: "location" },
-              { label: "Description", type: "textarea", name: "description" },
-            ]}
-            formClassName={"event-form"}
-          />
+
+          {/* Replace ButtonModal with new CreateEventModal */}
+          <CreateEventModal onSubmit={handleEventSubmit} />
+
           <div className="events-filter">
-            {/**
-             * TODO:
-             * Make the filters work
-             * allow user to use one filter at a time
-             * make the default filter "All Events"
-             */}
             <input
               className="events-filter-checkbox"
               type="checkbox"
@@ -120,22 +184,20 @@ function EventsPage() {
             <span>In-Person</span>
           </div>
           <div className="events-cards-container">
-            {/**
-             * TODO:
-             * allow scrolling to load more events, without allowing the cards to overflow out of the container( Lazy Loading)
-             * the cards should be displayed in order of most close to the user
-             * when clicking on a card, it should make the map center and zoom in on the event
-             *
-             */}
-            {events.map((event) => (
-              <EventsCard
-                is_Online={event.is_online} //remember this is a boolean
-                key={`${event.event_id}-card`}
-                eventName={event.title}
-                date={event.date}
-                location={`${event.street_address}, ${event.location_city}, ${event.location_state}`}
-                tags={event.tag_names}
-              />
+            {filteredEvents.map((event) => (
+              <div
+                key={`${event.event_id}-card-wrapper`}
+                onClick={() => handleEventCardClick(event)}
+              >
+                <EventsCard
+                  is_Online={event.is_online}
+                  key={`${event.event_id}-card`}
+                  eventName={event.title}
+                  date={event.date}
+                  location={`${event.street_address}, ${event.location_city}, ${event.location_state}`}
+                  tags={event.tag_names}
+                />
+              </div>
             ))}
           </div>
         </aside>
@@ -143,7 +205,9 @@ function EventsPage() {
           <header className="map-header">
             <FaLocationDot color="red" />
             <span>
-              {`${location.city}, ${location.state}` || "fetching address.."}
+              {location && location.city
+                ? `${location.city}, ${location.state}`
+                : "Fetching address..."}
             </span>
           </header>
 
@@ -153,31 +217,51 @@ function EventsPage() {
                 width: "70vw",
                 height: "75vh",
                 position: "relative",
-                zIndex: 0, // Ensure the map stays behind the modal. this didn't work
+                zIndex: 0,
               }}
               defaultCenter={position}
               defaultZoom={9}
               gestureHandling={"greedy"}
               disableDefaultUI={true}
               mapId={import.meta.env.VITE_GOOGLE_MAP_ID}
+              onLoad={(map) => setMapInstance(map)}
             >
+              {/* User's location marker */}
               <AdvancedMarker
                 id="Your-Location"
                 position={position}
-              ></AdvancedMarker>
-              {/**
-               * style the markers to be more visible
-               * TODO:
-               * add a popup to the markers that shows the event name and date
-               * limit the number of markers and calls to the api.
-               */}
+              >
+                <div className="user-location-marker">
+                  <FaLocationDot color="blue" size={24} />
+                </div>
+              </AdvancedMarker>
+
+              {/* Event markers with info windows */}
               {geolocations.map((event) =>
                 event.lat && event.lng ? (
                   <AdvancedMarker
                     key={`${event.event_id}-marker`}
                     id={`${event.event_id}-marker`}
                     position={{ lat: event.lat, lng: event.lng }}
-                  ></AdvancedMarker>
+                    onClick={() => setSelectedMarker(event)}
+                  >
+                    <div className="event-marker">
+                      <FaLocationDot color="red" size={24} />
+                    </div>
+
+                    {selectedMarker && selectedMarker.event_id === event.event_id && (
+                      <InfoWindow
+                        position={{ lat: event.lat, lng: event.lng }}
+                        onCloseClick={() => setSelectedMarker(null)}
+                      >
+                        <div className="event-info-window">
+                          <h3>{event.title}</h3>
+                          <p><strong>Date:</strong> {event.date}</p>
+                          <p><strong>Location:</strong> {event.location_city}, {event.location_state}</p>
+                        </div>
+                      </InfoWindow>
+                    )}
+                  </AdvancedMarker>
                 ) : null
               )}
             </Map>
@@ -187,4 +271,5 @@ function EventsPage() {
     </APIProvider>
   );
 }
+
 export default EventsPage;
