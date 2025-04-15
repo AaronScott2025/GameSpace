@@ -1,9 +1,7 @@
-
 /*    
 FOR NAVBAR U NEED TO ADD TO the PAGES/GUI'S :
 import Navbar from "../components/nav-bar";
 <Navbar />                                           */
-
 
   /* --------------------  Nav Bar  --------------------- */
 
@@ -13,7 +11,7 @@ import Navbar from "../components/nav-bar";
     justify-content: space-between;
     align-items: center;
     padding: 40px 15px;  
-    background: linear-gradient(to right, #1048c9, #3b74d6, #5aa0ff);
+    background: linear-gradient(to right, #000000, #343434, #5c5c5c, #343434, #000000);
     position: fixed;
     width: 100%;
     top: 0;
@@ -22,7 +20,7 @@ import Navbar from "../components/nav-bar";
 }
 .logo {   /* Game Space */
     position: absolute;
-    left: 10%;
+    left: 10.3%;
     top: -41%;
     transform: translate(-30%, 0%);
     display: flex;
@@ -46,7 +44,7 @@ import Navbar from "../components/nav-bar";
   .nav-button {   /* arrow */
     display: flex;
     position: absolute;
-    background: rgba(49, 115, 230, 0.8);
+    background: rgba(92, 92, 92, 0.8);
     color: #ffffff;
     padding: 5px;
     font-size: 1rem;
@@ -104,42 +102,60 @@ import Navbar from "../components/nav-bar";
   position: fixed;
   border: clear;
   top: 80px;
-  left: -300px; /*  off-screen */
-  width: 290px; /* size */
-  height: 60%;
-  background-color: #d3d3d3; /* Lighter grey background */
+  left: -380px; /*  off-screen */
+  width: 360px; /* size */
+  height: 66%;
+  background-color: clear; /* clear or Lighter grey background #d3d3d3*/
   transition: left 0.3s ease-in-out;
   z-index:50;
   padding-top: 85px;
 }
-.nav-links .active-link {
-  color: white !important; /* Make selected link white */
-  font-weight: bold; /*  bold for emphasis */
+
+.nav-links {
+  list-style: none;
+  padding: 10px;
+  margin-top: -90px;
 }
+
+.nav-links li {
+  margin: .5% 0;
+}
+
+.side-menu.open {
+  left: 0; /* Slides side menu */
+}
+
 .side-menu .nav-links a {
   display: flex;
   align-items: center;
   gap: 15px;
-  color: rgb(0, 0, 0);
-  font-size: 2.1rem;
-  padding: 15px;
+  font-size: 1.8rem;
+  padding: 16px 20px;
   text-decoration: none;
-  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+  font-weight: bold;
+  border: 3px solid black;
+  box-shadow: inset -6px -7px 0 rgba(0,0,0,0.5), 0px 4px 8px rgba(0, 0, 0, 0.6);
+  transition: transform 0.15s ease, background-color 0.2s ease;
+  border-radius: 3px;
+  text-transform: uppercase;
 }
+
+/* Hover = Retro Pop */
 .side-menu .nav-links a:hover {
-  background-color: rgba(255, 255, 255, 0.4);
-  color: rgb(255, 255, 255);
-  transform: scale(1.04);
+  transform: scale(1.02);
+  filter: brightness(1.2);
+  color: whitesmoke;
 }
-.side-menu .nav-links {
-    list-style: none;
-    padding: 5px;
-    margin-top: -90px; /* menu items below  navbar */
+
+.nav-links .active-link {
+  outline: 2px solid rgb(0, 0, 0);
+  color: rgb(255, 255, 255); /* Fix active link text color */
 }
-.side-menu .nav-links li {
-    margin: 2% 0;
-    border-bottom: 1px solid black;
-}
-.side-menu.open {
-    left: 0; /* Slides side menu */
-}
+
+/* Retro color blocks */
+.nav-home     { background-color: #0096FF; } /* Blue */
+.nav-market   { background-color: #FF5733; } /* Green */
+.nav-party    { background-color: #FFC300; } /* Yellow */
+.nav-chatbot  { background-color: #00C49A; } /* Orange/Red */
+.nav-events   { background-color: #FF33A6; } /* Pink/Red */
+.nav-dm       { background-color: #8D33FF; } /* Purple */
