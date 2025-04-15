@@ -17,9 +17,8 @@ function EventsCard({ eventId, eventName, date, location, is_Online, tags }) {
         </div>
         <div className="events-tags">
           <Tags tagText={is_Online ? "Online" : "In-person"} />{" "}
-          {/* Render Online or In-person tag based on is_Online */}
           {tags.map((tag, index) => (
-            <Tags key={index} tagText={tag} /> // Render a Tags component for each tag
+            <Tags key={index} tagText={tag} />
           ))}
         </div>
         <span className="events-location">{location}</span>
