@@ -6,6 +6,7 @@ import { useContext, useState, useEffect, useRef } from "react";
 import { supabase } from "../../client";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
+import useSound from "../hooks/useSound"; // Custom hook
 
 const HomePage = () => {
   //////////////////////////////////////////////////////////////
@@ -26,6 +27,22 @@ const HomePage = () => {
     if (error) throw error;
     navigate("/login");
   };
+  //////////////////////////////////////////////////////////////
+  //////////////For linking different sounds to functions///////////////////////
+    const mouseClickSound = useSound("/sounds/mouse-click.mp3");
+    const gameStartSound = useSound("/sounds/game-start.mp3");
+    const blipSound = useSound("/sounds/blip.mp3");
+
+    //////////////////////////////////////////////////////////////
+  //////////////Preview Profile Handler///////////////////////
+  // const [selectedUser, setSelectedUser] = useState(null);
+  // const [showUserPopup, setShowUserPopup] = useState(false);
+  // const handleUsernameClick = (user) => {
+  //   setSelectedUser(user);
+  //   setShowUserPopup(true);
+  //   mouseClickSound.volume = 0.1;
+  //   mouseClickSound.play();
+  // };
 
   //////////////////////////////////////////////////////////////
   //////////////Fetch data functionality///////////////////////
@@ -39,7 +56,12 @@ const HomePage = () => {
     try {
       let { data: posts, error } = await supabase
         .from("post")
-        .select("*")
+        .select(`
+          *,
+          profiles (
+            profile_pic
+          )
+        `)
         .order("created_at", { ascending: false }); // (newest first)
       if (error) {
         setError(error.message);
@@ -131,6 +153,7 @@ const HomePage = () => {
         return;
       }
       // Success or error message
+      gameStartSound.play(0.5);
       alert("Post created successfully!");
       setPostContent("");
       setPostImage(null);
@@ -142,42 +165,6 @@ const HomePage = () => {
   };
 
   //////////////////////////////////////////////////////////////
-  ///////////////////Set local events///////////////////////////
-
-  const items = [
-    {
-      id: 1,
-      title: "Fifa Tournament",
-      description: "Join the biggest Fifa event of the year!",
-      //  image: "/planet.png",
-    },
-    {
-      id: 2,
-      title: "Fortnite Event",
-      description: "Join the latest global fortnite update ",
-      //  image: "/planet.png",
-    },
-    {
-      id: 3,
-      title: "Gaming Event",
-      description: "Join The Biggest Gaming Event Of The Month!",
-      //  image: "/planet.png",
-    },
-    {
-      id: 4,
-      title: "Gaming Event",
-      description: "Join The Biggest Gaming Event Of The Month!",
-      //  image: "/planet.png",
-    },
-    {
-      id: 5,
-      title: "Gaming Event",
-      description: "Join The Biggest Gaming Event Of The Month!",
-      //  image: "/planet.png",
-    },
-  ];
-
-  //////////////////////////////////////////////////////////////
   ///////////////////For user context///////////////////////////
   const { user } = useContext(UserContext);
   if (!user) {
@@ -187,60 +174,46 @@ const HomePage = () => {
   //////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////
 
+  
+
   return (
     <div>
-      {/* Profile info section */}
-      <div className="profileinfo-container">
-        <p>Username : {user.username}</p>
-        <p>Email : {user.email}</p>
-        <button onClick={signOut}>Sign Out</button>
-      </div>
-
       {/* Toggle Button */}
       <button onClick={togglePostContainer} className="toggle-post-button">
         <BsFillPostcardFill size={30} /> {/* Icon for the button */}
       </button>
 
       {/* Left side container for posting, conditional rendering */}
-      {isPostContainerOpen && (
-        <div className="post-container">
+      {/* {isPostContainerOpen && (
+        
+      )} */}
+
+      <div className="post-container">
+        <div className="post-input-row">
           <textarea
             className="post-content"
             placeholder="Type your post here..."
             value={postContent}
             onChange={handleContentChange}
           />
-          <label htmlFor="file-input" className="custom-file-button">
-            Choose File
-          </label>
-          <input
-            type="file"
-            id="file-input"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="post-image-input"
-          />
-          <span className="post-image-info">
-            {postImage ? postImage.name : " No file chosen"}
-          </span>
-          <button onClick={handlePostClick} className="post-button">
-            Post
-          </button>
-        </div>
-      )}
-
-      {/* Local events container posts */}
-      <div className="localevents-container">
-        <h1>Local Events</h1>
-        <div className="localeventsscroll-box">
-          {items.map((item) => (
-            <div key={item.id} className="localevent-box">
-              <div className="localevent-content">
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-              </div>
-            </div>
-          ))}
+          <div className="post-controls">
+            <label htmlFor="file-input" className="custom-file-button">
+              Choose File
+            </label>
+            <input
+              type="file"
+              id="file-input"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="post-image-input"
+            />
+            <span className="post-image-info">
+              {postImage ? postImage.name : " No file chosen"}
+            </span>
+            <button onClick={handlePostClick} className="post-button">
+              Post
+            </button>
+          </div>
         </div>
       </div>
 
@@ -253,7 +226,18 @@ const HomePage = () => {
             data.map((item, index) => (
               <div key={index} className="media-box">
                 <div className="media-left">
-                  <span className="username">{item.username}</span>
+                  <div className="media-user-info">
+                    {item.profiles?.profile_pic && (
+                      <img
+                        src={item.profiles.profile_pic}
+                        alt="Profile"
+                        className="profile-pic"
+                      />
+                    )}
+                    <span className="username">{item.username}
+
+                    </span>
+                  </div>
                   <p className="mediapost-content">{item.post_content}</p>
                 </div>
                 {item.post_attachment && (
@@ -272,7 +256,13 @@ const HomePage = () => {
 
         {/* Refresh button */}
         <div className="pagination-buttons">
-          <button onClick={refreshPosts} disabled={loading}>
+          <button
+            onClick={() => {
+              refreshPosts();
+              blipSound.play(0.5);
+            }}
+            disabled={loading}
+          >
             {loading ? "Refreshing..." : "Refresh"}
           </button>
         </div>
