@@ -31,6 +31,18 @@ const HomePage = () => {
   //////////////For linking different sounds to functions///////////////////////
     const mouseClickSound = useSound("/sounds/mouse-click.mp3");
     const gameStartSound = useSound("/sounds/game-start.mp3");
+    const blipSound = useSound("/sounds/blip.mp3");
+
+    //////////////////////////////////////////////////////////////
+  //////////////Preview Profile Handler///////////////////////
+  // const [selectedUser, setSelectedUser] = useState(null);
+  // const [showUserPopup, setShowUserPopup] = useState(false);
+  // const handleUsernameClick = (user) => {
+  //   setSelectedUser(user);
+  //   setShowUserPopup(true);
+  //   mouseClickSound.volume = 0.1;
+  //   mouseClickSound.play();
+  // };
 
   //////////////////////////////////////////////////////////////
   //////////////Fetch data functionality///////////////////////
@@ -222,7 +234,9 @@ const HomePage = () => {
                         className="profile-pic"
                       />
                     )}
-                    <span className="username">{item.username}</span>
+                    <span className="username">{item.username}
+
+                    </span>
                   </div>
                   <p className="mediapost-content">{item.post_content}</p>
                 </div>
@@ -245,7 +259,7 @@ const HomePage = () => {
           <button
             onClick={() => {
               refreshPosts();
-              mouseClickSound.play(0.1);
+              blipSound.play(0.5);
             }}
             disabled={loading}
           >

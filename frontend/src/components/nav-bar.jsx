@@ -9,6 +9,7 @@ import { RiAliensFill } from "react-icons/ri";
 import { CiShoppingCart } from "react-icons/ci";
 import { TiMessages } from "react-icons/ti";
 import "./nav-bar.css";
+import useSound from "../hooks/useSound"; // Custom hook
 
 /* FOR NAVBAR U NEED TO ADD THESE TO the PAGES/GUI'S WHERE U WANT THE NAVBAR :
 import Navbar from "../components/nav-bar";
@@ -22,6 +23,10 @@ const Navbar = () => {
     setMenuOpen((prevState) => !prevState);
   };
 
+  //Linking of Sound effects to Hook
+  const mouseClickSound = useSound("/sounds/mouse-click.mp3");
+  const gameStartSound = useSound("/sounds/game-start.mp3");
+
   useEffect(() => {
     setMenuOpen(false);
   }, [location]);
@@ -30,15 +35,17 @@ const Navbar = () => {
     <div>
       <nav className="navbar">
         <div className="logo">
-          <NavLink to="/home">GameSpace</NavLink>
+          <NavLink to="/home" onClick={() =>{ mouseClickSound.play(0.1);}}>GameSpace</NavLink>
         </div>
 
-        <button className="nav-button" onClick={handleMenuToggle}>
+        <button className="nav-button" onClick={() =>{handleMenuToggle(); }}>
           <BsJoystick size={30} />
         </button>
 
         <div className="profile-auth">
-          <NavLink to="/account" className="profile-btn">
+          <NavLink to="/account"
+          
+           className="profile-btn">
             <div className="profile-icon">
               <GiAstronautHelmet size={40} />
             </div>
@@ -51,6 +58,7 @@ const Navbar = () => {
           <li>
             <NavLink
               to="/home"
+              onClick={() =>{ mouseClickSound.play(0.1);}}
               className={({ isActive }) => `${isActive ? "active-link" : ""} nav-home`}
               >
               <BsRocket /> Home
@@ -59,6 +67,7 @@ const Navbar = () => {
           <li>
             <NavLink
               to="/marketplace"
+              onClick={() =>{ mouseClickSound.play(0.1);}}
               className={({ isActive }) => `${isActive ? "active-link" : ""} nav-market`}
               >
               <CiShoppingCart /> Market
@@ -67,6 +76,7 @@ const Navbar = () => {
           <li>
             <NavLink
               to="/partyfinder"
+              onClick={() =>{ mouseClickSound.play(0.1);}}
               className={({ isActive }) => `${isActive ? "active-link" : ""} nav-party`}
               >
               <GiSatelliteCommunication /> PartyFinder
@@ -75,6 +85,7 @@ const Navbar = () => {
           <li>
             <NavLink
               to="/chatbot"
+              onClick={() =>{ mouseClickSound.play(0.1);}}
               className={({ isActive }) => `${isActive ? "active-link" : ""} nav-chatbot`}
               >
               <RiAliensFill /> Chatbot
@@ -83,6 +94,7 @@ const Navbar = () => {
           <li>
             <NavLink
               to="/clans"
+              onClick={() =>{ mouseClickSound.play(0.1);}}
               className={({ isActive }) => `${isActive ? "active-link" : ""} nav-events`}
               >
               <FaUsers /> Events
@@ -91,6 +103,7 @@ const Navbar = () => {
           <li>
             <NavLink
               to="/dm-page"
+              onClick={() =>{ mouseClickSound.play(0.1);}}
               className={({ isActive }) => `${isActive ? "active-link" : ""} nav-dm`}
               >
               <TiMessages /> Messages

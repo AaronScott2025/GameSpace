@@ -317,6 +317,7 @@ background: linear-gradient(to bottom, #737373, #a4a4a4, #d2d2d2, #ffffff); */
   display: flex;
   align-items: center;
   gap: 10px;
+  border:1px black;
 }
 
 .profile-pic {
@@ -326,6 +327,7 @@ background: linear-gradient(to bottom, #737373, #a4a4a4, #d2d2d2, #ffffff); */
   margin-left:10px;
   margin-right: 5px;
   object-fit: cover;
+  border: 1px black;
 }
 .mediapost-content {
   margin-top: auto;
@@ -371,3 +373,4 @@ background: linear-gradient(to bottom, #737373, #a4a4a4, #d2d2d2, #ffffff); */
 .pagination-buttons button:hover:not(:disabled) {
   background: #0056b3;
 }
+
