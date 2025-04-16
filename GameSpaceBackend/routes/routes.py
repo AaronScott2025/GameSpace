@@ -10,13 +10,11 @@ env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.env')
 from GameSpaceBackend.models.classes import Profile, DuoMatching
 import GameSpaceBackend.services.MatchmakingService as ms
 load_dotenv(dotenv_path=env_path)
-from flask_cors import CORS
 
 SUPABASE_API_KEY = os.getenv("SUPABASE")
 OPEN_AI_KEY = os.getenv("OPEN_AI")
 
 app = Flask(__name__)
-CORS(app, origins=["*"],supports_credentials=True)
 supabase = create_client("https://xfmccwekbxjkrjwuheyv.supabase.co", SUPABASE_API_KEY)
 
 
