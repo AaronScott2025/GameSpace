@@ -9,6 +9,8 @@ import {
   updateUserBio,
   generateProfilePic,
   generateUsername,
+  getFavoriteGames,
+  removeFavoriteGame,
 } from "../scripts/account-page-scripts";
 import { UserContext } from "./UserContext.jsx";
 import defaultProfilePic from "../assets/default_pfp.jpg";
@@ -16,11 +18,11 @@ import LoadingAnimation from "../components/loading-animation.jsx";
 import { RiAiGenerate2 } from "react-icons/ri";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
+import FavoriteGamesPopUp from "../components/favoriteGamesPopUp.jsx";
 
 const AccountPage = () => {
   const { user } = useContext(UserContext);
 
-  // Declare all hooks unconditionally
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [profilePic, setProfilePic] = useState(defaultProfilePic);
@@ -41,7 +43,11 @@ const AccountPage = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [usernamePrompt, setUsernamePrompt] = useState("");
   const [isUsernameGenerating, setIsUsernameGenerating] = useState(false);
-  const [showUsernamePrompt, setShowUsernamePrompt] = useState(false); // State to toggle input field
+  const [showUsernamePrompt, setShowUsernamePrompt] = useState(false);
+
+  const [favoriteGames, setFavoriteGames] = useState({});
+  const [showGamePopup, setShowGamePopup] = useState(false);
+  const [currentGameSlot, setCurrentGameSlot] = useState(null);
 
   useEffect(() => {
     const loadUserInfo = async () => {
@@ -59,6 +65,12 @@ const AccountPage = () => {
           setPsn(userInfo.PSN_link || "");
           setXbox(userInfo.Xbox_link || "");
           setDiscord(userInfo.Discord_link || "");
+
+          // Load favorite games
+          const games = await getFavoriteGames(user.id, userInfo.username);
+          if (games) {
+            setFavoriteGames(games);
+          }
         } else {
           setError("Unable to load user information.");
         }
@@ -71,6 +83,7 @@ const AccountPage = () => {
     loadUserInfo();
   }, [user?.id]);
 
+  // Preserve all original functions
   const handlePasswordChange = async () => {
     if (newPassword !== confirmPassword) {
       setError("Passwords do not match.");
@@ -108,7 +121,7 @@ const AccountPage = () => {
       if (newProfilePic) {
         console.log("Generated profile picture URL:", newProfilePic);
         setProfilePic(newProfilePic);
-        setPrompt(""); // Clear the input field
+        setPrompt("");
       } else {
         setError("Failed to generate profile picture.");
         console.error("Failed to generate profile picture.");
@@ -118,13 +131,14 @@ const AccountPage = () => {
       setError("An error occurred while generating the profile picture.");
     }
   };
+
   const handleGenerateUsername = async (message) => {
     try {
       const newUsername = await generateUsername(user.id, message);
       if (newUsername) {
         console.log("Generated username:", newUsername);
         setUsername(newUsername);
-        setUsernamePrompt(""); // Clear the input field
+        setUsernamePrompt("");
       } else {
         setError("Failed to generate username.");
         console.error("Failed to generate username.");
@@ -133,8 +147,8 @@ const AccountPage = () => {
       console.error("Error generating username:", err);
       setError("An error occurred while generating the username.");
     } finally {
-      setIsUsernameGenerating(false); // Hide loading animation
-      setShowUsernamePrompt(false); // Hide the container
+      setIsUsernameGenerating(false);
+      setShowUsernamePrompt(false);
     }
   };
 
@@ -166,6 +180,51 @@ const AccountPage = () => {
     setLoading(false);
   };
 
+  const handleGameClick = (slotNumber) => {
+    setCurrentGameSlot(slotNumber);
+    setShowGamePopup(true);
+  };
+
+  const handleSelectGame = async (game, slotNumber) => {
+    if (!game || !user.id || !username) return;
+
+    setLoading(true);
+    const result = await handleGameSelection(user.id, username, game.id, slotNumber);
+
+    if (result.success) {
+      setFavoriteGames(prev => {
+        const newGames = { ...prev };
+        newGames[slotNumber] = game;
+        return newGames;
+      });
+    } else {
+      setError("Failed to update favorite game.");
+    }
+
+    setLoading(false);
+    setShowGamePopup(false);
+  };
+
+  const handleRemoveGame = async (slotNumber) => {
+    if (!user.id || !username) return;
+
+    setLoading(true);
+    const success = await removeFavoriteGame(user.id, username, slotNumber);
+
+    if (success) {
+      // Update local state
+      setFavoriteGames(prev => {
+        const newGames = { ...prev };
+        newGames[slotNumber] = null;
+        return newGames;
+      });
+    } else {
+      setError("Failed to remove favorite game.");
+    }
+
+    setLoading(false);
+  };
+
   if (loading) {
     return <div className="loading">Loading user data...</div>;
   }
@@ -173,6 +232,7 @@ const AccountPage = () => {
   return (
     <div className="content-container">
       <div className="account-page">
+
         <div className="profile-section">
           <div className="profile-picture">
             <img key={profilePic} src={profilePic} alt="Profile" />
@@ -218,10 +278,10 @@ const AccountPage = () => {
                     <button
                       className="action-button-generate"
                       onClick={async () => {
-                        setIsGenerating(true); // Show loading animation
+                        setIsGenerating(true);
                         await handleGenerateProfilePic(prompt);
-                        setIsGenerating(false); // Hide loading animation
-                        setShowPromptInput(false); // Hide the container
+                        setIsGenerating(false);
+                        setShowPromptInput(false);
                       }}
                     >
                       Generate
@@ -229,8 +289,8 @@ const AccountPage = () => {
                     <button
                       className="action-button-generate"
                       onClick={() => {
-                        setPrompt(""); // Clear the input field
-                        setShowPromptInput(false); // Hide the container
+                        setPrompt("");
+                        setShowPromptInput(false);
                       }}
                     >
                       Close
@@ -238,7 +298,7 @@ const AccountPage = () => {
                   </div>
                 </>
               ) : (
-                <LoadingAnimation /> // Show loading animation
+                <LoadingAnimation />
               )}
             </div>
           )}
@@ -267,7 +327,7 @@ const AccountPage = () => {
                     className="generate-icon"
                     data-tooltip-id="generate-icon-tooltip"
                     onClick={() => {
-                      setShowUsernamePrompt(!showUsernamePrompt); // Toggle input field visibility
+                      setShowUsernamePrompt(!showUsernamePrompt);
                     }}
                   />
                   <Tooltip
@@ -306,7 +366,7 @@ const AccountPage = () => {
                             className="action-button-generate"
                             onClick={() =>
                               handleGenerateUsername(usernamePrompt)
-                            } // Pass the prompt explicitly
+                            }
                             disabled={isUsernameGenerating}
                           >
                             Generate
@@ -323,7 +383,7 @@ const AccountPage = () => {
                       <LoadingAnimation />
                     )}
                   </div>
-                ) //close showUsernamePrompt parenthesis
+                )
               }
 
               <div className="info-row" style={{ justifyContent: "center" }}>
@@ -477,25 +537,60 @@ const AccountPage = () => {
         <div className="favoriteGames-section">
           <div className="favoriteGames-title">Favorite Games</div>
           <div className="favoriteGames-content">
-            {["Game 1", "Game 2", "Game 3", "Game 4", "Game 5", "Game 6"].map(
-              (game) => (
+            {[1, 2, 3, 4, 5, 6].map((slot) => (
+              <div key={slot} className="favorite-game-container">
                 <div
-                  key={game}
-                  className="favorite-game"
-                  onClick={() => handleGameSelection(game)}
+                  className={`favorite-game ${favoriteGames[slot] ? 'has-game' : ''}`}
+                  onClick={() => handleGameClick(slot)}
                 >
-                  <img src="" alt={game} />
+                  {favoriteGames[slot] ? (
+                    <>
+                      {favoriteGames[slot].cover_art_url ? (
+                        <img
+                          src={favoriteGames[slot].cover_art_url}
+                          alt={favoriteGames[slot].title}
+                        />
+                      ) : (
+                        <div className="game-placeholder">
+                          {favoriteGames[slot].title.charAt(0)}
+                        </div>
+                      )}
+                      <div className="game-title-overlay">
+                        <span>{favoriteGames[slot].title}</span>
+                      </div>
+                      <button
+                        className="remove-game-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveGame(slot);
+                        }}
+                      >
+                        ×
+                      </button>
+                    </>
+                  ) : (
+                    <div className="add-game-placeholder">
+                      <span className="add-icon">+</span>
+                      <span className="add-text">Add Game</span>
+                    </div>
+                  )}
                 </div>
-              )
-            )}
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="marketplace-section">
           <div className="marketplace-title">Marketplace</div>
-          {/* Marketplace content would go here */}
         </div>
       </div>
+
+      <FavoriteGamesPopUp
+        isOpen={showGamePopup}
+        onClose={() => setShowGamePopup(false)}
+        onSelectGame={handleSelectGame}
+        gameSlot={currentGameSlot}
+      />
     </div>
   );
 };
