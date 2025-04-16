@@ -57,10 +57,6 @@ function EventsPage() {
     setUserPositionInfoWindow(false);
   }, [position]); // Dependency ensures it runs when the position changes
 
-  useEffect(() => {
-    console.log("myPosition:", myPosition);
-  }, [myPosition]);
-
   // Error handling logic
   const renderErrors = () => {
     const errors = [];
@@ -81,6 +77,9 @@ function EventsPage() {
       </div>
     ) : null;
   };
+  if (!position) {
+    return <div>Loading map...</div>; // Show a loading state until position is available
+  }
 
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAP_API_KEY}>
@@ -168,75 +167,85 @@ function EventsPage() {
           </header>
 
           <div className="map-container">
-            <Map
-              style={{
-                width: "70vw",
-                height: "75vh",
-                position: "relative",
-                zIndex: 0, // Ensure the map stays behind the modal. this didn't work
-              }}
-              defaultCenter={position}
-              defaultZoom={9}
-              gestureHandling={"greedy"}
-              disableDefaultUI={true}
-              mapId={import.meta.env.VITE_GOOGLE_MAP_ID}
-            >
-              <AdvancedMarker
-                id="Your-Location"
-                position={position}
-                ref={myPostionRef}
-                onClick={HandleYourPosition}
+            {position && (
+              <Map
+                style={{
+                  width: "70vw",
+                  height: "75vh",
+                  position: "relative",
+                  zIndex: 0, // Ensure the map stays behind the modal. this didn't work
+                }}
+                defaultCenter={position}
+                defaultZoom={9}
+                gestureHandling={"greedy"}
+                disableDefaultUI={true}
+                mapId={import.meta.env.VITE_GOOGLE_MAP_ID}
               >
-                <div
-                  className="custom-pin"
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    backgroundColor: "#4285F4",
-                    borderRadius: "50%",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    overflow: "hidden",
-                    border: "2px solid #000",
-                  }}
+                <AdvancedMarker
+                  id="Your-Location"
+                  position={position}
+                  ref={myPostionRef}
+                  onClick={HandleYourPosition}
                 >
-                  <img
-                    src={userImage || "https://example.com/default-avatar.png"} // Use the user's profile picture or a default image
-                    alt="User Icon"
+                  <div
+                    className="custom-pin"
                     style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
+                      width: "40px",
+                      height: "40px",
+                      backgroundColor: "#4285F4",
+                      borderRadius: "50%",
+                      borderColor: "#4285F4",
+                      borderWidth: "5px",
+                      borderStyle: "solid",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      overflow: "hidden",
+                      border: "2px solid #000",
                     }}
-                  />
-                </div>
-              </AdvancedMarker>
+                  >
+                    <img
+                      src={
+                        userImage || "https://example.com/default-avatar.png"
+                      } // Use the user's profile picture or a default image
+                      alt="User Icon"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  </div>
+                </AdvancedMarker>
 
-              {myPosition && userPositionInfoWindow && (
-                <InfoWindow
-                  anchor={myPosition} // Pass a valid marker or AdvancedMarkerElement
-                  onClose={() => setUserPositionInfoWindow(false)} // Handle close event
-                >
-                  <span style={{ color: "black" }}>Your location</span>
-                </InfoWindow>
-              )}
-              {/**
-               * style the markers to be more visible
-               * TODO:
-               * add a popup to the markers that shows the event name and date
-               * limit the number of markers and calls to the api.
-               */}
-              {geolocations.map((event) =>
-                event.lat && event.lng ? (
-                  <AdvancedMarker
-                    id={event.event_id}
-                    key={`${event.event_id}-marker`}
-                    position={{ lat: event.lat, lng: event.lng }}
-                  />
-                ) : null
-              )}
-            </Map>
+                {myPosition && userPositionInfoWindow && (
+                  <InfoWindow
+                    anchor={myPosition} // Pass a valid marker or AdvancedMarkerElement
+                    onClose={() => setUserPositionInfoWindow(false)} // Handle close event
+                  >
+                    <span style={{ color: "black" }}>
+                      {`${location.city}, ${location.state}` ||
+                        "fetching address.."}
+                    </span>
+                  </InfoWindow>
+                )}
+                {/**
+                 * style the markers to be more visible
+                 * TODO:
+                 * add a popup to the markers that shows the event name and date
+                 * limit the number of markers and calls to the api.
+                 */}
+                {geolocations.map((event) =>
+                  event.lat && event.lng ? (
+                    <AdvancedMarker
+                      id={event.event_id}
+                      key={`${event.event_id}-marker`}
+                      position={{ lat: event.lat, lng: event.lng }}
+                    />
+                  ) : null
+                )}
+              </Map>
+            )}
           </div>
         </main>
       </div>
