@@ -205,9 +205,7 @@ function EventsPage() {
                     }}
                   >
                     <img
-                      src={
-                        userImage || "https://example.com/default-avatar.png"
-                      } // Use the user's profile picture or a default image
+                      src={userImage || GiAstronautHelmet} // Use the user's profile picture or a default image
                       alt="User Icon"
                       style={{
                         width: "100%",
