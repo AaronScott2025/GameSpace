@@ -10,15 +10,13 @@ env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.env')
 from GameSpaceBackend.models.classes import Profile, DuoMatching
 import GameSpaceBackend.services.MatchmakingService as ms
 load_dotenv(dotenv_path=env_path)
-from flask_cors import CORS, cross_origin
-from flask_socketio import SocketIO, emit, join_room, leave_room
+from flask_cors import CORS
 
 SUPABASE_API_KEY = os.getenv("SUPABASE")
 OPEN_AI_KEY = os.getenv("OPEN_AI")
 
 app = Flask(__name__)
 CORS(app, origins=["*"],supports_credentials=True)
-socketio = SocketIO(app)
 supabase = create_client("https://xfmccwekbxjkrjwuheyv.supabase.co", SUPABASE_API_KEY)
 
 
@@ -143,8 +141,6 @@ def namegen():
         if not message:
             return {"error": "Message is required"}, 400
 
-        
-
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0125",
             messages=[
@@ -159,66 +155,6 @@ def namegen():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-# API: Send a message in a conversation
-@app.route('/send_message', methods=['POST'])
-@cross_origin(origins=["http://localhost:5173"])
-def send_message():
-    data = request.get_json()
-    conversation_id = data['conversation_id']
-    user_id = data['user_id']
-    message = data['message']
-
-    # Insert the message into Supabase
-    response = supabase.table('messages').insert({
-        'conversation_id': conversation_id,
-        'user_id': user_id,
-        'message': message
-    }).execute()
-
-    # Notify participants in real-time
-    socketio.emit('message_notification', {
-        'conversation_id': conversation_id,
-        'user_id': user_id,
-        'message': message
-    }, to=f'conversation_{conversation_id}')
-
-    return jsonify({'message': 'Message sent successfully', 'response': response.data})
-
-# API: Get messages for a conversation
-@app.route('/get_messages/<int:conversation_id>', methods=['GET'])
-@cross_origin(origins=["http://localhost:5173"])
-def get_messages(conversation_id):
-    # Query messages for the conversation
-    response = supabase.table('messages').select("*").eq('conversation_id', conversation_id).order('created_at').execute()
-    return jsonify(response.data)
-
-# API: Get user conversations
-@app.route('/get_user_conversations/<uuid:user_id>', methods=['GET'])
-@cross_origin(origins=["http://localhost:5173"])
-def get_user_conversations(user_id):
-    # Query conversations linked to the user
-    response = supabase.table('user_conversation').select("*").eq('user_id', str(user_id)).execute()
-    return jsonify(response.data)
-
-# SocketIO: Handle real-time connections
-@socketio.on('connect')
-@cross_origin(origins=["http://localhost:5173"])
-def handle_connect():
-    conversation_id = request.args.get('conversation_id')
-    if conversation_id:
-        join_room(f'conversation_{conversation_id}')
-        print(f'User joined room conversation_{conversation_id}')
-
-@socketio.on('disconnect')
-@cross_origin(origins=["http://localhost:5173"])
-def handle_disconnect():
-    conversation_id = request.args.get('conversation_id')
-    if conversation_id:
-        leave_room(f'conversation_{conversation_id}')
-        print(f'User left room conversation_{conversation_id}')
-
-
 if __name__ == '__main__':
     app.run(debug=True)
-    socketio.run(app, debug=True)
+
