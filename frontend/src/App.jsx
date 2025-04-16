@@ -5,11 +5,13 @@ import SignupPage from "./pages/signup-page";
 import HomePage from "./pages/home-page";
 import DuoMatchmakerPage from "./pages/duo-matchmaker-page";
 import ChatBot from "./pages/chat-bot";
+import DMPage from "./pages/dm-page";
 import Wrapper from "./pages/Wrapper";
 import AccountPage from "./pages/account-page";
 import Marketplace from "./pages/marketplace-home";
 import ProductPage from "./pages/product-page";
 import ErrorPage from "./pages/error-page";
+import EventsPage from "./pages/events-page";
 import MatchmakingFormPage from "./pages/matchmaking-form-page";
 import "./App.css";
 
@@ -32,6 +34,14 @@ function App() {
       element: (
         <Wrapper>
           <ChatBot />
+        </Wrapper>
+      ),
+    },
+    {
+      path: "/dm-page",
+      element: (
+        <Wrapper>
+          <DMPage />
         </Wrapper>
       ),
     },
@@ -71,6 +81,14 @@ function App() {
       element: (
         <Wrapper>
           <ProductPage />,
+        </Wrapper>
+      ),
+    },
+    {
+      path: "/events",
+      element: (
+        <Wrapper>
+          <EventsPage />
         </Wrapper>
       ),
     },

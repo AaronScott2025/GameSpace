@@ -1,415 +1,468 @@
 :root {
-    --primary-bg: #5b168f;
-    --secondary-bg: #3c006e;
-    --accent-color: #eeff00;
-    --neutral-bg: #888888;
-    --border-radius: 10px;
-    --base-gap: 15px;
-    --base-padding: 15px;
-    --title-font-size: 36px;
-    --subtitle-font-size: 28px;
-    --label-font-size: 18px;
-    --button-font-size: 14px;
+  --primary-bg: #5b168f;
+  --secondary-bg: #3c006e;
+  --accent-color: #eeff00;
+  --neutral-bg: #888888;
+  --border-radius: 10px;
+  --base-gap: 15px;
+  --base-padding: 15px;
+  --title-font-size: 36px;
+  --subtitle-font-size: 28px;
+  --label-font-size: 18px;
+  --button-font-size: 14px;
 }
-
-
 
 body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    overflow: hidden;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* Content container to center the account page */
-/* Update the content-container */
 .content-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    padding: 20px;
-    overflow: hidden; /* Prevent scrolling at this level */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+  overflow: hidden;
 }
 
-/* Update the account-page to have max-height and max-width */
 .account-page {
-    box-sizing: border-box;
-    display: grid;
-    grid-template-areas:
-        "pfp bio marketplace"
-        "account-info games marketplace";
-    grid-template-columns: minmax(100px, 1.5fr) minmax(300px, 2fr) minmax(100px, 1fr);
-    grid-template-rows: auto 1fr;
-    gap: var(--base-gap);
-    padding: var(--base-padding);
-    background: linear-gradient(180deg, var(--secondary-bg), var(--primary-bg));
-    height: 90vh; /* Use percentage of viewport height */
-    max-height: 900px; /* Add a maximum height */
-    max-width: 1200px;
-    width: 100%;
-    margin: 0 auto;
-    color: white;
-    border-radius: var(--border-radius);
-    overflow: hidden; /* Prevent scrolling at this level */
+  box-sizing: border-box;
+  display: grid;
+  grid-template-areas:
+    "pfp bio marketplace"
+    "account-info games marketplace";
+  grid-template-columns: minmax(100px, 1.5fr) minmax(300px, 2fr) minmax(
+      100px,
+      1fr
+    );
+  grid-template-rows: auto 1fr;
+  gap: var(--base-gap);
+  padding: var(--base-padding);
+  background: linear-gradient(180deg, var(--secondary-bg), var(--primary-bg));
+  height: 90vh;
+  max-height: 900px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  color: white;
+  border-radius: var(--border-radius);
+  overflow: hidden;
 }
 
-/* Profile Section */
 .profile-section {
-    grid-area: pfp;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    gap: var(--base-gap);
-    padding-top: 20px;
-    overflow-y: auto;
-    max-height: 100%;
+  grid-area: pfp;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--base-gap);
+  padding-top: 20px;
+  overflow-y: auto;
+  max-height: 100%;
 }
 .profile-picture {
-    width: 130px;
-    height: 130px;
-    overflow: hidden;
-    border-radius: 50%;
-    background: var(--neutral-bg);
-    border: 2px solid white;
-    flex-shrink: 0;
+  width: 130px;
+  height: 130px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--neutral-bg);
+  border: 2px solid white;
+  flex-shrink: 0;
 }
 .profile-picture img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-/* Button Styling */
+.Edit-or-genereate-pfp {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
 .action-button {
-    background: var(--neutral-bg);
-    color: white;
-    font-size: var(--button-font-size);
-    font-weight: bold;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    transition: background 0.3s ease-in-out;
-    margin: 0 auto;
-    display: block;
-    flex-shrink: 0;
+  background: var(--neutral-bg);
+  color: white;
+  font-size: var(--button-font-size);
+  font-weight: bold;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.3s ease-in-out;
+  margin: 0 auto;
+  display: block;
+  flex-shrink: 0;
 }
 .action-button:hover {
-    background: var(--accent-color);
-    color: black;
+  background: var(--accent-color);
+  color: black;
 }
 
-/* Account Info Section */
 .account-info-section {
-    grid-area: account-info;
-    background: var(--primary-bg);
-    padding: 15px;
-    border-radius: var(--border-radius);
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    max-height: 100%;
+  grid-area: account-info;
+  background: var(--primary-bg);
+  padding: 15px;
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 100%;
 }
 .account-info-title {
-    font-size: var(--title-font-size);
-    font-weight: bold;
-    margin-bottom: 5px;
-    flex-shrink: 0;
+  font-size: var(--title-font-size);
+  font-weight: bold;
+  margin-bottom: 5px;
+  flex-shrink: 0;
 }
 .linked-services-title {
-    font-size: var(--subtitle-font-size);
-    flex-shrink: 0;
+  font-size: var(--subtitle-font-size);
+  flex-shrink: 0;
 }
 .error-message {
-    color: red;
-    font-weight: bold;
-    margin-bottom: 10px;
-    flex-shrink: 0;
+  color: red;
+  font-weight: bold;
+  margin-bottom: 10px;
+  flex-shrink: 0;
 }
 .info-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 5px;
 }
 .info-label {
-    font-size: var(--label-font-size);
-    font-weight: bold;
-    color: var(--accent-color);
-    width: 120px;
+  font-size: var(--label-font-size);
+  font-weight: bold;
+  color: var(--accent-color);
+  width: 120px;
 }
 .info-input {
-    flex: 1;
-    padding: 5px;
-    border: none;
-    border-radius: 8px;
+  flex: 1;
+  padding: 5px;
+  border: none;
+  border-radius: 8px;
 }
 
-/* Password Change Section */
 .password-change-section {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 15px;
-    border-radius: var(--border-radius);
-    margin-top: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: var(--border-radius);
+  margin-top: 15px;
 }
 .password-input-container {
-    position: relative;
-    margin-bottom: 10px;
+  position: relative;
+  margin-bottom: 10px;
 }
 .password-change-section .password-input-container .info-input {
-    width: 100%;
-    padding: 10px 40px 10px 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background: #fff;
-    color: #333;
-    font-size: 16px;
-    transition: border-color 0.3s ease;
+  width: 100%;
+  padding: 10px 40px 10px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #fff;
+  color: #333;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
 }
 .password-change-section .password-input-container .info-input:focus {
-    outline: none;
-    border-color: var(--accent-color);
+  outline: none;
+  border-color: var(--accent-color);
 }
 .password-change-section .toggle-password-icon {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    font-size: 14px;
-    color: #888;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 14px;
+  color: #888;
 }
 .password-change-section .password-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }
 .password-change-section .password-buttons .action-button {
-    padding: 10px;
-    font-size: 16px;
+  padding: 10px;
+  font-size: 16px;
 }
 .password-change-section .password-buttons .cancel-button {
-    background: #b22222;
-    color: #fff;
+  background: #b22222;
+  color: #fff;
 }
 .password-change-section .password-buttons .cancel-button:hover {
-    background: #a31d1d;
+  background: #a31d1d;
 }
 .change-password-text {
-    cursor: pointer;
-    color: var(--accent-color);
-    text-decoration: underline;
-    font-size: var(--label-font-size);
+  cursor: pointer;
+  color: var(--accent-color);
+  text-decoration: underline;
+  font-size: var(--label-font-size);
 }
 .change-password-text:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 /* Bio Section */
 .bio-section {
-    grid-area: bio;
-    background: var(--primary-bg);
-    padding: 15px;
-    border-radius: var(--border-radius);
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    max-height: 100%;
+  grid-area: bio;
+  background: var(--primary-bg);
+  padding: 15px;
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 100%;
 }
 .bio-title {
-    font-size: var(--title-font-size);
-    font-weight: bold;
-    margin-bottom: 15px;
-    flex-shrink: 0;
+  font-size: var(--title-font-size);
+  font-weight: bold;
+  margin-bottom: 15px;
+  flex-shrink: 0;
 }
 .bio-content {
-    flex: 1;
-    overflow: visible;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  flex: 1;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .bio-input {
-    width: 100%;
-    height: 100%;
-    min-height: 100px;
-    padding: 5px;
-    border: none;
-    border-radius: 5px;
-    resize: none;
-    background: transparent;
-    color: var(--accent-color);
-    font-size: var(--label-font-size);
-    font-weight: bold;
+  width: 100%;
+  height: 100%;
+  min-height: 100px;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+  resize: none;
+  background: transparent;
+  color: var(--accent-color);
+  font-size: var(--label-font-size);
+  font-weight: bold;
 }
 
 /* Favorite Games Section */
 .favoriteGames-section {
-    grid-area: games;
-    background: var(--primary-bg);
-    padding: 10px;
-    border-radius: var(--border-radius);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    max-height: 100%;
+  grid-area: games;
+  background: var(--primary-bg);
+  padding: 10px;
+  border-radius: var(--border-radius);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 100%;
 }
 .favoriteGames-title {
-    font-size: var(--title-font-size);
-    font-weight: bold;
-    margin-bottom: 15px;
-    flex-shrink: 0;
+  font-size: var(--title-font-size);
+  font-weight: bold;
+  margin-bottom: 15px;
+  flex-shrink: 0;
 }
 .favoriteGames-content {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    gap: 15px;
-    overflow-y: auto;
-    padding-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 15px;
+  overflow-y: auto;
+  padding-bottom: 10px;
 }
 .favorite-game {
-    width: 125px;
-    aspect-ratio: 125 / 187;
-    border: 2px solid var(--accent-color);
-    background: var(--neutral-bg);
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: opacity 0.2s ease-in-out;
-    flex-shrink: 0;
+  width: 125px;
+  aspect-ratio: 125 / 187;
+  border: 2px solid var(--accent-color);
+  background: var(--neutral-bg);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
+  flex-shrink: 0;
 }
 .favorite-game:hover {
-    opacity: 0.8;
+  opacity: 0.8;
 }
 .favorite-game img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* Marketplace Section */
 .marketplace-section {
-    grid-area: marketplace;
-    background: var(--primary-bg);
-    padding: 15px;
-    border-radius: var(--border-radius);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: var(--title-font-size);
-    overflow-y: auto;
-    max-height: 100%;
+  grid-area: marketplace;
+  background: var(--primary-bg);
+  padding: 15px;
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: var(--title-font-size);
+  overflow-y: auto;
+  max-height: 100%;
 }
 .marketplace-title {
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 /* Loading state */
 .loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-size: 24px;
-    color: white;
-    background: linear-gradient(180deg, var(--secondary-bg), var(--primary-bg));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 24px;
+  color: white;
+  background: linear-gradient(180deg, var(--secondary-bg), var(--primary-bg));
 }
 
 /* Responsive Adjustments */
 @media (max-width: 1024px) {
-    .account-page {
-        grid-template-areas:
-            "pfp bio"
-            "account-info games"
-            "marketplace marketplace";
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto 1fr auto;
-        height: calc(100vh - 40px);
-    }
-    .marketplace-section {
-        grid-column: span 2;
-    }
+  .account-page {
+    grid-template-areas:
+      "pfp bio"
+      "account-info games"
+      "marketplace marketplace";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    height: calc(100vh - 40px);
+  }
+  .marketplace-section {
+    grid-column: span 2;
+  }
 }
 
 @media (max-width: 768px) {
-    body {
-        overflow-y: auto;
-    }
+  body {
+    overflow-y: auto;
+  }
 
-    .content-container {
-        height: auto;
-        padding: 10px;
-    }
+  .content-container {
+    height: auto;
+    padding: 10px;
+  }
 
-    .account-page {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        height: auto;
-        padding: 15px;
-        margin: 20px 0;
-    }
+  .account-page {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: auto;
+    padding: 15px;
+    margin: 20px 0;
+  }
 
-    .profile-section,
-    .account-info-section,
-    .bio-section,
-    .favoriteGames-section,
-    .marketplace-section {
-        max-height: none;
-        overflow: visible;
-        margin-bottom: 15px;
-    }
+  .profile-section,
+  .account-info-section,
+  .bio-section,
+  .favoriteGames-section,
+  .marketplace-section {
+    max-height: none;
+    overflow: visible;
+    margin-bottom: 15px;
+  }
 
-    .bio-input {
-        height: 150px;
-    }
+  .bio-input {
+    height: 150px;
+  }
 
-    .favoriteGames-content {
-        max-height: 400px;
-        overflow-y: auto;
-    }
+  .favoriteGames-content {
+    max-height: 400px;
+    overflow-y: auto;
+  }
 }
 
 @media (max-height: 700px) {
-    .content-container {
-        padding: 10px;
-    }
+  .content-container {
+    padding: 10px;
+  }
 
-    .account-page {
-        gap: 10px;
-        padding: 10px;
-    }
+  .account-page {
+    gap: 10px;
+    padding: 10px;
+  }
 
-    .profile-picture {
-        width: 80px;
-        height: 80px;
-    }
+  .profile-picture {
+    width: 80px;
+    height: 80px;
+  }
 
-    .account-info-title,
-    .bio-title,
-    .favoriteGames-title,
-    .marketplace-title {
-        font-size: 22px;
-        margin-bottom: 8px;
-    }
+  .account-info-title,
+  .bio-title,
+  .favoriteGames-title,
+  .marketplace-title {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
 
-    .info-label {
-        font-size: 14px;
-    }
+  .info-label {
+    font-size: 14px;
+  }
 
-    .bio-input {
-        min-height: 80px;
-    }
+  .bio-input {
+    min-height: 80px;
+  }
 
-    .favorite-game {
-        width: 100px;
-        aspect-ratio: 100 / 150;
-    }
+  .favorite-game {
+    width: 100px;
+    aspect-ratio: 100 / 150;
+  }
+}
+.prompt-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: center; /* Align items to the start of the container */
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: var(--border-radius);
+  background: var(--primary-bg);
+}
+.prompt-input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  width: calc(1ch * 38);
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.action-button-generate {
+  background: var(--neutral-bg);
+  color: white;
+  font-size: var(--button-font-size);
+  font-weight: bold;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.3s ease-in-out;
+  margin: 0 auto;
+  display: block;
+  flex-shrink: 0;
+}
+.action-button-generate:hover {
+  background: var(--accent-color);
+  color: black;
+}
+.prompt-input-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: center;
+  align-items: center; /* Align items to the start of the container */
+  flex-direction: row;
+}
+
+.generate-icon {
+  color: var(--accent-color);
+  padding: 10px;
 }

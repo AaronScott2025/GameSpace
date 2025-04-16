@@ -7,10 +7,11 @@ const SignUpTextField = ({
   value,
   onChange,
   placeholder,
+  className,
 }) => {
   return (
     <input
-      className="form-input"
+      className={className}
       label={label}
       type={type}
       name={name}

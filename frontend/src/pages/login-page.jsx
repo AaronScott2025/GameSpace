@@ -52,11 +52,12 @@ const LoginPage = () => {
       {/* end of the logo*/}
 
       <div className="signup-form-container">
-        <form className="form" onSubmit={handleLogin}>
+        <form className="login-form" onSubmit={handleLogin}>
           <h1 className="form-tittle">Log In</h1>
           {errorMessage && <p className="error-message">{errorMessage}</p>}{" "}
           {/* Conditionally render error message */}
           <SignUpTextField
+            className={"login-textfield-email"}
             label="Email"
             type="email"
             name="email"
@@ -67,6 +68,7 @@ const LoginPage = () => {
             }
           />
           <SignUpTextField
+            className={"login-textfield-password"}
             label="Password"
             type="password"
             name="password"
@@ -77,10 +79,14 @@ const LoginPage = () => {
             }
           />
           <br></br>
-          <FormButton text={"Log In"} />
+          <FormButton className={"login-button"} text={"Log In"} />
         </form>
         <h2>New to GameSpace?</h2>
-        <FormButton text={"Create account"} route={goToCreateAccount} />
+        <FormButton
+          className={"signup-button"}
+          text={"Create account"}
+          route={goToCreateAccount}
+        />
       </div>
     </div>
   );

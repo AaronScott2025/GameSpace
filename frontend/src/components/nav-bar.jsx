@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 //import { BiSolidJoystickButton } from "react-icons/bi";
 //import { BiSolidDownArrow } from "react-icons/bi";
 import { BsJoystick, BsRocket } from "react-icons/bs";
-import {
-  GiAstronautHelmet,
-  GiWhistle,
-  GiSatelliteCommunication,
-} from "react-icons/gi";
+import { GiAstronautHelmet, GiSatelliteCommunication} from "react-icons/gi";
 import { FaUsers } from "react-icons/fa";
 import { RiAliensFill } from "react-icons/ri";
 import { CiShoppingCart } from "react-icons/ci";
+import { TiMessages } from "react-icons/ti";
 import "./nav-bar.css";
+import useSound from "../hooks/useSound"; // Custom hook
 
 /* FOR NAVBAR U NEED TO ADD THESE TO the PAGES/GUI'S WHERE U WANT THE NAVBAR :
 import Navbar from "../components/nav-bar";
@@ -25,6 +23,10 @@ const Navbar = () => {
     setMenuOpen((prevState) => !prevState);
   };
 
+  //Linking of Sound effects to Hook
+  const mouseClickSound = useSound("/sounds/mouse-click.mp3");
+  const gameStartSound = useSound("/sounds/game-start.mp3");
+
   useEffect(() => {
     setMenuOpen(false);
   }, [location]);
@@ -33,15 +35,17 @@ const Navbar = () => {
     <div>
       <nav className="navbar">
         <div className="logo">
-          <NavLink to="/home">GameSpace</NavLink>
+          <NavLink to="/home" onClick={() =>{ mouseClickSound.play(0.1);}}>GameSpace</NavLink>
         </div>
 
-        <button className="nav-button" onClick={handleMenuToggle}>
+        <button className="nav-button" onClick={() =>{handleMenuToggle(); }}>
           <BsJoystick size={30} />
         </button>
 
         <div className="profile-auth">
-          <NavLink to="/account" className="profile-btn">
+          <NavLink to="/account"
+          
+           className="profile-btn">
             <div className="profile-icon">
               <GiAstronautHelmet size={40} />
             </div>
@@ -54,49 +58,55 @@ const Navbar = () => {
           <li>
             <NavLink
               to="/home"
-              className={({ isActive }) => (isActive ? "active-link" : "")}
-            >
+              onClick={() =>{ mouseClickSound.play(0.1);}}
+              className={({ isActive }) => `${isActive ? "active-link" : ""} nav-home`}
+              >
               <BsRocket /> Home
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/marketplace"
-              className={({ isActive }) => (isActive ? "active-link" : "")}
-            >
+              onClick={() =>{ mouseClickSound.play(0.1);}}
+              className={({ isActive }) => `${isActive ? "active-link" : ""} nav-market`}
+              >
               <CiShoppingCart /> Market
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/partyfinder"
-              className={({ isActive }) => (isActive ? "active-link" : "")}
-            >
+              onClick={() =>{ mouseClickSound.play(0.1);}}
+              className={({ isActive }) => `${isActive ? "active-link" : ""} nav-party`}
+              >
               <GiSatelliteCommunication /> PartyFinder
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/chatbot"
-              className={({ isActive }) => (isActive ? "active-link" : "")}
-            >
+              onClick={() =>{ mouseClickSound.play(0.1);}}
+              className={({ isActive }) => `${isActive ? "active-link" : ""} nav-chatbot`}
+              >
               <RiAliensFill /> Chatbot
             </NavLink>
           </li>
           <li>
             <NavLink
-              to="/clans"
-              className={({ isActive }) => (isActive ? "active-link" : "")}
-            >
-              <FaUsers /> Clans
+              to="/events"
+              onClick={() =>{ mouseClickSound.play(0.1);}}
+              className={({ isActive }) => `${isActive ? "active-link" : ""} nav-events`}
+              >
+              <FaUsers /> Events
             </NavLink>
           </li>
           <li>
             <NavLink
-              to="/coaching"
-              className={({ isActive }) => (isActive ? "active-link" : "")}
-            >
-              <GiWhistle /> Coaching
+              to="/dm-page"
+              onClick={() =>{ mouseClickSound.play(0.1);}}
+              className={({ isActive }) => `${isActive ? "active-link" : ""} nav-dm`}
+              >
+              <TiMessages /> Messages
             </NavLink>
           </li>
         </ul>
