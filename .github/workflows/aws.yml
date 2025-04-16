@@ -25,6 +25,9 @@ jobs:
           VITE_SUPABASE_REACT_APP_URL: ${{ secrets.VITE_SUPABASE_REACT_APP_URL }}
           VITE_SUPABASE_REACT_APP_API_KEY: ${{ secrets.VITE_SUPABASE_REACT_APP_API_KEY }}
           VITE_SUPABASE_REACT_SERVICE_ROLE_KEY: ${{ secrets.VITE_SUPABASE_REACT_SERVICE_ROLE_KEY }}
+          VITE_GOOGLE_MAP_API_KEY: ${{ secrets.VITE_GOOGLE_MAP_API_KEY }}
+          VITE_GOOGLE_MAP_ID: ${{ secrets.VITE_GOOGLE_MAP_ID }}
+          VITE_LOCATIONIQ_API_TOKEN: ${{ secrets.VITE_LOCATIONIQ_API_TOKEN }}
         run: |
           cd frontend
           npm install
