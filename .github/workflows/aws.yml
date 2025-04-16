@@ -19,6 +19,7 @@ jobs:
         with:
           node-version: '20'
 
+
       # Build the frontend with environment variables injected at build time.
       - name: Build Frontend
         env:
@@ -28,8 +29,10 @@ jobs:
           VITE_GOOGLE_MAP_API_KEY: ${{ secrets.VITE_GOOGLE_MAP_API_KEY }}
           VITE_GOOGLE_MAP_ID: ${{ secrets.VITE_GOOGLE_MAP_ID }}
           VITE_LOCATIONIQ_API_TOKEN: ${{ secrets.VITE_LOCATIONIQ_API_TOKEN }}
+          FRONTEND_ENV_FILE: ${{ secrets.FRONTEND_ENV_FILE }} 
         run: |
           cd frontend
+          printf '%s' "${{ secrets.FRONTEND_ENV_FILE }}" > .env # Saving the secret to a .env file
           npm install
           npm run build
           echo "Frontend build complete!"
