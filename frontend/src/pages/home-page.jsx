@@ -180,11 +180,6 @@ const HomePage = () => {
     <div>
       <PostSignupPopup />
       {/* Profile info section */}
-      <div className="profileinfo-container">
-        <p>Username : {user.username}</p>
-        <p>Email : {user.email}</p>
-        <button onClick={signOut}>Sign Out</button>
-      </div>
       {/* Toggle Button */}
       <button onClick={togglePostContainer} className="toggle-post-button">
         <BsFillPostcardFill size={30} /> {/* Icon for the button */}
