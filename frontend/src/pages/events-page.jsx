@@ -194,18 +194,18 @@ function EventsPage() {
                       height: "40px",
                       backgroundColor: "#4285F4",
                       borderRadius: "50%",
+                      border: "2px solid #000 !important",
                       borderColor: "#4285F4",
-                      borderWidth: "5px",
+                      borderWidth: "3px",
                       borderStyle: "solid",
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
                       overflow: "hidden",
-                      border: "2px solid #000",
                     }}
                   >
                     <img
-                      src={userImage || GiAstronautHelmet} // Use the user's profile picture or a default image
+                      src={userImage} // Use the user's profile picture or a default image
                       alt="User Icon"
                       style={{
                         width: "100%",
