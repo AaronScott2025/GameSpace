@@ -20,7 +20,7 @@ jobs:
           node-version: '20'
 
 
-      # Build the frontend with environment variables injected at build time.
+      # Build the frontend with environment variables injected at build time
       - name: Build Frontend
         env:
           VITE_SUPABASE_REACT_APP_URL: ${{ secrets.VITE_SUPABASE_REACT_APP_URL }}
