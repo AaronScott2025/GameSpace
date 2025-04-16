@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
+import { UserContext } from "./UserContext.jsx";
 import "../styles/events-page.css"; // Import your CSS file for styling
 import { supabase } from "../../client.js"; // Shared client
 import ButtonModal from "../components/button-modal";
@@ -10,6 +11,7 @@ import {
   AdvancedMarker,
   InfoWindow,
   useAdvancedMarkerRef,
+  Pin,
 } from "@vis.gl/react-google-maps";
 import { FaLocationDot } from "react-icons/fa6";
 import {
@@ -23,6 +25,8 @@ import {
 } from "../hooks/events-supabase.jsx";
 import axios from "axios";
 import CreateEventModal from "../components/create-event-modal.jsx"; // Import your modal component
+import { color } from "framer-motion";
+import { GiAstronautHelmet } from "react-icons/gi";
 
 function EventsPage() {
   const { position, error, geoError } = useGeolocation();
@@ -32,19 +36,31 @@ function EventsPage() {
   const [selectedFilter, setSelectedFilter] = useState("all-events"); // Default filter
   const [infoWindowShown, setInfoWindowShown] = useState(false);
   const [markerRef, marker] = useAdvancedMarkerRef();
+  const [userPositionInfoWindow, setUserPositionInfoWindow] = useState(false); // State to manage the info window for the user's position
+  const [myPostionRef, myPosition] = useAdvancedMarkerRef(); // Ref for the user's position marker
+  const { user } = useContext(UserContext); // Get the user context
+  const userImage = user?.profile_pic || null;
 
-  // clicking the marker will toggle the infowindow
-  const handleMarkerClick = useCallback(
-    () => setInfoWindowShown((isShown) => !isShown),
+  const HandleYourPosition = useCallback(
+    () => setUserPositionInfoWindow((isShow) => !isShow),
     []
-  );
+  ); // Placeholder for your position handling
 
   // if the maps api closes the infowindow, we have to synchronize our state
-  const handleClose = useCallback(() => setInfoWindowShown(false), []);
+  const handleClose = useCallback(() => setUserPositionInfoWindow(false), []);
 
   const handleFilterChange = (filterName) => {
     setSelectedFilter(filterName); // Update the selected filter
   };
+  useEffect(() => {
+    // Ensure the info window is closed on initial load or map reload
+    setUserPositionInfoWindow(false);
+  }, [position]); // Dependency ensures it runs when the position changes
+
+  useEffect(() => {
+    console.log("myPosition:", myPosition);
+  }, [myPosition]);
+
   // Error handling logic
   const renderErrors = () => {
     const errors = [];
@@ -168,7 +184,43 @@ function EventsPage() {
               <AdvancedMarker
                 id="Your-Location"
                 position={position}
-              ></AdvancedMarker>
+                ref={myPostionRef}
+                onClick={HandleYourPosition}
+              >
+                <div
+                  className="custom-pin"
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    backgroundColor: "#4285F4",
+                    borderRadius: "50%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    overflow: "hidden",
+                    border: "2px solid #000",
+                  }}
+                >
+                  <img
+                    src={userImage || "https://example.com/default-avatar.png"} // Use the user's profile picture or a default image
+                    alt="User Icon"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+              </AdvancedMarker>
+
+              {myPosition && userPositionInfoWindow && (
+                <InfoWindow
+                  anchor={myPosition} // Pass a valid marker or AdvancedMarkerElement
+                  onClose={() => setUserPositionInfoWindow(false)} // Handle close event
+                >
+                  <span style={{ color: "black" }}>Your location</span>
+                </InfoWindow>
+              )}
               {/**
                * style the markers to be more visible
                * TODO:
@@ -178,23 +230,11 @@ function EventsPage() {
               {geolocations.map((event) =>
                 event.lat && event.lng ? (
                   <AdvancedMarker
-                    ref={markerRef}
+                    id={event.event_id}
                     key={`${event.event_id}-marker`}
                     position={{ lat: event.lat, lng: event.lng }}
-                    onClick={handleMarkerClick}
                   />
                 ) : null
-              )}
-              {infoWindowShown && (
-                <InfoWindow anchor={marker} onClose={handleClose}>
-                  <EventsCard
-                    is_Online={true} //remember this is a boolean
-                    eventName={"Event Name"}
-                    date={"Date"}
-                    location={"Location"}
-                    tags={["tag1", "tag2"]}
-                  />
-                </InfoWindow>
               )}
             </Map>
           </div>
