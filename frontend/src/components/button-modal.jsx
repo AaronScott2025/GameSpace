@@ -16,7 +16,7 @@
  */
 import React, { act } from "react";
 import "/src/styles/modal.css"; // Import the CSS file for styling
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function ButtonModal({
   buttonText,
@@ -28,6 +28,9 @@ function ButtonModal({
   onSubmit,
   formClassName,
   modalClassName,
+  buttonsClassName,
+  closeButtonClassName,
+  submitButtonClassName,
   ...props
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,6 +58,19 @@ function ButtonModal({
     setFormData({}); // Reset form data after submission
     setIsModalOpen(false);
   };
+  // Add useEffect to listen for the Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && isModalOpen) {
+        handleCloseModal();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isModalOpen]);
 
   return (
     <>
@@ -77,7 +93,7 @@ function ButtonModal({
       {/* Modal */}
       {isModalOpen && (
         <div className="modal-overlay">
-          <div className={`modal-content ${modalClassName}`}>
+          <div className={modalClassName}>
             <button className="close-button" onClick={handleCloseModal}>
               &times;
             </button>
@@ -118,15 +134,15 @@ function ButtonModal({
                     )}
                   </label>
                 ))}
-                <div className="form-buttons">
+                <div className={buttonsClassName}>
                   <button
                     type="button"
-                    className="close-modal-button"
+                    className={closeButtonClassName}
                     onClick={handleCloseModal}
                   >
                     Close
                   </button>
-                  <button type="submit" className="submit-button">
+                  <button type="submit" className={submitButtonClassName}>
                     Submit
                   </button>
                 </div>

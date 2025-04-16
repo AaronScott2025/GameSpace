@@ -72,9 +72,10 @@ const SignupPage = () => {
       {/* end of the logo*/}
 
       <div className="signup-form-container">
-        <form className="form" onSubmit={handleSignUp}>
+        <form className="signup-form" onSubmit={handleSignUp}>
           <h1 className="form-tittle">Sign Up</h1>
           <SignUpTextField
+            className={"signup-username-tf"}
             label="Username"
             type="text"
             name="username"
@@ -85,6 +86,7 @@ const SignupPage = () => {
             }
           />
           <SignUpTextField
+            className={"signup-email-tf"}
             label="Email"
             type="email"
             name="email"
@@ -95,6 +97,7 @@ const SignupPage = () => {
             }
           />
           <SignUpTextField
+            className={"signup-password-tf"}
             label="Password"
             type="password"
             name="password"
@@ -105,10 +108,14 @@ const SignupPage = () => {
             }
           />
           <h2>Create account </h2>
-          <FormButton text={"Sign Up"} />
+          <FormButton className={"create-account-button"} text={"Sign Up"} />
         </form>
         <h2>Already have an account?</h2>
-        <FormButton text={"Log In"} route={goToLogin} />
+        <FormButton
+          className={"go-to-login-btn"}
+          text={"Log In"}
+          route={goToLogin}
+        />
       </div>
     </div>
   );

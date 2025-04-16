@@ -5,7 +5,7 @@
   bottom: 9px;
   left: 18px;
   border: 3px solid #000000;
-  background: linear-gradient(to bottom, #d3d3d3, #ffffff); 
+  background: linear-gradient(to bottom, #d3d3d3, #ffffff);
   padding: 55px 125px;
   border-radius: 0px;
   text-align: center;
@@ -17,7 +17,7 @@
   color: black; /* Set text color to black */
 }
 .profileinfo-container button {
-  font-size: 20px; 
+  font-size: 20px;
   font-family: "Jersey 10", sans-serif;
   margin-top: 10px;
   width: 90%;
@@ -76,12 +76,9 @@
   }
 }
 
-
-
-
 /*//////////////////////////////////////////////////*/
 /*//////////Post Container - toggle & Post//////////*/
-.toggle-post-button {
+/* .toggle-post-button {
   position: fixed;
   bottom: 25px;
   left: 410px;
@@ -93,42 +90,65 @@
   cursor: pointer;
   font-size: 20px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  z-index: 1000; /* Ensure it stays on top */
+  z-index: 1000;
 }
 .toggle-post-button:hover {
   background-color: #0056b3;
-}
+} */
+
 /* Post Container - Post Textbox, Image, and Post Button */
 .post-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  width: 20.2vw; /* width for post box */
-  padding: 15px;
-  border: 3px solid #000000;
+  width: 50vw; /* width for post box */
+  height: 10vh;
+  padding: 10px;
+  border: 1px solid #000000;
   background: linear-gradient(to bottom, #666666, #d2d2d2);
   border-radius: 0px;
   position: fixed; /* position to stay on left */
   top: 83px;
-  left: 18px;
+  left: 50%;
+  transform: translateX(-50%);
   transition: transform 0.3s ease; /* transition for showing/hiding */
+  position:fixed;
 }
+
+.post-input-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  gap: 15px; /* space between textarea and buttons */
+}
+
+.post-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+
 .post-content {
-  font-size: 13px; 
+  font-size: 13px;
   font-family: "Jersey 10", sans-serif;
   width: 93%;
-  height: 150px;
+  height: 66%;
   padding: 10px;
   border-radius: 0px;
   border: 1px solid #ddd;
-  margin-bottom: 20px;
+  margin-bottom: auto;
   font-size: 16px;
   display: flex;
   resize: none; /* Prevent resize */
-  text-align: center; /* center the text */
+  text-align: left; /* center the text */
   justify-content: center; /* center the text */
   align-items: center;
+  background-color: white;
+  color: #303030; /* Lighter text color */
+  flex: 1;
 }
 /* Custom file input button */
 .custom-file-button {
@@ -140,7 +160,7 @@
   border-radius: 5px;
   font-size: 16px;
   display: inline-block;
-  margin-top: 10px;
+  margin-top: auto;
   margin-left: auto; /* Center  */
   margin-right: auto; /* Center  */
 }
@@ -149,10 +169,9 @@
 }
 /* 'No file chosen' text */
 .post-image-info {
-  font-size: 18px; 
-  margin-top: 10px; /* Space below the input */
+  font-size: 18px;
+  margin-top: auto; /* Space below the input */
   color: #303030; /* Lighter text color */
-  margin-left: 6px; /* Move the text to the right a bit */
   margin-left: auto; /* Center horizontally */
   margin-right: auto; /* Center horizontally */
 }
@@ -166,7 +185,7 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 20px; /* Push post button down */
+  margin-top:auto;
   margin-left: auto; /* Center horizontally */
   margin-right: auto; /* Center horizontally */
   display: block;
@@ -180,9 +199,6 @@
   position: absolute; /* Remove it from the layout flow */
   opacity: 0; /* Make it fully transparent */
 }
-
-
-
 
 /*//////////////////////////////////////////////////*/
 /* Local Event Box */
@@ -236,23 +252,20 @@
   text-align: center;
 }
 
-
-
-
 /*/////////////////////////////////////////////////////*/
 /*////////////////Media Container//////////////////////*/
+/*  border: 1px solid #000000;
+border-radius: 0px;
+background: linear-gradient(to bottom, #737373, #a4a4a4, #d2d2d2, #ffffff); */
 .media-container {
   position: fixed;
-  top: 83px; /* Adjust based on layout */
+  top: 20vh; /* Adjust based on layout */
   left: 50%;
   transform: translateX(-50%); /* Centers the container */
   display: flex;
   flex-direction: column;
   width: 53vw;
-  height: calc(95vh - 55px);
-  border: 3px solid #000000;
-  border-radius: 0px;
-  background: linear-gradient(to bottom, #737373, #a4a4a4, #d2d2d2, #ffffff);
+  height: calc(85vh - 50px);
   box-sizing: border-box;
   align-items: center;
   justify-content: flex-start;
@@ -264,16 +277,17 @@
   background-color: #d3d3d3;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 0px;
-  padding: 5px;
+  padding:  5px;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 20px;
+
 }
 .media-box {
   display: flex;
-  flex-direction: row;  
+  flex-direction: row;
   align-items: flex-start;
   background-color: rgb(255, 255, 255);
   color: black;
@@ -287,17 +301,33 @@
 }
 .media-left {
   display: flex;
-  flex-direction: column;  
-  justify-content: flex-start; 
+  flex-direction: column;
+  justify-content: flex-start;
   width: 50%;
   padding-right: 20px;
-  margin-right: -100px; 
+  margin-right: -100px;
 }
 .username {
   font-weight: bold;
   font-size: 25px;
   width: 20%;
   margin-bottom: 15px;
+}
+.media-user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border:1px black;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-left:10px;
+  margin-right: 5px;
+  object-fit: cover;
+  border: 1px black;
 }
 .mediapost-content {
   margin-top: auto;
@@ -319,11 +349,8 @@
   }
 }
 
-
-
-
 /*//////////////////////////////////////////////////*/
-/*////////////// Refresh Button //////////////////*/    
+/*////////////// Refresh Button //////////////////*/
 .pagination-buttons {
   margin-top: 9px;
 }
@@ -346,3 +373,4 @@
 .pagination-buttons button:hover:not(:disabled) {
   background: #0056b3;
 }
+

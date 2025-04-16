@@ -27,7 +27,10 @@ const ListingCard = ({ listing }) => {
       </div>
       <div className="listing-info">
         <h3>{listing.title}</h3>
-        <p className="price">${listing.listing_price}</p>
+        <div className="seller-price">
+          <span className="seller">{listing.username}</span>
+          <span className="price">${listing.listing_price}</span>
+        </div>
       </div>
     </div>
   );
@@ -70,7 +73,7 @@ const Marketplace = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Fetch listings data from the "listings" table
+  // Fetch listings data from the "listings" table and include username
   useEffect(() => {
     const fetchListings = async () => {
       setIsLoading(true);
@@ -78,7 +81,7 @@ const Marketplace = () => {
         console.log("Fetching listings...");
         const { data, error } = await supabase
           .from("listings")
-          .select("listing_id, title, listing_price, picture");
+          .select("listing_id, title, listing_price, picture, username");
 
         if (error) {
           console.error("Supabase error:", error);
