@@ -93,7 +93,7 @@ const Navbar = () => {
           </li>
           <li>
             <NavLink
-              to="/clans"
+              to="/events"
               onClick={() =>{ mouseClickSound.play(0.1);}}
               className={({ isActive }) => `${isActive ? "active-link" : ""} nav-events`}
               >
