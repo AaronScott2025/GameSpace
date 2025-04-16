@@ -2,22 +2,16 @@
   font-family: "Jersey 10", sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background: linear-gradient(
-    180deg,
-    #7426a7,
-    #2d0f41
-  ); /* Updated background with gradient */
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --background-color: rgba(255, 255, 255, 0.95);
-  --color-text: #044999;
+
+  color: rgba(255, 255, 255, 0.87);
+  background: linear-gradient(180deg, #090039, #5c148c, #540986, #6b209d, #085ba3);
+  min-height: 100vh;
+  position: relative;
 }
 
 body {
@@ -26,4 +20,38 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  overflow: hidden; /* hides overflow of animations */
+  position: relative;/*  positioning of stars */
+}
+
+/* Shooting Stars Animation */
+@keyframes shootingStar {
+  0% {
+    transform: translateX(-200px); /* Start off-screen to the left */
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(2000px); /* Fly across to the right */
+    opacity: 0;
+  }
+}
+
+/* Star Styles */
+.star {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 2px;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+  animation: shootingStar 9s linear infinite; /* Slowed down by increasing duration to 10s */
+  opacity: 0;
+  z-index: 0;
+}
+
+/* Glow effect for stars */
+.star {
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.4);
 }
