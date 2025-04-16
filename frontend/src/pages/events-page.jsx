@@ -22,6 +22,7 @@ import {
   useEventswithTags,
 } from "../hooks/events-supabase.jsx";
 import axios from "axios";
+import CreateEventModal from "../components/create-event-modal.jsx"; // Import your modal component
 
 function EventsPage() {
   const { position, error, geoError } = useGeolocation();
@@ -86,21 +87,7 @@ function EventsPage() {
            *
            * create a new modal, pop up or page to create a new event up to whoever is developing this
            *  */}
-          <ButtonModal
-            buttonText={"Create Event"}
-            modalClassName={"create-event-modal"}
-            className={"create-event-button"}
-            icon={IoMdAdd}
-            iconSize={24}
-            title={"Create New Event"}
-            inputs={[
-              { label: "Event Name", type: "text", name: "event_name" },
-              { label: "Date", type: "date", name: "date" },
-              { label: "Location", type: "text", name: "location" },
-              { label: "Description", type: "textarea", name: "description" },
-            ]}
-            formClassName={"event-form"}
-          />
+          <CreateEventModal />
           <div className="events-filter">
             {/**
              * TODO:
