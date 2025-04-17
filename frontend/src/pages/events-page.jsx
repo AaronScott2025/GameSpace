@@ -6,12 +6,10 @@ import React, {
   useRef,
   useMemo,
 } from "react";
-import { Link } from "react-router-dom";
+
 import { UserContext } from "./UserContext.jsx";
 import "../styles/events-page.css"; // Import your CSS file for styling
-import { supabase } from "../../client.js"; // Shared client
-import ButtonModal from "../components/button-modal";
-import { IoMdAdd } from "react-icons/io";
+
 import EventsCard from "../components/event-card.jsx";
 import {
   APIProvider,
@@ -27,14 +25,11 @@ import {
   useReverseGeocoding,
   useEventsToGeo,
 } from "../hooks/geolocation.jsx";
-import {
-  useEventsTable,
-  useEventswithTags,
-} from "../hooks/events-supabase.jsx";
-import axios from "axios";
+import { useEventswithTags } from "../hooks/events-supabase.jsx";
+
 import CreateEventModal from "../components/create-event-modal.jsx"; // Import your modal component
-import { color } from "framer-motion";
-import { GiAstronautHelmet } from "react-icons/gi";
+
+import { GiAstronautHelmet } from "react-icons/gi"; // TODO: figure out how to use this icon
 
 function EventsPage() {
   const { position, error, geoError } = useGeolocation();
@@ -42,8 +37,7 @@ function EventsPage() {
   const { data: events, error: tableWithTagsError } = useEventswithTags();
   const { geolocations, error: evntGeoError } = useEventsToGeo();
   const [selectedFilter, setSelectedFilter] = useState("all-events"); // Default filter
-  const [infoWindowShown, setInfoWindowShown] = useState(false);
-  const [markerRef, marker] = useAdvancedMarkerRef();
+
   const [userPositionInfoWindow, setUserPositionInfoWindow] = useState(false); // State to manage the info window for the user's position
   const [myPostionRef, myPosition] = useAdvancedMarkerRef(); // Ref for the user's position marker
   const { user } = useContext(UserContext); // Get the user context
@@ -180,25 +174,13 @@ function EventsPage() {
             />
           </div>
           {/**
-           * ButtonModal will change to handle tags
            * TODO:
-           * MAKE THE MODAL WORK LOL
-           * style the modal with the form
-           * allow the user to select multiple tags
-           * maybe allow the user to create new tags
-           *
-           * OR
-           *
-           * create a new modal, pop up or page to create a new event up to whoever is developing this
-           *  */}
+           * make the logic of creating an event
+           * change the tag logic for a better user experience
+           * add a loading state when creating an event
+           */}
           <CreateEventModal />
           <div className="events-filter">
-            {/**
-             * TODO:
-             * Make the filters work
-             * allow user to use one filter at a time
-             * make the default filter "All Events"
-             */}
             <input
               className="events-filter-checkbox"
               type="checkbox"
@@ -233,7 +215,7 @@ function EventsPage() {
                * TODO:
                * allow scrolling to load more events, without allowing the cards to overflow out of the container( Lazy Loading)
                * the cards should be displayed in order of most close to the user
-               * when clicking on a card, it should make the map center and zoom in on the event
+               * update the events when a new event is created
                *
                */}
 
@@ -333,12 +315,7 @@ function EventsPage() {
                     </span>
                   </InfoWindow>
                 )}
-                {/**
-                 * style the markers to be more visible
-                 * TODO:
-                 * add a popup to the markers that shows the event name and date
-                 * limit the number of markers and calls to the api.
-                 */}
+
                 {activeInfoWindowEventId &&
                   (() => {
                     const event = enrichedEvents.find(
