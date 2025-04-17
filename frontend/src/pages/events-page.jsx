@@ -389,11 +389,13 @@ function MapController({ selectedEventId, geolocations, userPosition }) {
 
     const zoomTo = (location, zoomLevel = 14) => {
       map.panTo(location);
-      smoothZoom(map, zoomLevel);
+      map.setZoom(zoomLevel); // simpler + avoids feedback loop
     };
 
-    if (!selectedEventId && userPosition?.lat && userPosition?.lng) {
-      zoomTo(userPosition, 9); // zoom out to user's location
+    if (!selectedEventId) {
+      if (userPosition?.lat && userPosition?.lng) {
+        zoomTo(userPosition, 9); // Reset zoom when deselecting
+      }
       return;
     }
 
@@ -407,20 +409,4 @@ function MapController({ selectedEventId, geolocations, userPosition }) {
   }, [selectedEventId, geolocations, userPosition, map]);
 
   return null;
-}
-
-function smoothZoom(map, targetZoom, delay = 100) {
-  const currentZoom = map.getZoom();
-  if (currentZoom === targetZoom) return;
-
-  const step = targetZoom > currentZoom ? 1 : -1;
-
-  const zoomTimer = setInterval(() => {
-    const newZoom = map.getZoom() + step;
-    map.setZoom(newZoom);
-
-    if (newZoom === targetZoom) {
-      clearInterval(zoomTimer);
-    }
-  }, delay);
 }
