@@ -43,6 +43,16 @@ function EventsPage() {
 
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const [filteredeEvents, setFilteredEvents] = useState([]); // Filtered posts
+  const [SelectedEventId, setSelectedEventId] = useState(null); // State to manage selected event ID
+
+  const handleCardSelect = (e) => {
+    setSelectedEventId(e); // Set the selected event ID
+    const updatedEvents = filteredeEvents.map((event) => ({
+      ...event,
+      isSelected: event.event_id === e, // Mark the selected event
+    }));
+    setFilteredEvents(updatedEvents); // Update the filtered events to reflect selection
+  };
 
   useEffect(() => {
     if (events && events.length > 0) {
@@ -205,6 +215,8 @@ function EventsPage() {
                   date={event.date}
                   location={`${event.street_address}, ${event.location_city}, ${event.location_state}`}
                   tags={event.tag_names}
+                  onSelect={() => handleCardSelect(event.event_id)} // Handle card selection
+                  isSelected={SelectedEventId === event.event_id} // Highlight selected card
                 />
               ))
             ) : (
