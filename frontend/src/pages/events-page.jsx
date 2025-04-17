@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useContext,
   useRef,
+  useMemo,
 } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "./UserContext.jsx";
@@ -51,6 +52,20 @@ function EventsPage() {
   const [filteredeEvents, setFilteredEvents] = useState([]); // Filtered posts
   const [SelectedEventId, setSelectedEventId] = useState(null); // State to manage selected event ID
   const [mapInstance, setMapInstance] = useState(null); // State to manage the map instance
+  const [activeInfoWindowEventId, setActiveInfoWindowEventId] = useState(null);
+
+  const enrichedEvents = useMemo(() => {
+    if (!events || !geolocations) return [];
+
+    return geolocations
+      .map((geo) => {
+        const fullEvent = events.find((e) => e.event_id === geo.event_id);
+        return fullEvent && geo.lat && geo.lng
+          ? { ...fullEvent, lat: geo.lat, lng: geo.lng }
+          : null;
+      })
+      .filter(Boolean);
+  }, [events, geolocations]);
 
   const handleCardSelect = (eventId) => {
     setSelectedEventId((prevSelectedId) => {
@@ -324,19 +339,37 @@ function EventsPage() {
                  * add a popup to the markers that shows the event name and date
                  * limit the number of markers and calls to the api.
                  */}
-                {geolocations.map((event) => {
-                  if (!event.lat || !event.lng) return null;
+                {activeInfoWindowEventId &&
+                  (() => {
+                    const event = enrichedEvents.find(
+                      (e) => e.event_id === activeInfoWindowEventId
+                    );
+                    if (!event) return null;
 
-                  return (
-                    <AdvancedMarker
-                      key={`${event.event_id}-marker`}
-                      position={{ lat: event.lat, lng: event.lng }}
-                      ref={(marker) => {
-                        if (marker) markerRefs.current[event.event_id] = marker;
-                      }}
-                    />
-                  );
-                })}
+                    return (
+                      <InfoWindow
+                        position={{ lat: event.lat, lng: event.lng }}
+                        onCloseClick={() => setActiveInfoWindowEventId(null)}
+                      >
+                        <EventsCard
+                          eventId={event.event_id}
+                          is_Online={event.is_online} // remember this is a boolean
+                          key={`${event.event_id}-card`}
+                          eventName={event.title}
+                          date={new Date(event.date).toLocaleDateString()}
+                          location={`${event.street_address}, ${event.location_city}, ${event.location_state}`}
+                          tags={event.tag_names}
+                        />
+                      </InfoWindow>
+                    );
+                  })()}
+                {enrichedEvents.map((event) => (
+                  <AdvancedMarker
+                    key={`${event.event_id}-marker`}
+                    position={{ lat: event.lat, lng: event.lng }}
+                    onClick={() => setActiveInfoWindowEventId(event.event_id)}
+                  />
+                ))}
               </Map>
             )}
           </div>
