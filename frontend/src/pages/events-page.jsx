@@ -350,23 +350,40 @@ function MapController({ selectedEventId, geolocations, userPosition }) {
   useEffect(() => {
     if (!map) return;
 
-    if (!selectedEventId) {
-      // No event selected — go back to user's position
-      if (userPosition?.lat && userPosition?.lng) {
-        map.panTo({ lat: userPosition.lat, lng: userPosition.lng });
-        map.setZoom(9); // Optional: zoom out a bit
-      }
+    const zoomTo = (location, zoomLevel = 14) => {
+      map.panTo(location);
+      smoothZoom(map, zoomLevel);
+    };
+
+    if (!selectedEventId && userPosition?.lat && userPosition?.lng) {
+      zoomTo(userPosition, 9); // zoom out to user's location
       return;
     }
 
     const targetEvent = geolocations.find(
       (e) => e.event_id === selectedEventId
     );
+
     if (targetEvent?.lat && targetEvent?.lng) {
-      map.panTo({ lat: targetEvent.lat, lng: targetEvent.lng });
-      map.setZoom(14);
+      zoomTo({ lat: targetEvent.lat, lng: targetEvent.lng }, 14);
     }
   }, [selectedEventId, geolocations, userPosition, map]);
 
   return null;
+}
+
+function smoothZoom(map, targetZoom, delay = 100) {
+  const currentZoom = map.getZoom();
+  if (currentZoom === targetZoom) return;
+
+  const step = targetZoom > currentZoom ? 1 : -1;
+
+  const zoomTimer = setInterval(() => {
+    const newZoom = map.getZoom() + step;
+    map.setZoom(newZoom);
+
+    if (newZoom === targetZoom) {
+      clearInterval(zoomTimer);
+    }
+  }, delay);
 }
