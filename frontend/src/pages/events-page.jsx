@@ -211,32 +211,34 @@ function EventsPage() {
             />
             <span>In-Person</span>
           </div>
+          <div className="events-cards-wrapper">
+            <div className="events-cards-container">
+              {/**
+               * TODO:
+               * allow scrolling to load more events, without allowing the cards to overflow out of the container( Lazy Loading)
+               * the cards should be displayed in order of most close to the user
+               * when clicking on a card, it should make the map center and zoom in on the event
+               *
+               */}
 
-          <div className="events-cards-container">
-            {/**
-             * TODO:
-             * allow scrolling to load more events, without allowing the cards to overflow out of the container( Lazy Loading)
-             * the cards should be displayed in order of most close to the user
-             * when clicking on a card, it should make the map center and zoom in on the event
-             *
-             */}
-
-            {filteredeEvents.length > 0 ? (
-              filteredeEvents.map((event) => (
-                <EventsCard
-                  is_Online={event.is_online} // remember this is a boolean
-                  key={`${event.event_id}-card`}
-                  eventName={event.title}
-                  date={event.date}
-                  location={`${event.street_address}, ${event.location_city}, ${event.location_state}`}
-                  tags={event.tag_names}
-                  onSelect={() => handleCardSelect(event.event_id)} // Handle card selection
-                  isSelected={SelectedEventId === event.event_id} // Highlight selected card
-                />
-              ))
-            ) : (
-              <p>No results found</p>
-            )}
+              {filteredeEvents.length > 0 ? (
+                filteredeEvents.map((event) => (
+                  <EventsCard
+                    is_Online={event.is_online} // remember this is a boolean
+                    key={`${event.event_id}-card`}
+                    eventName={event.title}
+                    date={event.date}
+                    location={`${event.street_address}, ${event.location_city}, ${event.location_state}`}
+                    tags={event.tag_names}
+                    onSelect={() => handleCardSelect(event.event_id)} // Handle card selection
+                    isSelected={SelectedEventId === event.event_id} // Highlight selected card
+                  />
+                ))
+              ) : (
+                <p>No results found</p>
+              )}
+            </div>
+            {/**end of events container */}
           </div>
         </aside>
         <main>
