@@ -27,6 +27,11 @@
   color: #fff;
 }
 
+.events-card-link h3:hover {
+  text-decoration: underline;
+  text-decoration-color: #0074e4;
+}
+
 .events-card-content {
   width: 100%;
 }

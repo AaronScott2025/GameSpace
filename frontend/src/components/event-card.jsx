@@ -1,5 +1,6 @@
 import React from "react";
 import Tags from "./tags";
+import { Link } from "react-router-dom";
 import "../styles/event-card.css"; // Import your CSS file for styling
 
 function EventsCard({
@@ -24,7 +25,14 @@ function EventsCard({
     >
       <div className="events-card-content">
         <div className="events-card-header-and-date">
-          <h3>{eventName}</h3>
+          <Link
+            to={`/events/${eventId}`}
+            style={{ textDecoration: "none", color: "inherit" }}
+            className="events-card-link"
+          >
+            <h3>{eventName}</h3>
+          </Link>
+
           <time dateTime={date}>{date}</time>
         </div>
         <div className="events-tags">

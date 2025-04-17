@@ -5,6 +5,7 @@ import React, {
   useContext,
   useRef,
 } from "react";
+import { Link } from "react-router-dom";
 import { UserContext } from "./UserContext.jsx";
 import "../styles/events-page.css"; // Import your CSS file for styling
 import { supabase } from "../../client.js"; // Shared client
@@ -224,6 +225,7 @@ function EventsPage() {
               {filteredeEvents.length > 0 ? (
                 filteredeEvents.map((event) => (
                   <EventsCard
+                    eventId={event.event_id}
                     is_Online={event.is_online} // remember this is a boolean
                     key={`${event.event_id}-card`}
                     eventName={event.title}
