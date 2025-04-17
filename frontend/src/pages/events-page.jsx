@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+  useRef,
+} from "react";
 import { UserContext } from "./UserContext.jsx";
 import "../styles/events-page.css"; // Import your CSS file for styling
 import { supabase } from "../../client.js"; // Shared client
@@ -11,7 +17,7 @@ import {
   AdvancedMarker,
   InfoWindow,
   useAdvancedMarkerRef,
-  Pin,
+  useMap,
 } from "@vis.gl/react-google-maps";
 import { FaLocationDot } from "react-icons/fa6";
 import {
@@ -40,20 +46,23 @@ function EventsPage() {
   const [myPostionRef, myPosition] = useAdvancedMarkerRef(); // Ref for the user's position marker
   const { user } = useContext(UserContext); // Get the user context
   const userImage = user?.profile_pic || null;
-
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const [filteredeEvents, setFilteredEvents] = useState([]); // Filtered posts
   const [SelectedEventId, setSelectedEventId] = useState(null); // State to manage selected event ID
+  const [mapInstance, setMapInstance] = useState(null); // State to manage the map instance
 
-  const handleCardSelect = (e) => {
+  const handleCardSelect = (eventId) => {
     setSelectedEventId((prevSelectedId) => {
-      const newSelectedId = prevSelectedId === e ? null : e; // Toggle selection
+      const newSelectedId = prevSelectedId === eventId ? null : eventId;
+
       const updatedEvents = filteredeEvents.map((event) => ({
         ...event,
-        isSelected: event.event_id === newSelectedId, // Mark or unmark the selected event
+        isSelected: event.event_id === newSelectedId,
       }));
-      setFilteredEvents(updatedEvents); // Update the filtered events to reflect selection
-      return newSelectedId; // Update the selected event ID
+
+      setFilteredEvents(updatedEvents);
+
+      return newSelectedId; // ✅ Let <MapController /> handle map movement
     });
   };
 
@@ -133,6 +142,9 @@ function EventsPage() {
       </div>
     ) : null;
   };
+
+  const markerRefs = useRef({});
+
   if (!position) {
     return <div>Loading map...</div>; // Show a loading state until position is available
   }
@@ -238,6 +250,7 @@ function EventsPage() {
           <div className="map-container">
             {position && (
               <Map
+                onLoad={(map) => setMapInstance(map)} // Store the map instance
                 style={{
                   width: "70vw",
                   height: "75vh",
@@ -250,6 +263,11 @@ function EventsPage() {
                 disableDefaultUI={true}
                 mapId={import.meta.env.VITE_GOOGLE_MAP_ID}
               >
+                <MapController
+                  selectedEventId={SelectedEventId}
+                  geolocations={geolocations}
+                  userPosition={position}
+                ></MapController>
                 <AdvancedMarker
                   id="Your-Location"
                   position={position}
@@ -302,15 +320,19 @@ function EventsPage() {
                  * add a popup to the markers that shows the event name and date
                  * limit the number of markers and calls to the api.
                  */}
-                {geolocations.map((event) =>
-                  event.lat && event.lng ? (
+                {geolocations.map((event) => {
+                  if (!event.lat || !event.lng) return null;
+
+                  return (
                     <AdvancedMarker
-                      id={event.event_id}
                       key={`${event.event_id}-marker`}
                       position={{ lat: event.lat, lng: event.lng }}
+                      ref={(marker) => {
+                        if (marker) markerRefs.current[event.event_id] = marker;
+                      }}
                     />
-                  ) : null
-                )}
+                  );
+                })}
               </Map>
             )}
           </div>
@@ -319,4 +341,32 @@ function EventsPage() {
     </APIProvider>
   );
 }
+
 export default EventsPage;
+
+function MapController({ selectedEventId, geolocations, userPosition }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!map) return;
+
+    if (!selectedEventId) {
+      // No event selected — go back to user's position
+      if (userPosition?.lat && userPosition?.lng) {
+        map.panTo({ lat: userPosition.lat, lng: userPosition.lng });
+        map.setZoom(9); // Optional: zoom out a bit
+      }
+      return;
+    }
+
+    const targetEvent = geolocations.find(
+      (e) => e.event_id === selectedEventId
+    );
+    if (targetEvent?.lat && targetEvent?.lng) {
+      map.panTo({ lat: targetEvent.lat, lng: targetEvent.lng });
+      map.setZoom(14);
+    }
+  }, [selectedEventId, geolocations, userPosition, map]);
+
+  return null;
+}
