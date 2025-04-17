@@ -21,6 +21,16 @@
   box-sizing: border-box;
   padding: 12px; /* Increased padding for better spacing */
 }
+.events-card.selected {
+  border: 2px solid #4285f4;
+  background-color: #406ea2;
+  color: #fff;
+}
+
+.events-card-link h3:hover {
+  text-decoration: underline;
+  text-decoration-color: #0074e4;
+}
 
 .events-card-content {
   width: 100%;
@@ -71,7 +81,7 @@
   text-align: center;
   white-space: nowrap; /* Prevent text from breaking inside tags */
   box-sizing: border-box; /* Include padding in width calculation */
-  
+
   /* Fix for the layout issue - remove the flex properties that force 3 per row */
   display: inline-block;
   flex: none;
