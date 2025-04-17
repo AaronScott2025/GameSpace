@@ -46,12 +46,15 @@ function EventsPage() {
   const [SelectedEventId, setSelectedEventId] = useState(null); // State to manage selected event ID
 
   const handleCardSelect = (e) => {
-    setSelectedEventId(e); // Set the selected event ID
-    const updatedEvents = filteredeEvents.map((event) => ({
-      ...event,
-      isSelected: event.event_id === e, // Mark the selected event
-    }));
-    setFilteredEvents(updatedEvents); // Update the filtered events to reflect selection
+    setSelectedEventId((prevSelectedId) => {
+      const newSelectedId = prevSelectedId === e ? null : e; // Toggle selection
+      const updatedEvents = filteredeEvents.map((event) => ({
+        ...event,
+        isSelected: event.event_id === newSelectedId, // Mark or unmark the selected event
+      }));
+      setFilteredEvents(updatedEvents); // Update the filtered events to reflect selection
+      return newSelectedId; // Update the selected event ID
+    });
   };
 
   useEffect(() => {
