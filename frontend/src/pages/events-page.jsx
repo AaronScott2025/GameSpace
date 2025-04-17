@@ -41,6 +41,36 @@ function EventsPage() {
   const { user } = useContext(UserContext); // Get the user context
   const userImage = user?.profile_pic || null;
 
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [filteredeEvents, setFilteredEvents] = useState([]); // Filtered posts
+
+  useEffect(() => {
+    if (events && events.length > 0) {
+      setFilteredEvents(events); // Initially show all events
+    }
+  }, [events]);
+
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = events.filter((event) => {
+        const searchLower = searchQuery.toLowerCase();
+        return (
+          event.title.toLowerCase().includes(searchLower) || // Search by title
+          event.street_address.toLowerCase().includes(searchLower) || // Search by street address
+          event.location_city.toLowerCase().includes(searchLower) || // Search by city
+          event.location_state.toLowerCase().includes(searchLower) // Search by state
+        );
+      });
+      setFilteredEvents(filtered);
+    } else {
+      setFilteredEvents(events); // Reset to all events if search query is empty
+    }
+  }, [searchQuery, events]);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value); // Update the search query
+  };
+
   const HandleYourPosition = useCallback(
     () => setUserPositionInfoWindow((isShow) => !isShow),
     []
@@ -52,6 +82,19 @@ function EventsPage() {
   const handleFilterChange = (filterName) => {
     setSelectedFilter(filterName); // Update the selected filter
   };
+
+  useEffect(() => {
+    if (selectedFilter === "all-events") {
+      setFilteredEvents(events); // Show all events
+    } else if (selectedFilter === "online") {
+      const filtered = events.filter((event) => event.is_online === true); // Filter online events
+      setFilteredEvents(filtered);
+    } else if (selectedFilter === "in-person") {
+      const filtered = events.filter((event) => event.is_online === false); // Filter in-person events
+      setFilteredEvents(filtered);
+    }
+  }, [selectedFilter, events]);
+
   useEffect(() => {
     // Ensure the info window is closed on initial load or map reload
     setUserPositionInfoWindow(false);
@@ -88,7 +131,12 @@ function EventsPage() {
         <aside className="events-sidebar">
           <h2 className="events-title">Events</h2>
           <div className="search-bar">
-            <input type="text" placeholder="Search" />
+            <input
+              type="text"
+              placeholder="Search by title, address, city, or state"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
           </div>
           {/**
            * ButtonModal will change to handle tags
@@ -138,6 +186,7 @@ function EventsPage() {
             />
             <span>In-Person</span>
           </div>
+
           <div className="events-cards-container">
             {/**
              * TODO:
@@ -146,16 +195,21 @@ function EventsPage() {
              * when clicking on a card, it should make the map center and zoom in on the event
              *
              */}
-            {events.map((event) => (
-              <EventsCard
-                is_Online={event.is_online} //remember this is a boolean
-                key={`${event.event_id}-card`}
-                eventName={event.title}
-                date={event.date}
-                location={`${event.street_address}, ${event.location_city}, ${event.location_state}`}
-                tags={event.tag_names}
-              />
-            ))}
+
+            {filteredeEvents.length > 0 ? (
+              filteredeEvents.map((event) => (
+                <EventsCard
+                  is_Online={event.is_online} // remember this is a boolean
+                  key={`${event.event_id}-card`}
+                  eventName={event.title}
+                  date={event.date}
+                  location={`${event.street_address}, ${event.location_city}, ${event.location_state}`}
+                  tags={event.tag_names}
+                />
+              ))
+            ) : (
+              <p>No results found</p>
+            )}
           </div>
         </aside>
         <main>
