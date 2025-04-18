@@ -16,7 +16,7 @@
  */
 import React, { act } from "react";
 import "/src/styles/modal.css"; // Import the CSS file for styling
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function ButtonModal({
   buttonText,
@@ -58,6 +58,19 @@ function ButtonModal({
     setFormData({}); // Reset form data after submission
     setIsModalOpen(false);
   };
+  // Add useEffect to listen for the Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && isModalOpen) {
+        handleCloseModal();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isModalOpen]);
 
   return (
     <>

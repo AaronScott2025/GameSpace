@@ -19,18 +19,15 @@ body {
   overflow: hidden;
 }
 
-/* Content container to center the account page */
-/* Update the content-container */
 .content-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   padding: 20px;
-  overflow: hidden; /* Prevent scrolling at this level */
+  overflow: hidden;
 }
 
-/* Update the account-page to have max-height and max-width */
 .account-page {
   box-sizing: border-box;
   display: grid;
@@ -45,17 +42,16 @@ body {
   gap: var(--base-gap);
   padding: var(--base-padding);
   background: linear-gradient(180deg, var(--secondary-bg), var(--primary-bg));
-  height: 90vh; /* Use percentage of viewport height */
-  max-height: 900px; /* Add a maximum height */
+  height: 90vh;
+  max-height: 900px;
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
   color: white;
   border-radius: var(--border-radius);
-  overflow: hidden; /* Prevent scrolling at this level */
+  overflow: hidden;
 }
 
-/* Profile Section */
 .profile-section {
   grid-area: pfp;
   display: flex;
@@ -82,14 +78,12 @@ body {
   object-fit: cover;
 }
 
-/* display of new button */
 .Edit-or-genereate-pfp {
   display: flex;
   flex-direction: row;
   gap: 10px;
 }
 
-/* Button Styling */
 .action-button {
   background: var(--neutral-bg);
   color: white;
@@ -110,7 +104,6 @@ body {
   color: black;
 }
 
-/* Account Info Section */
 .account-info-section {
   grid-area: account-info;
   background: var(--primary-bg);
@@ -157,7 +150,6 @@ body {
   border-radius: 8px;
 }
 
-/* Password Change Section */
 .password-change-section {
   background: rgba(255, 255, 255, 0.05);
   padding: 15px;

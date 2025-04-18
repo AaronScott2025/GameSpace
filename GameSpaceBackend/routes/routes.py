@@ -10,13 +10,11 @@ env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.env')
 from GameSpaceBackend.models.classes import Profile, DuoMatching
 import GameSpaceBackend.services.MatchmakingService as ms
 load_dotenv(dotenv_path=env_path)
-from flask_socketio import SocketIO, emit
 
 SUPABASE_API_KEY = os.getenv("SUPABASE")
 OPEN_AI_KEY = os.getenv("OPEN_AI")
 
 app = Flask(__name__)
-socketio = SocketIO(app)
 supabase = create_client("https://xfmccwekbxjkrjwuheyv.supabase.co", SUPABASE_API_KEY)
 
 
@@ -141,8 +139,6 @@ def namegen():
         if not message:
             return {"error": "Message is required"}, 400
 
-        
-
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0125",
             messages=[
@@ -157,37 +153,6 @@ def namegen():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-@app.route('/sendmessage/', methods=['POST'])
-def send_message():
-    try:
-        data = request.json
-        response = supabase.table('Messages').insert({
-            'sender_id': data['sender_id'],
-            'receiver_id': data['receiver_id'],
-            'message_content': data['message_content']
-        }).execute()
-        return jsonify(response.data), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route('/getmessage/', methods=['GET'])
-def get_messages():
-    print("wip")
-
-@socketio.on('send_message')
-def handle_send_message(data):
-    # Save message to database (Supabase)
-    supabase.table('Messages').insert({
-        'sender_id': data['sender_id'],
-        'receiver_id': data['receiver_id'],
-        'message_content': data['message_content']
-    }).execute()
-
-    # Broadcast the message to the receiver
-    emit('receive_message', data, room=data['receiver_id'])
-
-
 if __name__ == '__main__':
     app.run(debug=True)
-    socketio.run(app, debug=True)
+
