@@ -210,7 +210,7 @@ import Navbar from "../components/nav-bar";
 }
 
 .tooltip-content h1:hover {
-  color: #555; /* Slightly lighter hover color */
+  color: #ffffff; /* Change color on hover for better visibility */
   text-decoration: underline; /* Keep underline on hover */
 }
 
