@@ -177,13 +177,6 @@ import Navbar from "../components/nav-bar";
   background-color: #8d33ff;
 } /* Purple */
 
-.tooltip-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  flex-direction: column;
-}
 .profile-pic-nav {
   width: 6vh;
   height: 6vh;
@@ -192,4 +185,47 @@ import Navbar from "../components/nav-bar";
   margin-right: 5px;
   object-fit: cover;
   border: 2px solid #fff;
+}
+
+.tooltip {
+  background-color: #343434;
+  border-radius: 10px;
+}
+
+.tooltip-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px; /* Increased spacing for better layout */
+  flex-direction: column;
+
+  padding: 20px; /* Add padding for better spacing */
+}
+
+.tooltip-content h1 {
+  font-size: 1.8rem; /* Slightly smaller font for better balance */
+  color: #e0e0e0; /* Darker text for better contrast */
+  margin: 0; /* Remove unnecessary margins */
+  text-align: center; /* Center-align text */
+}
+
+.tooltip-content h1:hover {
+  color: #555; /* Slightly lighter hover color */
+  text-decoration: underline; /* Keep underline on hover */
+}
+
+.sign-out-button {
+  background-color: #ff4d4d; /* Softer red for better contrast with white */
+  color: white;
+  border: none;
+  padding: 12px 25px; /* Adjusted padding for better proportions */
+  font-size: 1.1rem; /* Slightly smaller font size */
+  cursor: pointer;
+  border-radius: 8px; /* Rounded corners for consistency */
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.sign-out-button:hover {
+  background-color: #e60000; /* Slightly darker red on hover */
+  transform: scale(1.08); /* Slightly larger scale for hover effect */
 }

@@ -90,22 +90,27 @@ const Navbar = () => {
             <Tooltip
               id="profile-tooltip"
               place="bottom-start"
-              type="dark"
-              effect="solid"
               clickable={true}
+              style={{
+                backgroundColor: "#3e3e3e",
+                borderRadius: "10px",
+              }}
               isOpen={isTooltipOpen}
               render={({ content, activeAnchor }) => (
                 <div className="tooltip-content">
                   <NavLink
+                    style={{ textDecoration: "none" }}
                     to="/account"
                     onClick={() => {
                       mouseClickSound.play(0.1);
                       setIsTooltipOpen(false); // Close tooltip on click
                     }}
                   >
-                    <strong>Go to profile page</strong>
+                    <h1>Go to profile page</h1>
                   </NavLink>
-                  <button onClick={signOut}>sign out</button>
+                  <button className="sign-out-button" onClick={signOut}>
+                    sign out
+                  </button>
                 </div>
               )}
             />
