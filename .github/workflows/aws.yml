@@ -19,6 +19,7 @@ jobs:
         with:
           node-version: '20'
 
+
       # Build the frontend with environment variables injected at build time
       - name: Build Frontend
         env:
@@ -28,13 +29,14 @@ jobs:
           VITE_GOOGLE_MAP_API_KEY: ${{ secrets.VITE_GOOGLE_MAP_API_KEY }}
           VITE_GOOGLE_MAP_ID: ${{ secrets.VITE_GOOGLE_MAP_ID }}
           VITE_LOCATIONIQ_API_TOKEN: ${{ secrets.VITE_LOCATIONIQ_API_TOKEN }}
-          FRONTEND_ENV_FILE: ${{ secrets.FRONTEND_ENV_FILE }}
+          FRONTEND_ENV_FILE: ${{ secrets.FRONTEND_ENV_FILE }} 
         run: |
           cd frontend
-          printf '%s' "${{ secrets.FRONTEND_ENV_FILE }}" > .env  # Saving the secret to a .env file
+          printf '%s' "${{ secrets.FRONTEND_ENV_FILE }}" > .env # Saving the secret to a .env file
           npm install
           npm run build
           echo "Frontend build complete!"
+
 
       # Clean the remote target folder for the frontend build files.
       - name: Clean Remote Frontend Build Directory
@@ -62,7 +64,8 @@ jobs:
           overwrite: true
           strip_components: '1'
 
-      # Deploy the backend by updating the repository and restoring the .env file
+      # Deploy the backend by updating the repository,
+      # restoring the backend .env file
       - name: Deploy and Restart Backend on EC2
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -71,7 +74,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            set -e
             cd ~/GameSpace
             printf '%s' "${{ secrets.FRONTEND_ENV_FILE }}" > frontend/.env
             git fetch origin main
@@ -85,10 +87,8 @@ jobs:
               python3 -m venv venv
             fi
             source venv/bin/activate
-            # Upgrade pip using the virtual environment’s python interpreter
-            python -m pip install --upgrade pip
-            # Install requirements without using the --break-system-packages flag
-            python -m pip install -r requirements.txt
+            pip install --upgrade pip
+            pip install --break-system-packages -r requirements.txt
             sudo systemctl daemon-reload
             sudo systemctl restart gunicorn
             echo "Backend deployment complete."
