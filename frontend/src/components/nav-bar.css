@@ -23,7 +23,7 @@ import Navbar from "../components/nav-bar";
   width: 100%;
   top: 0;
   left: 0;
-  z-index: 2000;
+  z-index: 9999;
 }
 .logo {
   /* Game Space */
