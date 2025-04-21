@@ -64,9 +64,6 @@ const EventDetailPage = () => {
         </div>
       </div>
 
-
-
-
       {/* BOTTOM MAP CONTAINER */}
       <div className="event-map-container">
         <h2>Map</h2>
@@ -74,9 +71,6 @@ const EventDetailPage = () => {
           {/* Map will go here */}
         </div>
       </div>
-
-
-
 
       {/* RSVP Modal */}
       {isRSVPOpen && (
