@@ -17,8 +17,12 @@ const SignupPage = () => {
     email: "",
     password: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const handleSignUp = async (e) => {
     e.preventDefault();
+    setErrorMessage(""); // Clear any previous error messages
+    setSuccessMessage(""); // Clear any previous success messages
     try {
       const { data, error } = await supabase.auth.signUp({
         email: usersData.email,
@@ -27,6 +31,7 @@ const SignupPage = () => {
 
       if (error) {
         console.error("Sign up failed", error);
+        alert(error.message); // Show error message to the user
         return; // Exit the function if sign-up fails
       }
 
@@ -48,13 +53,18 @@ const SignupPage = () => {
 
         if (profileError) {
           console.error("Profile creation failed", profileError);
+          alert("Error: Profile creation failed. Please try again."); // Show profile error
         } else {
           console.log("Profile created", profileData);
+          alert(
+            "Success: Account successfully created! Redirecting to login..."
+          );
           navigate("/login");
         }
       }
     } catch (error) {
       console.error("Sign up failed", error);
+      alert("Error: An unexpected error occurred. Please try again."); // Show generic error
     }
   };
 
@@ -74,6 +84,7 @@ const SignupPage = () => {
       <div className="signup-form-container">
         <form className="signup-form" onSubmit={handleSignUp}>
           <h1 className="form-tittle">Sign Up</h1>
+
           <SignUpTextField
             className={"signup-username-tf"}
             label="Username"
