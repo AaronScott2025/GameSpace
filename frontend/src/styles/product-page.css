@@ -84,6 +84,43 @@
   margin-bottom: 10px;
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.item-detail-description::-webkit-scrollbar {
+  width: 6px;
+}
+
+.item-detail-description::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.item-detail-tags {
+  margin: 10px 0;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.tag {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.tag:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .item-detail-username,
