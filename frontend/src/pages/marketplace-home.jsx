@@ -153,7 +153,7 @@ const Marketplace = () => {
 
         // Check if listing has at least one of the active filter tags
         return activeFilters.some(filter =>
-          listing.tags.some(tag => tag.toLowerCase().includes(filter.toLowerCase()))
+          listing.tags.some(tag => tag.toLowerCase() === filter.toLowerCase())
         );
       });
     }
@@ -172,10 +172,15 @@ const Marketplace = () => {
   const handleTagSelect = (tag) => {
     if (!tag) return;
 
-    // Add tag to active filters if not already present
-    if (!activeFilters.includes(tag)) {
-      setActiveFilters([...activeFilters, tag]);
-    }
+    // Toggle the tag in active filters
+    setActiveFilters(prev => {
+      // If the tag is already in the filters, remove it
+      if (prev.includes(tag)) {
+        return prev.filter(t => t !== tag);
+      }
+      // Otherwise, add it
+      return [...prev, tag];
+    });
   };
 
   // Remove a specific filter tag
@@ -225,6 +230,7 @@ const Marketplace = () => {
         onSearch={handleSearch}
         onTagSelect={handleTagSelect}
         currentSearchQuery={searchQuery}
+        activeFilters={activeFilters}
       />
       <div className="product-listings-wrapper">
         {(activeFilters.length > 0 || searchQuery) && (

@@ -11,7 +11,6 @@ const ProductPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch listing details when the page loads
   useEffect(() => {
     const fetchListingDetails = async () => {
       setIsLoading(true);
@@ -40,7 +39,6 @@ const ProductPage = () => {
     fetchListingDetails();
   }, [id]);
 
-    // Error state
     if (error) {
     return (
         <div className="item-page-container">
@@ -55,7 +53,6 @@ const ProductPage = () => {
     );
     }
 
-    // Listing not found
     if (!listing) {
     return (
         <div className="item-page-container">
@@ -70,7 +67,6 @@ const ProductPage = () => {
       );
     }
 
-    // Loading state
     if (isLoading) {
       return (
         <div className="item-page-container">
@@ -82,7 +78,6 @@ const ProductPage = () => {
       );
     }
 
-  // Format the date for display
   const formatDate = (dateString) => {
     if (!dateString) return "Unknown date";
     return new Date(dateString).toLocaleDateString("en-US", {

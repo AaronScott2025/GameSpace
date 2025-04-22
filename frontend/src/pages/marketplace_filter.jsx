@@ -6,7 +6,7 @@ import ButtonModal from "../components/button-modal.jsx";
 import { UserContext } from "./UserContext.jsx";
 import { IoMdAdd } from "react-icons/io";
 
-const CollapsibleSection = ({ title, items, onItemClick }) => {
+const CollapsibleSection = ({ title, items, onItemClick, selectedTags }) => {
   const [open, setOpen] = useState(false);
   const toggleSection = () => setOpen(!open);
 
@@ -24,6 +24,7 @@ const CollapsibleSection = ({ title, items, onItemClick }) => {
                 <input
                   type="checkbox"
                   name={item}
+                  checked={selectedTags.includes(item)}
                   onChange={() => onItemClick && onItemClick(item)}
                 />
                 {item}
@@ -36,7 +37,7 @@ const CollapsibleSection = ({ title, items, onItemClick }) => {
   );
 };
 
-const TagsSection = ({ popularTags, onTagClick }) => {
+const TagsSection = ({ popularTags, onTagClick, selectedTags }) => {
   const [open, setOpen] = useState(true);
   const toggleSection = () => setOpen(!open);
 
@@ -48,28 +49,27 @@ const TagsSection = ({ popularTags, onTagClick }) => {
       </div>
       {open && (
         <div className="tags-list">
-        {popularTags.map((tag, index) => (
+          {popularTags.map((tag, index) => (
             <span
-             key={index}
-            className={`filter-tag ${selectedTags.includes(tag) ? "selected" : ""}`}
-             onClick={() => onTagClick && onTagClick(tag)}
+              key={index}
+              className={`filter-tag ${selectedTags.includes(tag) ? "selected" : ""}`}
+              onClick={() => onTagClick && onTagClick(tag)}
             >
-          {tag}
-        </span>
-      ))}
-    </div>
-  )}
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
-const FilterSection = ({ onTagSelect, onSearch, currentSearchQuery = "" }) => {
+const FilterSection = ({ onTagSelect, onSearch, currentSearchQuery = "", activeFilters = [] }) => {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
   const [popularTags, setPopularTags] = useState([]);
   const [searchInput, setSearchInput] = useState(currentSearchQuery || "");
-  const [selectedTags, setSelectedTags] = useState([]);
-
+  const [selectedTags, setSelectedTags] = useState(activeFilters);
 
   const handleMarketplaceClick = () => {
     navigate("/marketplace");
@@ -86,25 +86,32 @@ const FilterSection = ({ onTagSelect, onSearch, currentSearchQuery = "" }) => {
   };
 
   useEffect(() => {
-    const fetchPopularTags = async () => {
-  try {
-    const { data, error } = await supabase
-      .from("listings")
-      .select("tags");
-    if (error) {
-      console.error("Error fetching tags:", error);
-      return;
-    }
+    setSelectedTags(activeFilters);
+  }, [activeFilters]);
 
-    if (data && data.length > 0) {
-    } else {
-      setPopularTags([]);
-    }
-  } catch (err) {
-    console.error("Error processing tags:", err);
-    setPopularTags([]);
-  }
-};
+  useEffect(() => {
+    const fetchPopularTags = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("listings")
+          .select("tags");
+        if (error) {
+          console.error("Error fetching tags:", error);
+          return;
+        }
+
+        if (data && data.length > 0) {
+          const allTags = data.flatMap(listing => listing.tags || []);
+          const uniqueTags = [...new Set(allTags)];
+          setPopularTags(uniqueTags.slice(0, 10));
+        } else {
+          setPopularTags([]);
+        }
+      } catch (err) {
+        console.error("Error processing tags:", err);
+        setPopularTags([]);
+      }
+    };
 
     fetchPopularTags();
   }, []);
@@ -114,16 +121,10 @@ const FilterSection = ({ onTagSelect, onSearch, currentSearchQuery = "" }) => {
   }, [currentSearchQuery]);
 
   const handleTagClick = (tag) => {
-  if (selectedTags.includes(tag)) {
-    setSelectedTags(selectedTags.filter(t => t !== tag));
-  } else {
-    setSelectedTags([...selectedTags, tag]);
-  }
-
-  if (onTagSelect) {
-    onTagSelect(tag);
-  }
-};
+    if (onTagSelect) {
+      onTagSelect(tag);
+    }
+  };
 
   const handleCreateListing = async (data) => {
     const { title, description, location, price, condition, picture, tags } = data;
@@ -216,6 +217,17 @@ const FilterSection = ({ onTagSelect, onSearch, currentSearchQuery = "" }) => {
           onChange={handleSearchInputChange}
           onKeyPress={handleSearchSubmit}
         />
+        {searchInput && (
+          <button
+            className="search-clear-button"
+            onClick={() => {
+              setSearchInput("");
+              onSearch && onSearch("");
+            }}
+          >
+            ✕
+          </button>
+        )}
       </div>
       <ButtonModal
         buttonText="Create Listing"
@@ -246,6 +258,7 @@ const FilterSection = ({ onTagSelect, onSearch, currentSearchQuery = "" }) => {
           <TagsSection
             popularTags={popularTags}
             onTagClick={handleTagClick}
+            selectedTags={selectedTags}
           />
         )}
         {filterSections.map((section, index) => (
@@ -253,7 +266,8 @@ const FilterSection = ({ onTagSelect, onSearch, currentSearchQuery = "" }) => {
             key={index}
             title={section.title}
             items={section.items}
-            onItemClick={(item) => handleTagClick(item)}
+            onItemClick={handleTagClick}
+            selectedTags={selectedTags}
           />
         ))}
       </div>
