@@ -17,12 +17,10 @@ const SignupPage = () => {
     email: "",
     password: "",
   });
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+
   const handleSignUp = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Clear any previous error messages
-    setSuccessMessage(""); // Clear any previous success messages
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email: usersData.email,
