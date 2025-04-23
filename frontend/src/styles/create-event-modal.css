@@ -99,6 +99,7 @@
   font-size: 0.95rem;
   background-color: #f9fbfd;
   transition: all 0.2s ease;
+  color: black;
 }
 
 .event-modal-form input:focus,
