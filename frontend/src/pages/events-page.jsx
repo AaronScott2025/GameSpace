@@ -26,7 +26,7 @@ import {
   useEventsToGeo,
 } from "../hooks/geolocation.jsx";
 import { useEventswithTags } from "../hooks/events-supabase.jsx";
-
+import { supabase } from "../../client.js";
 import CreateEventModal from "../components/create-event-modal.jsx"; // Import your modal component
 
 import { GiAstronautHelmet } from "react-icons/gi"; // TODO: figure out how to use this icon
@@ -132,6 +132,40 @@ function EventsPage() {
     setUserPositionInfoWindow(false);
   }, [position]); // Dependency ensures it runs when the position changes
 
+  /**
+   * create event fucntionality
+   */
+
+  const handleCreateEvent = async (eventData) => {
+    try {
+      const { data, error } = await supabase
+        .from("events")
+        .insert([
+          {
+            organizer_username: user?.username,
+            event_time: eventData.event_time,
+            title: eventData.title,
+            description: eventData.description,
+            date: eventData.date,
+            street_address: eventData.street_address,
+            location_city: eventData.location_city,
+            location_state: eventData.location_state,
+            is_online: eventData.is_online,
+          },
+        ])
+        .select("event_id");
+
+      if (error) {
+        throw new Error(error.message);
+      }
+      const newEvent = { ...eventData, event_id: data[0].event_id };
+      setFilteredEvents((prevEvents) => [...prevEvents, newEvent]); // Update the filtered events with the new event
+      console.log("Event created successfully:", newEvent);
+    } catch (error) {
+      console.error("Error creating event:", error);
+    }
+  };
+
   // Error handling logic
   const renderErrors = () => {
     const errors = [];
@@ -179,7 +213,7 @@ function EventsPage() {
            * change the tag logic for a better user experience
            * add a loading state when creating an event
            */}
-          <CreateEventModal />
+          <CreateEventModal onSubmit={handleCreateEvent} />
           <div className="events-filter">
             <input
               className="events-filter-checkbox"
