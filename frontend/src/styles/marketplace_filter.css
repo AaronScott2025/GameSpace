@@ -11,7 +11,7 @@
   align-self: flex-start;
   box-sizing: border-box;
   position: sticky;
-  top: 20px;
+  /* top: 20px; */
 }
 
 .filter-title {
