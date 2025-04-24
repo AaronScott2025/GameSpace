@@ -3,16 +3,16 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../../client.js";
 //import { BiSolidJoystickButton } from "react-icons/bi";
 //import { BiSolidDownArrow } from "react-icons/bi";
+//import { GiAstronautHelmet, GiSatelliteCommunication } from "react-icons/gi";
 import { BsJoystick, BsRocket } from "react-icons/bs";
-import { GiAstronautHelmet, GiSatelliteCommunication } from "react-icons/gi";
-import { FaUsers } from "react-icons/fa";
+import { FaUsers,FaMapMarkedAlt, } from "react-icons/fa";
 import { RiAliensFill } from "react-icons/ri";
 import { CiShoppingCart } from "react-icons/ci";
 import { TiMessages } from "react-icons/ti";
-import "./nav-bar.css";
 import useSound from "../hooks/useSound"; // Custom hook
 import { Tooltip } from "react-tooltip";
 import { UserContext } from "../pages/UserContext"; // Import UserContext
+import "./nav-bar.css";
 
 /* FOR NAVBAR U NEED TO ADD THESE TO the PAGES/GUI'S WHERE U WANT THE NAVBAR :
 import Navbar from "../components/nav-bar";
@@ -156,7 +156,7 @@ const Navbar = () => {
                 `${isActive ? "active-link" : ""} nav-party`
               }
             >
-              <GiSatelliteCommunication /> PartyFinder
+              <FaUsers /> PartyFinder
             </NavLink>
           </li>
           <li>
@@ -182,7 +182,7 @@ const Navbar = () => {
                 `${isActive ? "active-link" : ""} nav-events`
               }
             >
-              <FaUsers /> Events
+              <FaMapMarkedAlt /> Events
             </NavLink>
           </li>
           <li>
