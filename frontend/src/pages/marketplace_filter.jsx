@@ -76,9 +76,16 @@ const FilterSection = ({ onTagSelect, onSearch, currentSearchQuery = "", activeF
   };
 
   const handleSearchInputChange = (e) => {
-    setSearchInput(e.target.value);
+    const newSearchValue = e.target.value;
+    setSearchInput(newSearchValue);
+    // Apply search in real-time as user types
+    if (onSearch) {
+      onSearch(newSearchValue);
+    }
   };
 
+  // We can keep the handleSearchSubmit for Enter key presses,
+  // but it's not strictly necessary since search happens in real-time now
   const handleSearchSubmit = (e) => {
     if (e.key === 'Enter' && onSearch) {
       onSearch(searchInput);

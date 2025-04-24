@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "../styles/marketplace-home.css";
 import { supabase } from "../../client.js"; // Shared client
 import FilterSection from "./marketplace_filter.jsx";
@@ -45,6 +45,19 @@ const ListingCard = ({ listing }) => {
       </div>
     </div>
   );
+};
+
+// Simple debounce function to optimize search performance
+const debounce = (func, delay) => {
+  let timeoutId;
+  return function(...args) {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
 };
 
 const Marketplace = () => {
@@ -122,22 +135,19 @@ const Marketplace = () => {
     fetchListings();
   }, []);
 
-  // Combined search and filter logic
-  useEffect(() => {
+  const applyFilters = useCallback(() => {
     if (!allListings.length) return;
 
     let filtered = [...allListings];
 
-    // Apply search query if exists (search in title, description, and tags)
+
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(listing => {
-        // Search in title and username
         const titleMatch = listing.title?.toLowerCase().includes(query);
         const usernameMatch = listing.username?.toLowerCase().includes(query);
         const descriptionMatch = listing.listing_description?.toLowerCase().includes(query);
 
-        // Search in tags
         const tagMatch = listing.tags?.some(tag =>
           tag.toLowerCase().includes(query)
         );
@@ -146,12 +156,10 @@ const Marketplace = () => {
       });
     }
 
-    // Apply tag filters if any exist
     if (activeFilters.length > 0) {
       filtered = filtered.filter(listing => {
         if (!listing.tags) return false;
 
-        // Check if listing has at least one of the active filter tags
         return activeFilters.some(filter =>
           listing.tags.some(tag => tag.toLowerCase() === filter.toLowerCase())
         );
@@ -159,36 +167,35 @@ const Marketplace = () => {
     }
 
     setFilteredListings(filtered);
-    // Reset visible count when filters change
     setVisibleCount(calculateListingsToShow());
   }, [searchQuery, activeFilters, allListings]);
 
-  // Handler for search input from FilterSection
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-  };
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
 
-  // Handler for tag selection from FilterSection
+  const handleSearch = useCallback(
+    debounce((query) => {
+      setSearchQuery(query);
+    }, 300),
+    []
+  );
+
   const handleTagSelect = (tag) => {
     if (!tag) return;
 
-    // Toggle the tag in active filters
     setActiveFilters(prev => {
-      // If the tag is already in the filters, remove it
       if (prev.includes(tag)) {
         return prev.filter(t => t !== tag);
       }
-      // Otherwise, add it
       return [...prev, tag];
     });
   };
 
-  // Remove a specific filter tag
   const removeFilter = (tagToRemove) => {
     setActiveFilters(activeFilters.filter(tag => tag !== tagToRemove));
   };
 
-  // Clear all filters
   const clearAllFilters = () => {
     setActiveFilters([]);
     setSearchQuery("");

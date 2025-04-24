@@ -6,7 +6,7 @@ import Navbar from "../components/nav-bar";
 import { useParams } from "react-router-dom";
 
 const ProductPage = () => {
-  const { id } = useParams(); // 'id' represents the listing_id from the URL
+  const { id } = useParams();
   const [listing, setListing] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);

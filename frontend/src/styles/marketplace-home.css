@@ -5,7 +5,7 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
-  padding-top: 70px;
+  padding-top: 100px;
 }
 
 .product-listings-wrapper {
