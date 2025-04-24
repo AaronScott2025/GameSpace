@@ -133,6 +133,8 @@
   overflow: hidden;
   margin-top: 1rem;
   transition: box-shadow 0.3s ease;
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 .filter-group:hover {
