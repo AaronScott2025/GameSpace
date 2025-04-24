@@ -138,7 +138,8 @@ function EventsPage() {
 
   const handleCreateEvent = async (eventData) => {
     try {
-      const { data, error } = await supabase
+      // Insert the event into the Supabase database
+      const { data: eventInsertData, error: eventInsertError } = await supabase
         .from("events")
         .insert([
           {
@@ -150,17 +151,51 @@ function EventsPage() {
             street_address: eventData.street_address,
             location_city: eventData.location_city,
             location_state: eventData.location_state,
+            location_country: eventData.location_country || "USA", // Default to USA
+            image_url: eventData.image_url || null, // Optional image URL
             is_online: eventData.is_online,
           },
         ])
         .select("event_id");
 
-      if (error) {
-        throw new Error(error.message);
+      if (eventInsertError) {
+        throw new Error(eventInsertError.message);
       }
-      const newEvent = { ...eventData, event_id: data[0].event_id };
-      setFilteredEvents((prevEvents) => [...prevEvents, newEvent]); // Update the filtered events with the new event
-      console.log("Event created successfully:", newEvent);
+
+      const newEventId = eventInsertData[0].event_id;
+
+      // Insert tags into the event_event_tags table
+      if (eventData.tags && eventData.tags.length > 0) {
+        const { data: tagIds, error: tagFetchError } = await supabase
+          .from("event_tags")
+          .select("tag_id")
+          .in("tag_name", eventData.tags);
+
+        if (tagFetchError) {
+          throw new Error(tagFetchError.message);
+        }
+
+        const tagInsertData = tagIds.map((tag) => ({
+          event_id: newEventId,
+          tag_id: tag.tag_id,
+        }));
+
+        const { error: tagInsertError } = await supabase
+          .from("event_event_tags")
+          .insert(tagInsertData);
+
+        if (tagInsertError) {
+          throw new Error(tagInsertError.message);
+        }
+      }
+
+      // Update the local state with the new event
+      const newEvent = {
+        ...eventData,
+        event_id: newEventId,
+        tags: eventData.tags || [],
+      };
+      setFilteredEvents((prevEvents) => [...prevEvents, newEvent]);
     } catch (error) {
       console.error("Error creating event:", error);
     }
