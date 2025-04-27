@@ -321,14 +321,14 @@ const HomePage = () => {
             <button className="close-button" onClick={closeUserPopup}>
               X
             </button>
-            <button
+            {/* <button
               className="background-toggle-button"
               onClick={() => setIsBlueBackground((prev) => !prev)}
             >
               {isBlueBackground
                 ? "Switch to White Background"
                 : "Switch to Blue Background"}
-            </button>
+            </button> */}
             <div className="popup-profile-info">
               <div className="profile-header">
                 {selectedUser.profiles?.profile_pic && (
