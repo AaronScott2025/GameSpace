@@ -1,0 +1,383 @@
+/*///////////////////////////////////////////////////////*/
+/*////////Profile Container (info / sign out)////////////*/
+.profileinfo-container {
+  position: fixed;
+  bottom: 9px;
+  left: 18px;
+  border: 3px solid #000000;
+  background: linear-gradient(to bottom, #d3d3d3, #ffffff);
+  padding: 55px 125px;
+  border-radius: 0px;
+  text-align: center;
+  font-size: 20px;
+  width: 90px;
+}
+.profileinfo-container p {
+  margin: 10px 0;
+  color: black; /* Set text color to black */
+}
+.profileinfo-container button {
+  font-size: 20px;
+  font-family: "Jersey 10", sans-serif;
+  margin-top: 10px;
+  width: 90%;
+  padding: 5px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.profileinfo-container button:hover {
+  background-color: #cc0000;
+}
+@media (max-width: 1206px) {
+  .profileinfo-container {
+    padding: 40px 100px; /* Reduce padding */
+    width: 80px; /* Adjust width */
+    font-size: 15px; /* Slightly smaller font */
+  }
+  .profileinfo-container button {
+    font-size: 18px;
+    padding: 4px;
+  }
+}
+@media (max-width: 999px) {
+  .profileinfo-container {
+    padding: 60px 65px; /* Reduce padding */
+    width: 70px; /* Adjust width */
+    font-size: 14px; /* Decrease font size */
+  }
+  .profileinfo-container button {
+    font-size: 16px; /* Reduce button text size */
+    padding: 3px;
+  }
+}
+@media (max-width: 900px) {
+  .profileinfo-container {
+    padding: 50px 48px; /* Reduce padding */
+    width: 60px; /* Adjust width */
+    font-size: 13px;
+  }
+  .profileinfo-container button {
+    font-size: 15px;
+    padding: 3px;
+  }
+}
+@media (max-width: 666px) {
+  .profileinfo-container {
+    padding: 45px 30px; /* Reduce padding even more */
+    width: 50px; /* Make it even smaller */
+    font-size: 12px;
+  }
+  .profileinfo-container button {
+    font-size: 14px;
+    padding: 2px;
+  }
+}
+
+/*//////////////////////////////////////////////////*/
+/*//////////Post Container - toggle & Post//////////*/
+/* .toggle-post-button {
+  position: fixed;
+  bottom: 25px;
+  left: 410px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 4px 9px;
+  cursor: pointer;
+  font-size: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+.toggle-post-button:hover {
+  background-color: #0056b3;
+} */
+
+/* Post Container - Post Textbox, Image, and Post Button */
+.post-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 54.5vw;
+  height: auto;
+  min-height: 10vh;
+  padding: 10px;
+  border: 1px solid #000000;
+  background: linear-gradient(to bottom, #666666, #d2d2d2);
+  border-radius: 10px 10px 0 0;
+  position: fixed;
+  top: 83px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+.post-input-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  gap: 15px; /* space between textarea and buttons */
+}
+
+.post-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+
+.post-content {
+  font-size: 13px;
+  font-family: "Jersey 10", sans-serif;
+  width: 93%;
+  height: 85px; /* Increased height */
+  padding: 10px;
+  border-radius: 0px;
+  border: 1px solid #ddd;
+  margin-bottom: auto;
+  font-size: 16px;
+  display: flex;
+  resize: none;
+  text-align: left;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  color: #303030;
+  flex: 1;
+  z-index: 0;
+}
+
+/* Custom file input button */
+.custom-file-button {
+  background: #007bff;
+  color: white;
+  padding: 8px 33px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  display: inline-block;
+  margin-top: auto;
+  margin-left: auto; /* Center  */
+  margin-right: auto; /* Center  */
+}
+.custom-file-button:hover {
+  background-color: #0056b3;
+}
+/* 'No file chosen' text */
+.post-image-info {
+  font-size: 18px;
+  margin-top: auto; /* Space below the input */
+  color: #303030; /* Lighter text color */
+  margin-left: auto; /* Center horizontally */
+  margin-right: auto; /* Center horizontally */
+}
+/* Styling for the "Post/submit" button */
+.post-button {
+  font-size: 16px;
+  font-family: "Jersey 10", sans-serif;
+  background: #007bff;
+  color: white;
+  padding: 12px 55px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top:auto;
+  margin-left: auto; /* Center horizontally */
+  margin-right: auto; /* Center horizontally */
+  display: block;
+}
+.post-button:hover {
+  background: #0056b3;
+}
+/* Remove/Hide default file button it from the layout flow */
+.post-image-input {
+  display: none; /* Hide the file input */
+  position: absolute; /* Remove it from the layout flow */
+  opacity: 0; /* Make it fully transparent */
+}
+
+/*//////////////////////////////////////////////////*/
+/* Local Event Box */
+.localevents-container {
+  position: fixed;
+  top: 83px; /* Align with media-container */
+  left: calc(50% + 26.35vw); /* Position it next to media-container */
+  width: 20.4vw;
+  height: 400px;
+  padding: 15px;
+  border: 3px solid #000000;
+  background: linear-gradient(to bottom, #7a7a7a, #a7a7a7, #ededed);
+  border-radius: 0px;
+  transition: transform 0.3s ease;
+  overflow: hidden;
+}
+.localevents-container h1 {
+  margin: 1px 0; /* Reduce spacing around the title */
+  text-align: center;
+  font-size: 30px;
+}
+
+.localeventsscroll-box {
+  width: 100%;
+  height: 90%; /* Make it take full height of parent */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-right: 7px; /* Prevents scrollbar from overlapping content */
+}
+.localeventsscroll-box::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+.localevent-box {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  color: black;
+  padding: 5px;
+  border: 2px solid #000;
+  font-size: 16px;
+  font-weight: bold;
+  width: 100%;
+  box-sizing: border-box;
+}
+.localevent-content {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+/*/////////////////////////////////////////////////////*/
+/*////////////////Media Container//////////////////////*/
+/*  border: 1px solid #000000;
+border-radius: 0px;
+background: linear-gradient(to bottom, #737373, #a4a4a4, #d2d2d2, #ffffff); */
+.media-container {
+  position: fixed;
+  top: 29vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  width: 56vw;
+  height: calc(85vh - 50px - 08vh);
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 15px;
+  background: linear-gradient(to bottom, #737373, #a4a4a4, #d2d2d2, #ffffff);
+  border: 1px solid #000000;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+}
+
+.mediascroll-box {
+  width: 100%;
+  height: 100%;
+  background-color: #d3d3d3;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 0px;
+  padding: 5px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.media-box {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  background-color: rgb(255, 255, 255);
+  color: black;
+  padding: 5px;
+  border: 2px solid #000000;
+  border-radius: 0px;
+  font-size: 20px;
+  font-weight: bold;
+  width: 100%;
+  box-sizing: border-box;
+}
+.media-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 50%;
+  padding-right: 20px;
+  margin-right: -100px;
+}
+.username {
+  font-weight: bold;
+  font-size: 25px;
+  width: 20%;
+  margin-bottom: 15px;
+}
+.media-user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border:1px black;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-left:10px;
+  margin-right: 5px;
+  object-fit: cover;
+  border: 1px black;
+}
+.mediapost-content {
+  margin-top: auto;
+}
+.media-image {
+  height: 200px;
+  width: 400px;
+  object-fit: contain;
+  border-radius: 5px;
+  margin-left: 90px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-bottom: 0;
+}
+@media (max-width: 768px) {
+  .media-image {
+    height: 100px;
+    width: 100%;
+  }
+}
+
+/*//////////////////////////////////////////////////*/
+/*////////////// Refresh Button //////////////////*/
+.pagination-buttons {
+  margin-top: 9px;
+}
+.pagination-buttons button {
+  font-size: 16px;
+  font-family: "Jersey 10", sans-serif;
+  margin: 0px;
+  padding: 12px 15px;
+  border: none;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+.pagination-buttons button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+.pagination-buttons button:hover:not(:disabled) {
+  background: #0056b3;
+}
+

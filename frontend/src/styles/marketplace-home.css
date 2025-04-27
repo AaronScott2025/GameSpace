@@ -1,0 +1,163 @@
+/* Overall container for the marketplace */
+.marketplace-container {
+  width: 100%;
+  height: 100vh;
+  padding: 50px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  padding-top: 70px;
+}
+
+.product-listings-wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.product-listings {
+  flex-grow: 1;
+  padding: 2rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.product-listings::-webkit-scrollbar {
+  width: 8px;
+}
+
+.product-listings::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.product-listings::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.product-listings::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.product-listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+  justify-content: center;
+}
+
+@media (min-width: 1200px) {
+  .product-listings-grid {
+    grid-template-columns: repeat(4, minmax(220px, 1fr));
+  }
+}
+
+@media (min-width: 1600px) {
+  .product-listings-grid {
+    grid-template-columns: repeat(5, minmax(220px, 1fr));
+  }
+}
+
+@media (min-width: 1900px) {
+  .product-listings-grid {
+    grid-template-columns: repeat(6, minmax(220px, 1fr));
+  }
+}
+
+.listing-card {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.listing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.listing-picture {
+  background-color: #e0e0e0;
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #555;
+}
+
+/* Listing info container */
+.listing-info {
+  background-color: #0074e4;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.listing-info h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Seller and Price container */
+.seller-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.seller-price .seller {
+  font-size: 1.1rem;
+}
+
+.seller-price .price {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #ffd700;
+}
+
+.listing-card.placeholder {
+  background-color: #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #555;
+  font-style: italic;
+}
+
+.load-more-container {
+  text-align: center;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.load-more-container button {
+  background: var(--neutral-bg, #888888);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px 15px;
+  border: none;
+  border-radius: var(--border-radius, 10px);
+  cursor: pointer;
+  transition: background 0.3s ease-in-out, transform 0.3s ease;
+  margin: 0 auto;
+  display: block;
+  font-family: inherit;
+}
+
+.load-more-container button:hover {
+  background: var(--accent-color, #eeff00);
+  color: black;
+  transform: translateY(-2px);
+}

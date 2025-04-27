@@ -1,0 +1,117 @@
+.layout-container {
+  display: flex;
+  justify-content: flex-start;
+  margin: 0;
+}
+
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-family: "Jersey 10", sans-serif;
+  margin: 50px;
+}
+
+.signup-logo-container {
+  display: auto;
+  margin: 0 auto;
+}
+.logo-text {
+  font-size: 7rem;
+  color: #ffff00;
+  position: absolute;
+  top: 6%;
+  width: 100%;
+  line-height: 1.1; /* Reduce space between lines */
+  font-family: "Jersey 10", sans-serif;
+}
+
+.planet-logo {
+  width: 500px;
+  height: auto;
+  z-index: 0; /* Keep the planet behind the title */
+  object-fit: contain;
+  animation: float 6s ease-in-out infinite;
+}
+.signup-form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-family: "Jersey 10", sans-serif;
+  color: #d3f114;
+  margin: 50px;
+  width: 100%;
+  background-color: #9237cf;
+  border-radius: 10px;
+  box-shadow: 0 0 10px 5px #38035075;
+}
+.signup-form-container h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #d3f114;
+  text-align: center;
+  font-family: "Jersey 10", sans-serif;
+}
+.signup-form,
+.login-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  margin: 20px;
+}
+
+.login-textfield-email,
+.login-textfield-password,
+.signup-username-tf,
+.signup-email-tf,
+.signup-password-tf {
+  font: inherit;
+  border-radius: 25px;
+  width: 100%; /* Make the width responsive */
+  max-width: 200px; /* Set a maximum width */
+  height: 30px;
+  padding: 5px 10px; /* Add padding for better readability */
+  font-size: 1rem; /* Adjust the font size */
+  letter-spacing: 0.2rem; /* Add letter spacing */
+  border: 2px solid #325f54;
+  margin-bottom: 1rem;
+  color: black;
+  background-color: #ffffff;
+}
+.form h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+.form-input::placeholder {
+  font-size: 1.2rem; /* Adjust the font size as needed */
+  text-align: center;
+}
+.login-button,
+.signup-button,
+.create-account-button,
+.go-to-login-btn {
+  font: inherit;
+  border-radius: 25px;
+  width: 200px;
+  max-width: 200px; /* Set a maximum width */
+  height: 30px;
+  text-align: center;
+  border: 2px solid #325f54;
+  margin-bottom: 1rem;
+  color: black;
+  background-color: #ffffff;
+  font-size: 1.2rem;
+}
+
+.login-button:hover,
+.signup-button:hover,
+.create-account-button:hover,
+.go-to-login-btn:hover {
+  background-color: #4b15a1be;
+  color: #d3f114;
+}

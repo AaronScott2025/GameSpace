@@ -1,11 +1,13 @@
 import { React } from "react";
 //import Header from "../components/header";
 import "../styles/landing-page.css";
-import {GiAstronautHelmet,GiWhistle, GiSatelliteCommunication,} from "react-icons/gi";
-import { FaUsers } from "react-icons/fa";
+import {GiAstronautHelmet, GiSatelliteCommunication,} from "react-icons/gi";
+import { FaUsers,FaMapMarkedAlt, } from "react-icons/fa";
 import { CiShoppingCart } from "react-icons/ci";
 import { BsRocket } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import { RiAliensFill } from "react-icons/ri";
+import { TiMessages } from "react-icons/ti";
 
 /*<Header />*/
 const LandingPage = () => {
@@ -16,6 +18,9 @@ const LandingPage = () => {
   const goToLogin = () => {
     navigate("/login"); // Navigate to Login page
   };
+  const goToMarket = () => {
+    navigate("/marketplace")
+  }
   return (
     <div className="landing-page">
       <div className="planet-container">
@@ -24,6 +29,10 @@ const LandingPage = () => {
           {" "}
           G A M E <br /> S P A C E{" "}
         </h1>
+        <div className="icon messages">
+          <TiMessages size={50} />
+          <span className="tooltip">Messages</span>
+        </div>
         <div className="icon rocket" onClick={goToHome}>
           <BsRocket size={50} />
           <span className="tooltip">Home</span>
@@ -32,20 +41,20 @@ const LandingPage = () => {
           <GiAstronautHelmet size={50} />
           <span className="tooltip">LogIn</span>
         </div>
-        <div className="icon store">
+        <div className="icon store" onClick={goToMarket}>
           <CiShoppingCart size={50} />
           <span className="tooltip">Market</span>
         </div>
         <div className="icon clan">
-          <FaUsers size={50} />
-          <span className="tooltip">Clans</span>
+          <FaMapMarkedAlt size={50} />
+          <span className="tooltip">Events</span>
         </div>
         <div className="icon whistle">
-          <GiWhistle size={50} />
-          <span className="tooltip">Coaching</span>
+          <RiAliensFill  size={50} />
+          <span className="tooltip">Chatbot</span>
         </div>
         <div className="icon frens">
-          <GiSatelliteCommunication size={50} />
+          <FaUsers size={50} />
           <span className="tooltip">PartyFinder</span>
         </div>
       </div>

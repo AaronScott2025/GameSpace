@@ -3,10 +3,15 @@ import LandingPage from "./pages/landing-page";
 import LoginPage from "./pages/login-page";
 import SignupPage from "./pages/signup-page";
 import HomePage from "./pages/home-page";
+import DuoMatchmakerPage from "./pages/duo-matchmaker-page";
 import ChatBot from "./pages/chat-bot";
-
+import DMPage from "./pages/dm-page";
 import Wrapper from "./pages/Wrapper";
 import AccountPage from "./pages/account-page";
+import Marketplace from "./pages/marketplace-home";
+import ProductPage from "./pages/product-page";
+import ErrorPage from "./pages/error-page";
+import EventsPage from "./pages/events-page";
 import "./App.css";
 
 function App() {
@@ -24,15 +29,34 @@ function App() {
       element: <SignupPage />,
     },
     {
-      path: "/chatbot", 
-      element: 
-      <Wrapper>
-        <ChatBot />
-      </Wrapper>},
-      {
-      path: "/account",
-      element: < AccountPage/>,
+      path: "/chatbot",
+      element: (
+        <Wrapper>
+          <ChatBot />
+        </Wrapper>
+      ),
     },
+    {
+      path: "/dm-page",
+      element: (
+        <Wrapper>
+          <DMPage />
+        </Wrapper>
+      ),
+    },
+    {
+      path: "/account",
+      element: <AccountPage />,
+    },
+    {
+      path: "/marketplace",
+      element: (
+        <Wrapper>
+          <Marketplace />,
+        </Wrapper>
+      ),
+    },
+
     {
       path: "/home",
       element: (
@@ -40,6 +64,30 @@ function App() {
           <HomePage />
         </Wrapper>
       ),
+    },
+    {
+      path: "/partyfinder",
+      element: <DuoMatchmakerPage />,
+    },
+    {
+      path: "/item/:id", // <-- Add this route for item details
+      element: (
+        <Wrapper>
+          <ProductPage />,
+        </Wrapper>
+      ),
+    },
+    {
+      path: "/events",
+      element: (
+        <Wrapper>
+          <EventsPage />
+        </Wrapper>
+      ),
+    },
+    {
+      path: "*",
+      element: <ErrorPage />,
     },
   ]);
 

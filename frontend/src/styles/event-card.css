@@ -1,0 +1,94 @@
+/* Update your event-card.css file with these styles */
+
+.events-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  --background-color: rgba(255, 255, 255, 0.95);
+  --color-text: #044999;
+
+  background-color: var(--background-color);
+  color: var(--color-text);
+
+  border-radius: 12px;
+  margin: 0;
+
+  max-width: 100%;
+
+  text-align: left;
+  box-sizing: border-box;
+  padding: 12px; /* Increased padding for better spacing */
+}
+.events-card.selected {
+  border: 2px solid #4285f4;
+  background-color: #406ea2;
+  color: #fff;
+}
+
+.events-card-link h3:hover {
+  text-decoration: underline;
+  text-decoration-color: #0074e4;
+}
+
+.events-card-content {
+  width: 100%;
+}
+
+.events-card-header-and-date {
+  display: flex;
+  gap: 1rem;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 0;
+}
+
+.events-card-header-and-date h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  /* Allow title to wrap if too long */
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.events-card-header-and-date time {
+  white-space: nowrap; /* Keep date on one line */
+}
+
+.events-tags {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping to the next row */
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0;
+  width: 100%; /* Ensure it takes the full width of the parent */
+}
+
+.tags {
+  background-color: #0074e4;
+  padding: 0.3rem 0.6rem;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.8rem; /* Slightly smaller font size */
+  text-align: center;
+  white-space: nowrap; /* Prevent text from breaking inside tags */
+  box-sizing: border-box; /* Include padding in width calculation */
+
+  /* Fix for the layout issue - remove the flex properties that force 3 per row */
+  display: inline-block;
+  flex: none;
+  max-width: none;
+}
+
+.events-location {
+  padding: 0.5rem 0;
+  word-break: break-word; /* Allow long addresses to wrap */
+}

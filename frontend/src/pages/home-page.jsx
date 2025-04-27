@@ -1,55 +1,72 @@
 import Navbar from "../components/nav-bar";
+import PostSignupPopup from "../components/postSignupPopup.jsx";
 import "/src/styles/home-page.css";
-import React, { useContext, useState, useEffect, useRef } from "react";
+import { BsFillPostcardFill } from "react-icons/bs";
+import { useContext, useState, useEffect, useRef } from "react";
 import { supabase } from "../../client";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "./UserContext.jsx";
-import axios from "axios";
-
-const items = [
-  { id: 1, title: "Item 1", description: "This is the first item.", image: "../public/planet.png" },
-  { id: 2, title: "Item 2", description: "This is the second item.", image: "../public/planet.png" },
-  { id: 3, title: "Item 3", description: "This is the third item.", image: "../public/planet.png" },
-  { id: 4, title: "Item 4", description: "This is the fourth item.", image: "../public/planet.png" },
-  { id: 5, title: "Item 5", description: "This is the fifth item.", image: "../public/planet.png" },
-  { id: 6, title: "Item 6", description: "This is the sixth item.", image: "../public/planet.png" },
-  { id: 7, title: "Item 7", description: "This is the seventh item.", image: "../public/planet.png" },
-  { id: 8, title: "Item 8", description: "This is the seventh item.", image: "../public/planet.png" },
-  { id: 9, title: "Item 9", description: "This is the seventh item.", image: "../public/planet.png" },
-  { id: 10, title: "Item 10", description: "This is the seventh item.", image: "../public/planet.png" },
-  { id: 11, title: "Item 11", description: "This is the seventh item.", image: "../public/planet.png" },
-  { id: 12, title: "Item 12", description: "This is the seventh item.", image: "../public/planet.png" },
-  { id: 13, title: "Item 13", description: "This is the seventh item.", image: "../public/planet.png" },
-  { id: 14, title: "Item 14", description: "This is the seventh item.", image: "../public/planet.png" },
-];
+import { UserContext } from "./UserContext";
+import useSound from "../hooks/useSound"; // Custom hook
 
 const HomePage = () => {
+  //////////////////////////////////////////////////////////////
+  ///////////////To navigate pages//////////////////////////////
   const navigate = useNavigate();
 
+  //////////////////////////////////////////////////////////////
+  //////////////Toggle post container///////////////////////
+  const [isPostContainerOpen, setIsPostContainerOpen] = useState(false); // manage post container visibility
+  const togglePostContainer = () => {
+    setIsPostContainerOpen((prevState) => !prevState); // Toggle the visibility
+  };
+
+  //////////////////////////////////////////////////////////////
+  //////////////Sign out functionality///////////////////////
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
     navigate("/login");
   };
+  //////////////////////////////////////////////////////////////
+  //////////////For linking different sounds to functions///////////////////////
+    const mouseClickSound = useSound("/sounds/mouse-click.mp3");
+    const gameStartSound = useSound("/sounds/game-start.mp3");
+    const blipSound = useSound("/sounds/blip.mp3");
 
-  const [data, setData] = useState([]); // Store the fetched posts
-  const [nextOffset, setNextOffset] = useState(0); // Start with an initial offset
+    //////////////////////////////////////////////////////////////
+  //////////////Preview Profile Handler///////////////////////
+  // const [selectedUser, setSelectedUser] = useState(null);
+  // const [showUserPopup, setShowUserPopup] = useState(false);
+  // const handleUsernameClick = (user) => {
+  //   setSelectedUser(user);
+  //   setShowUserPopup(true);
+  //   mouseClickSound.volume = 0.1;
+  //   mouseClickSound.play();
+  // };
+
+  //////////////////////////////////////////////////////////////
+  //////////////Fetch data functionality///////////////////////
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  const fetchPosts = async (offset) => {
+  // Fetch posts from Supabase
+  const fetchPosts = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`/api/mediaGet/?offset=${offset}`);
-      console.log(response.data); // Log the response data
-      const result = response.data;
-
-      if (result.posts) {
-        setData((prevData) => [...prevData, ...result.posts]); // Append new posts to existing data
-        setNextOffset((prevOffset) => prevOffset + 5); // Update the next offset for pagination
+      let { data: posts, error } = await supabase
+        .from("post")
+        .select(`
+          *,
+          profiles (
+            profile_pic
+          )
+        `)
+        .order("created_at", { ascending: false }); // (newest first)
+      if (error) {
+        setError(error.message);
       } else {
-        setError(result.message || "Failed to fetch posts");
+        setData(posts);
       }
     } catch (err) {
       setError("Error fetching data");
@@ -57,59 +74,181 @@ const HomePage = () => {
       setLoading(false);
     }
   };
-
-  // Fetch data when the component mounts
   useEffect(() => {
-    fetchPosts(0); // Start with offset 0 when the component mounts
+    fetchPosts();
   }, []);
-
   const scrollBoxRef = useRef(null);
 
-  // Handle "Load More" functionality
-    const loadMore = async () => {
-      if (!loading && scrollBoxRef.current) {
-        const scrollBox = scrollBoxRef.current;
-        const prevScrollHeight = scrollBox.scrollHeight;
-        const prevScrollTop = scrollBox.scrollTop;
-    
-        await fetchPosts(nextOffset); // Fetch new posts
-    
-        requestAnimationFrame(() => {
-          // Maintain position relative to new content height
-          scrollBox.scrollTop = scrollBox.scrollHeight - prevScrollHeight + prevScrollTop;
-        });
-      }
-    };
+  //////////////////////////////////////////////////////////////
+  //////////////Refresh functionality///////////////////////
+  const refreshPosts = async () => {
+    fetchPosts(); // Refresh the list of posts
+  };
 
+  //////////////////////////////////////////////////////////////
+  //////////////Post (send) functionality///////////////////////
+  const [postContent, setPostContent] = useState("");
+  const handleContentChange = (e) => {
+    setPostContent(e.target.value);
+  };
+
+  // Post image state
+  const [postImage, setPostImage] = useState(null);
+  const handleImageChange = (e) => {
+    setPostImage(e.target.files[0]);
+  };
+
+  // Function for image upload
+  const uploadImage = async (image) => {
+    try {
+      // Generate file
+      const fileExt = image.name.split(".").pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `post-attachments/${fileName}`;
+      // Upload image to db
+      const { error: uploadError } = await supabase.storage
+        .from("post-attachments")
+        .upload(filePath, image);
+      if (uploadError) {
+        console.error("Image upload error:", uploadError.message);
+        alert("Failed to upload image.");
+        return null;
+      }
+      // Get URL of uploaded image
+      const { data } = supabase.storage
+        .from("post-attachments")
+        .getPublicUrl(filePath);
+      return data.publicUrl;
+    } catch (error) {
+      console.error("Unexpected upload error:", error);
+      alert("Something went wrong while uploading the image.");
+      return null;
+    }
+  };
+  //////////////////////////////////////////////////////////////
+  ////////////Function to handle post submission////////////////
+  const handlePostClick = async () => {
+    if (!postContent.trim() && !postImage) {
+      alert("Please add some content or an image before posting.");
+      return;
+    }
+    let imageUrl = null;
+    // If there is an image, upload it first
+    if (postImage) {
+      imageUrl = await uploadImage(postImage);
+      if (!imageUrl) return; // If upload fails, stop the post creation process
+    }
+    try {
+      // Insert post data into table
+      const { error: insertError } = await supabase.from("post").insert([
+        {
+          username: user.username, // Uses logged-in user
+          post_content: postContent,
+          post_attachment: imageUrl, // Can be null if no image
+        },
+      ]);
+      if (insertError) {
+        console.error("Post insert error:", insertError.message);
+        alert("Failed to create post.");
+        return;
+      }
+      // Success or error message
+      gameStartSound.play(0.5);
+      alert("Post created successfully!");
+      setPostContent("");
+      setPostImage(null);
+      //fetchPosts(); // Refresh posts
+    } catch (error) {
+      console.error("Unexpected post error:", error);
+      alert("Something went wrong while creating the post.");
+    }
+  };
+
+  //////////////////////////////////////////////////////////////
+  ///////////////////For user context///////////////////////////
   const { user } = useContext(UserContext);
   if (!user) {
     return <div>Loading...</div>;
   }
 
+  //////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////
+
+  
+
   return (
     <div>
-      <Navbar />
+      <PostSignupPopup />
+      {/* Profile info section */}
+      {/* Toggle Button */}
+      <button onClick={togglePostContainer} className="toggle-post-button">
+        <BsFillPostcardFill size={30} /> {/* Icon for the button */}
+      </button>
 
-      <div className="profileinfo-container">
-        <h1>Welcome to the Home Page!</h1>
-        <h1>Logged in as: </h1>
-        <div className="profileinfo-box">
-          <p>Username: {user.username}</p>
-          <p>Email: {user.email}</p>
-          <button onClick={signOut}>sign Out</button>
+      {/* Left side container for posting, conditional rendering */}
+      {/* {isPostContainerOpen && (
+        
+      )} */}
+
+      <div className="post-container">
+        <div className="post-input-row">
+          <textarea
+            className="post-content"
+            placeholder="Type your post here..."
+            value={postContent}
+            onChange={handleContentChange}
+          />
+          <div className="post-controls">
+            <label htmlFor="file-input" className="custom-file-button">
+              Choose File
+            </label>
+            <input
+              type="file"
+              id="file-input"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="post-image-input"
+            />
+            <span className="post-image-info">
+              {postImage ? postImage.name : " No file chosen"}
+            </span>
+            <button onClick={handlePostClick} className="post-button">
+              Post
+            </button>
+          </div>
         </div>
       </div>
 
+      {/* Media container displaying posts */}
       <div className="media-container">
-        <h1>Media Posts</h1>
         <div ref={scrollBoxRef} className="mediascroll-box">
           {loading ? (
             <p>Loading data...</p>
           ) : data && data.length > 0 ? (
             data.map((item, index) => (
               <div key={index} className="media-box">
-                <span className = "username">{item.username}</span> {/* Display username */}
-                <p className = "mediapost-content">{item.post_content}</p> {/* Display post content */}
+                <div className="media-left">
+                  <div className="media-user-info">
+                    {item.profiles?.profile_pic && (
+                      <img
+                        src={item.profiles.profile_pic}
+                        alt="Profile"
+                        className="profile-pic"
+                      />
+                    )}
+                    <span className="username">{item.username}
+
+                    </span>
+                  </div>
+                  <p className="mediapost-content">{item.post_content}</p>
+                </div>
+                {item.post_attachment && (
+                  <img
+                    src={item.post_attachment}
+                    alt="Attachment"
+                    className="media-image"
+                  />
+                )}
               </div>
             ))
           ) : (
@@ -117,29 +256,17 @@ const HomePage = () => {
           )}
         </div>
 
+        {/* Refresh button */}
         <div className="pagination-buttons">
-          <button onClick={loadMore} disabled={loading}>
-            {loading ? "Loading..." : "Load More"}
+          <button
+            onClick={() => {
+              refreshPosts();
+              blipSound.play(0.5);
+            }}
+            disabled={loading}
+          >
+            {loading ? "Refreshing..." : "Refresh"}
           </button>
-        </div>
-      </div>
-
-      <div className="localevents-container">
-        <h1>Local Events</h1>
-        <div className="localeventsscroll-box">
-          {items.map((item) => (
-            <div key={item.id} className="localevent-box">
-              <img
-                src={item.image}
-                alt={item.title}
-                className="localevent-image"
-              />
-              <div className="localevent-content">
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </div>
