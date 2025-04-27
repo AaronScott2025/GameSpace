@@ -1,5 +1,5 @@
 import React from "react";
-import PreferencesForm from "../components/matchmaking-components/match-form";
+import MatchmakingForm from "../components/matchmaking-components/match-form";
 import { useState } from "react";
 function MatchmakingFormPage() {
   const [userPreferences, setUserPreferences] = useState(null);
@@ -8,9 +8,10 @@ function MatchmakingFormPage() {
     setUserPreferences(preferences);
   };
   return (
-    <>
-      <PreferencesForm onSubmit={handlePreferencesSubmit} />
-    </>
+    <div className="matchmaking-form-page">
+      <h1>Matchmaking Form</h1>
+      <MatchmakingForm onSubmit={handlePreferencesSubmit} />
+    </div>
   );
 }
 
