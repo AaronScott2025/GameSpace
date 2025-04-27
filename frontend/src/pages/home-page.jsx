@@ -35,14 +35,24 @@ const HomePage = () => {
 
     //////////////////////////////////////////////////////////////
   //////////////Preview Profile Handler///////////////////////
-  // const [selectedUser, setSelectedUser] = useState(null);
-  // const [showUserPopup, setShowUserPopup] = useState(false);
-  // const handleUsernameClick = (user) => {
-  //   setSelectedUser(user);
-  //   setShowUserPopup(true);
-  //   mouseClickSound.volume = 0.1;
-  //   mouseClickSound.play();
-  // };
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showUserPopup, setShowUserPopup] = useState(false);
+  
+  const handleUsernameClick = (username) => {
+    // Find the clicked user's full info from the data array
+    const userData = data.find((item) => item.username === username);
+    if (userData) {
+      setSelectedUser(userData);
+      setShowUserPopup(true);
+      mouseClickSound.volume = 0.1;
+      mouseClickSound.play();
+    }
+  };
+
+  const closeUserPopup = () => {
+    setSelectedUser(null);
+    setShowUserPopup(false);
+  };
 
   //////////////////////////////////////////////////////////////
   //////////////Fetch data functionality///////////////////////
@@ -59,7 +69,8 @@ const HomePage = () => {
         .select(`
           *,
           profiles (
-            profile_pic
+            profile_pic,
+            bio
           )
         `)
         .order("created_at", { ascending: false }); // (newest first)
@@ -236,8 +247,10 @@ const HomePage = () => {
                         className="profile-pic"
                       />
                     )}
-                    <span className="username">{item.username}
-
+                    <span className="username" 
+                    onClick={() => handleUsernameClick(item.username)}
+                     style={{ cursor: "pointer" }}>
+                    {item.username}
                     </span>
                   </div>
                   <p className="mediapost-content">{item.post_content}</p>
@@ -269,6 +282,30 @@ const HomePage = () => {
           </button>
         </div>
       </div>
+      {showUserPopup && selectedUser && (
+  <div className="popup-overlay" onClick={closeUserPopup}>
+    <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+      <button className="close-button" onClick={closeUserPopup}>X</button>
+      <div className="popup-profile-info">
+        <div className="profile-header">
+          {selectedUser.profiles?.profile_pic && (
+            <img
+              src={selectedUser.profiles.profile_pic}
+              alt="Profile"
+              className="popup-profile-pic"
+            />
+          )}
+          <h2 className="popup-username">{selectedUser.username}</h2>
+        </div>
+        <p className="user-bio">{selectedUser.profiles?.bio || "No bio available."}</p>
+
+        <button className="message-button">
+          Send Message
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };
