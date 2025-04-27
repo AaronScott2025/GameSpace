@@ -69,9 +69,14 @@ const HomePage = () => {
         .select(`
           *,
           profiles (
-            profile_pic,
-            bio
-          )
+      profile_pic,
+      bio,
+      steam_link,
+      Epic_link,
+      PSN_link,
+      Xbox_link,
+      Discord_link
+    )
         `)
         .order("created_at", { ascending: false }); // (newest first)
       if (error) {
@@ -297,7 +302,30 @@ const HomePage = () => {
           )}
           <h2 className="popup-username">{selectedUser.username}</h2>
         </div>
+
         <p className="user-bio">{selectedUser.profiles?.bio || "No bio available."}</p>
+
+        {/* Linked Services */}
+        <div className="linked-services">
+  <h3>Linked Services</h3>
+  <ul>
+    {selectedUser.profiles?.steam_link && (
+      <li><strong>Steam:</strong> <span>{selectedUser.profiles.steam_link}</span></li>
+    )}
+    {selectedUser.profiles?.Epic_link && (
+      <li><strong>Epic Games:</strong> <span>{selectedUser.profiles.Epic_link}</span></li>
+    )}
+    {selectedUser.profiles?.PSN_link && (
+      <li><strong>PSN:</strong> <span>{selectedUser.profiles.PSN_link}</span></li>
+    )}
+    {selectedUser.profiles?.Xbox_link && (
+      <li><strong>Xbox:</strong> <span>{selectedUser.profiles.Xbox_link}</span></li>
+    )}
+    {selectedUser.profiles?.Discord_link && (
+      <li><strong>Discord:</strong> <span>{selectedUser.profiles.Discord_link}</span></li>
+    )}
+  </ul>
+</div>
 
         <button className="message-button">
           Send Message
