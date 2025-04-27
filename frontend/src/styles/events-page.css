@@ -28,10 +28,33 @@
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
+
+.events-cards-wrapper {
+  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 75vh; /* Limit the height for scrolling */
+}
+
+.events-cards-wrapper::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+.events-cards-wrapper::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Color of the scrollbar thumb */
+  border-radius: 4px; /* Rounded corners */
+}
+
+.events-cards-wrapper::-webkit-scrollbar-track {
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.1
+  ); /* Background of the scrollbar track */
+}
+
 .events-sidebar {
   min-width: 35vh;
   max-width: 40vh;
-
   margin-top: 35px;
   background: linear-gradient(135deg, #0074e4 0%, #044999 100%);
   padding: 1.8rem 1.2rem;
@@ -44,25 +67,24 @@
   position: sticky;
   top: 20px;
   max-height: 75vh;
+  overflow: hidden; /* Prevent content from overflowing the sidebar */
+}
+
+.events-cards-wrapper {
   overflow-y: auto; /* Enable vertical scrolling */
-}
-.events-sidebar::-webkit-scrollbar {
-  width: 8px; /* Width of the scrollbar */
-}
-
-.events-sidebar::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2); /* Color of the scrollbar thumb */
-  border-radius: 4px; /* Rounded corners */
+  max-height: calc(75vh - 17rem); /* Adjust height to fit within the sidebar */
+  padding: 0.5rem; /* Add padding for better spacing */
+  box-sizing: content-box; /* Ensure padding does not reduce the scrollable area */
 }
 
-.events-sidebar::-webkit-scrollbar-track {
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.1
-  ); /* Background of the scrollbar track */
+.events-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-bottom: 1rem; /* Add padding at the bottom to prevent cutting off the last element */
+  box-sizing: border-box; /* Include padding in the height calculation */
 }
+
 .events-title {
   margin-bottom: 1.2rem;
   text-align: center;

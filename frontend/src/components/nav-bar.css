@@ -3,56 +3,64 @@ FOR NAVBAR U NEED TO ADD TO the PAGES/GUI'S :
 import Navbar from "../components/nav-bar";
 <Navbar />                                           */
 
-  /* --------------------  Nav Bar  --------------------- */
+/* --------------------  Nav Bar  --------------------- */
 
-
-  .navbar {   /* container / Basically header */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 40px 15px;  
-    background: linear-gradient(to right, #000000, #343434, #5c5c5c, #343434, #000000);
-    position: fixed;
-    width: 100%;
-    top: 0;
-    left: 0;
-    z-index: 2000;
+.navbar {
+  /* container / Basically header */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px 15px;
+  background: linear-gradient(
+    to right,
+    #000000,
+    #343434,
+    #5c5c5c,
+    #343434,
+    #000000
+  );
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 9999;
 }
-.logo {   /* Game Space */
-    position: absolute;
-    left: 10.3%;
-    top: -41%;
-    transform: translate(-30%, 0%);
-    display: flex;
-    align-items: center;
+.logo {
+  /* Game Space */
+  position: absolute;
+  left: 10.3%;
+  top: -41%;
+  transform: translate(-30%, 0%);
+  display: flex;
+  align-items: center;
 }
-.logo a {   /* Game Space attributes */
-    font-size: 4.5rem;
-    font-weight: bold;
-    color: #ffffff;
-    text-decoration: none;
-    z-index: 2100;
+.logo a {
+  /* Game Space attributes */
+  font-size: 4.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-decoration: none;
+  z-index: 2100;
 }
 .logo:hover a {
-  color: rgb(236, 236, 236); 
+  color: rgb(236, 236, 236);
 }
 
+/* --------------------  Menu Button --------------------- */
 
-  /* --------------------  Menu Button --------------------- */
-
-
-  .nav-button {   /* arrow */
-    display: flex;
-    position: absolute;
-    background: rgba(92, 92, 92, 0.8);
-    color: #ffffff;
-    padding: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    border: clear;
-    border-radius: 4px;
-    left: 1.0%;
-    z-index: 2101;
+.nav-button {
+  /* arrow */
+  display: flex;
+  position: absolute;
+  background: rgba(92, 92, 92, 0.8);
+  color: #ffffff;
+  padding: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: clear;
+  border-radius: 4px;
+  left: 1%;
+  z-index: 2101;
 }
 .nav-button svg {
   width: 30px;
@@ -60,14 +68,12 @@ import Navbar from "../components/nav-bar";
   color: white;
 }
 .nav-button:hover svg {
-  color: rgb(0, 0, 0); 
+  color: rgb(0, 0, 0);
 }
 
+/* --------------------  Profile Button --------------------- */
 
-  /* --------------------  Profile Button --------------------- */
-
-
-.profile-auth {   
+.profile-auth {
   position: absolute;
   right: 45px;
   top: 50%;
@@ -81,7 +87,7 @@ import Navbar from "../components/nav-bar";
 }
 
 /* Profile link */
-.profile-btn {    
+.profile-btn {
   border: none;
   background: none;
   color: white;
@@ -94,9 +100,7 @@ import Navbar from "../components/nav-bar";
   color: rgb(0, 0, 0);
 }
 
-
-  /* --------------------  Side Menu --------------------- */
-
+/* --------------------  Side Menu --------------------- */
 
 .side-menu {
   position: fixed;
@@ -107,7 +111,7 @@ import Navbar from "../components/nav-bar";
   height: 66%;
   background-color: clear; /* clear or Lighter grey background #d3d3d3*/
   transition: left 0.3s ease-in-out;
-  z-index:50;
+  z-index: 50;
   padding-top: 85px;
 }
 
@@ -118,7 +122,7 @@ import Navbar from "../components/nav-bar";
 }
 
 .nav-links li {
-  margin: .5% 0;
+  margin: 0.5% 0;
 }
 
 .side-menu.open {
@@ -134,7 +138,8 @@ import Navbar from "../components/nav-bar";
   text-decoration: none;
   font-weight: bold;
   border: 3px solid black;
-  box-shadow: inset -6px -7px 0 rgba(0,0,0,0.5), 0px 4px 8px rgba(0, 0, 0, 0.6);
+  box-shadow: inset -6px -7px 0 rgba(0, 0, 0, 0.5),
+    0px 4px 8px rgba(0, 0, 0, 0.6);
   transition: transform 0.15s ease, background-color 0.2s ease;
   border-radius: 3px;
   text-transform: uppercase;
@@ -153,9 +158,74 @@ import Navbar from "../components/nav-bar";
 }
 
 /* Retro color blocks */
-.nav-home     { background-color: #0096FF; } /* Blue */
-.nav-market   { background-color: #FF5733; } /* Green */
-.nav-party    { background-color: #FFC300; } /* Yellow */
-.nav-chatbot  { background-color: #00C49A; } /* Orange/Red */
-.nav-events   { background-color: #FF33A6; } /* Pink/Red */
-.nav-dm       { background-color: #8D33FF; } /* Purple */
+.nav-home {
+  background-color: #0096ff;
+} /* Blue */
+.nav-market {
+  background-color: #ff5733;
+} /* Green */
+.nav-party {
+  background-color: #ffc300;
+} /* Yellow */
+.nav-chatbot {
+  background-color: #00c49a;
+} /* Orange/Red */
+.nav-events {
+  background-color: #ff33a6;
+} /* Pink/Red */
+.nav-dm {
+  background-color: #8d33ff;
+} /* Purple */
+
+.profile-pic-nav {
+  width: 6vh;
+  height: 6vh;
+  border-radius: 50%;
+  margin-left: 10px;
+  margin-right: 5px;
+  object-fit: cover;
+  border: 2px solid #fff;
+}
+
+.tooltip {
+  background-color: #343434;
+  border-radius: 10px;
+}
+
+.tooltip-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px; /* Increased spacing for better layout */
+  flex-direction: column;
+
+  padding: 20px; /* Add padding for better spacing */
+}
+
+.tooltip-content h1 {
+  font-size: 1.8rem; /* Slightly smaller font for better balance */
+  color: #e0e0e0; /* Darker text for better contrast */
+  margin: 0; /* Remove unnecessary margins */
+  text-align: center; /* Center-align text */
+}
+
+.tooltip-content h1:hover {
+  color: #ffffff; /* Change color on hover for better visibility */
+  text-decoration: underline; /* Keep underline on hover */
+}
+
+.sign-out-button {
+  background-color: #ff4d4d; /* Softer red for better contrast with white */
+  color: white;
+  border: none;
+  padding: 12px 25px; /* Adjusted padding for better proportions */
+  font-size: 1.1rem; /* Slightly smaller font size */
+  cursor: pointer;
+  border-radius: 8px; /* Rounded corners for consistency */
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.sign-out-button:hover {
+  background-color: #e60000; /* Slightly darker red on hover */
+  transform: scale(1.08); /* Slightly larger scale for hover effect */
+}
