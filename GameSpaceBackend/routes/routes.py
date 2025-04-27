@@ -94,7 +94,8 @@ def matchmaker():
             playertype=mminfo.get('PlayerType', '').split(','),
             playertypeints=[int(i) for i in mminfo.get('PlayerTypeInts', '').split(',')],
             description=mminfo.get('Description', ''),
-            weight=float(mminfo.get('Weight', 0))  # Assuming Weight is required
+            weight=float(mminfo.get('Weight', 0)),
+            age=(mminfo.get('Age', 0))
         )
         data,listofallduos = ms.importSpecificProfiles(supabase, match)
         listofpotentialduos = ms.matchMaking(listofallduos, match)

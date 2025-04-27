@@ -93,7 +93,6 @@ def test_name_gen():
 if __name__ == "__main__":
      #test_media_get()
     # test_chatbot()
-    #est_matchmaker()
+    test_matchmaker()
     #test_marketplace()
     #test_logo_gen()
-    test_name_gen()

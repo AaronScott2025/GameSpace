@@ -56,6 +56,7 @@ class DuoMatching:
     playertypeints: List[int]
     description: str
     weight: float
+    age:int
 
 
 @dataclass
