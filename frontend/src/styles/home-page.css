@@ -408,6 +408,31 @@ background: linear-gradient(to bottom, #737373, #a4a4a4, #d2d2d2, #ffffff); */
   max-width: 400px;
 }
 
+.white-background {
+  background: white;
+  color: black;
+}
+
+.blue-background {
+  background: #007bff; /* or any blue you like */
+  color: white;
+}
+
+.background-toggle-button {
+  background-color: #ddd;
+  color: #333;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.background-toggle-button:hover {
+  background-color: #ccc;
+}
+
 .close-button {
   position: absolute;
   top: 10px;
@@ -441,31 +466,44 @@ background: linear-gradient(to bottom, #737373, #a4a4a4, #d2d2d2, #ffffff); */
 
 .popup-username {
   font-size: 3rem;
-  color: #333;
 }
 
 .user-bio {
   margin: 1rem 0;
   font-size: 1rem;
-  color: #555;
   text-align: center;
 }
 
 .message-button {
   margin-top: 1rem;
   padding: 10px 20px;
-  background-color: #007bff;
   border: none;
-  color: white;
   border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-.message-button:hover {
+/* When popup background is white */
+.message-button-white {
+  background-color: #007bff; /* green */
+  color: white;
+}
+
+.message-button-white:hover {
   background-color: #0056b3;
 }
+
+/* When popup background is blue */
+.message-button-blue {
+  background-color: white;
+  color: #007bff;
+}
+
+.message-button-blue:hover {
+  background-color: #e6e6e6; /* Light grey hover */
+}
+
 
 .linked-services {
   margin-top: 1.5rem;
@@ -477,7 +515,6 @@ background: linear-gradient(to bottom, #737373, #a4a4a4, #d2d2d2, #ffffff); */
   font-size: 1.3rem;
   border-bottom: 2px solid #ddd;
   padding-bottom: 0.3rem;
-  color: #333;
 }
 
 .linked-services ul {
@@ -498,12 +535,10 @@ background: linear-gradient(to bottom, #737373, #a4a4a4, #d2d2d2, #ffffff); */
 .linked-services li strong {
   flex: 0 0 120px; /* Make all labels same width */
   font-weight: 600;
-  color: #333;
 }
 
 .linked-services li span {
   flex: 1;
-  color: #555;
   word-break: break-word;
 }
 
@@ -518,7 +553,6 @@ background: linear-gradient(to bottom, #737373, #a4a4a4, #d2d2d2, #ffffff); */
   font-size: 1.3rem;
   border-bottom: 2px solid #ddd;
   padding-bottom: 0.3rem;
-  color: #333;
 }
 
 .favorite-games ol {
@@ -529,5 +563,4 @@ background: linear-gradient(to bottom, #737373, #a4a4a4, #d2d2d2, #ffffff); */
 .favorite-games li {
   margin-bottom: 0.5rem;
   font-size: 1rem;
-  color: #555;
 }

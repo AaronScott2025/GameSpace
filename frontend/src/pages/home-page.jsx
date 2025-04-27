@@ -29,16 +29,16 @@ const HomePage = () => {
   };
   //////////////////////////////////////////////////////////////
   //////////////For linking different sounds to functions///////////////////////
-    const mouseClickSound = useSound("/sounds/mouse-click.mp3");
-    const gameStartSound = useSound("/sounds/game-start.mp3");
-    const blipSound = useSound("/sounds/blip.mp3");
+  const mouseClickSound = useSound("/sounds/mouse-click.mp3");
+  const gameStartSound = useSound("/sounds/game-start.mp3");
+  const blipSound = useSound("/sounds/blip.mp3");
 
-    //////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////
   //////////////Profile Popup Handler///////////////////////
   const [selectedUser, setSelectedUser] = useState(null);
   const [showUserPopup, setShowUserPopup] = useState(false);
   const [favoriteGames, setFavoriteGames] = useState([]);
-  
+  const [isBlueBackground, setIsBlueBackground] = useState(false);
 
   const handleUsernameClick = async (username) => {
     const userData = data.find((item) => item.username === username);
@@ -47,19 +47,21 @@ const HomePage = () => {
       setShowUserPopup(true);
       mouseClickSound.volume = 0.1;
       mouseClickSound.play();
-  
+
       // Fetch their favorite games
       const { data: favGames, error } = await supabase
-        .from('favorite_games')
-        .select(`
+        .from("favorite_games")
+        .select(
+          `
           rank,
           games ( title )
-        `)
-        .eq('profile_id', userData.profiles.id) // profiles.id is the primary key you want
-        .order('rank', { ascending: true });
-  
+        `
+        )
+        .eq("profile_id", userData.profiles.id) // profiles.id is the primary key you want
+        .order("rank", { ascending: true });
+
       if (error) {
-        console.error('Error fetching favorite games:', error.message);
+        console.error("Error fetching favorite games:", error.message);
         setFavoriteGames([]);
       } else {
         setFavoriteGames(favGames || []);
@@ -84,7 +86,8 @@ const HomePage = () => {
     try {
       let { data: posts, error } = await supabase
         .from("post")
-        .select(`
+        .select(
+          `
           *,
           profiles (
           id,
@@ -96,7 +99,8 @@ const HomePage = () => {
       Xbox_link,
       Discord_link
     )
-        `)
+        `
+        )
         .order("created_at", { ascending: false }); // (newest first)
       if (error) {
         setError(error.message);
@@ -209,8 +213,6 @@ const HomePage = () => {
   //////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////
 
-  
-
   return (
     <div>
       <PostSignupPopup />
@@ -271,10 +273,12 @@ const HomePage = () => {
                         className="profile-pic"
                       />
                     )}
-                    <span className="username" 
-                    onClick={() => handleUsernameClick(item.username)}
-                     style={{ cursor: "pointer" }}>
-                    {item.username}
+                    <span
+                      className="username"
+                      onClick={() => handleUsernameClick(item.username)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {item.username}
                     </span>
                   </div>
                   <p className="mediapost-content">{item.post_content}</p>
@@ -307,64 +311,100 @@ const HomePage = () => {
         </div>
       </div>
       {showUserPopup && selectedUser && (
-  <div className="popup-overlay" onClick={closeUserPopup}>
-    <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-      <button className="close-button" onClick={closeUserPopup}>X</button>
-      <div className="popup-profile-info">
-        <div className="profile-header">
-          {selectedUser.profiles?.profile_pic && (
-            <img
-              src={selectedUser.profiles.profile_pic}
-              alt="Profile"
-              className="popup-profile-pic"
-            />
-          )}
-          <h2 className="popup-username">{selectedUser.username}</h2>
+        <div className="popup-overlay" onClick={closeUserPopup}>
+          <div
+            className={`popup-content ${
+              isBlueBackground ? "blue-background" : "white-background"
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button className="close-button" onClick={closeUserPopup}>
+              X
+            </button>
+            <button
+              className="background-toggle-button"
+              onClick={() => setIsBlueBackground((prev) => !prev)}
+            >
+              {isBlueBackground
+                ? "Switch to White Background"
+                : "Switch to Blue Background"}
+            </button>
+            <div className="popup-profile-info">
+              <div className="profile-header">
+                {selectedUser.profiles?.profile_pic && (
+                  <img
+                    src={selectedUser.profiles.profile_pic}
+                    alt="Profile"
+                    className="popup-profile-pic"
+                  />
+                )}
+                <h2 className="popup-username">{selectedUser.username}</h2>
+              </div>
+
+              <p className="user-bio">
+                {selectedUser.profiles?.bio || "No bio available."}
+              </p>
+              {/* Favorite Games Section */}
+              {favoriteGames.length > 0 && (
+                <div className="favorite-games">
+                  <h3>Favorite Games</h3>
+                  <ol>
+                    {favoriteGames.map((game, index) => (
+                      <li key={index}>{game.games?.title || "Unknown Game"}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+              {/* Linked Services */}
+              <div className="linked-services">
+                <h3>Linked Services</h3>
+                <ul>
+                  {selectedUser.profiles?.steam_link && (
+                    <li>
+                      <strong>Steam:</strong>{" "}
+                      <span>{selectedUser.profiles.steam_link}</span>
+                    </li>
+                  )}
+                  {selectedUser.profiles?.Epic_link && (
+                    <li>
+                      <strong>Epic Games:</strong>{" "}
+                      <span>{selectedUser.profiles.Epic_link}</span>
+                    </li>
+                  )}
+                  {selectedUser.profiles?.PSN_link && (
+                    <li>
+                      <strong>PSN:</strong>{" "}
+                      <span>{selectedUser.profiles.PSN_link}</span>
+                    </li>
+                  )}
+                  {selectedUser.profiles?.Xbox_link && (
+                    <li>
+                      <strong>Xbox:</strong>{" "}
+                      <span>{selectedUser.profiles.Xbox_link}</span>
+                    </li>
+                  )}
+                  {selectedUser.profiles?.Discord_link && (
+                    <li>
+                      <strong>Discord:</strong>{" "}
+                      <span>{selectedUser.profiles.Discord_link}</span>
+                    </li>
+                  )}
+                </ul>
+              </div>
+
+              <button
+                className={`message-button ${
+                  isBlueBackground
+                    ? "message-button-blue"
+                    : "message-button-white"
+                }`}
+              >
+                Send Message
+              </button>
+            </div>
+          </div>
         </div>
-
-        <p className="user-bio">{selectedUser.profiles?.bio || "No bio available."}</p>
-{/* Favorite Games Section */}
-{favoriteGames.length > 0 && (
-  <div className="favorite-games">
-    <h3>Favorite Games</h3>
-    <ol>
-      {favoriteGames.map((game, index) => (
-        <li key={index}>
-          {game.games?.title || "Unknown Game"}
-        </li>
-      ))}
-    </ol>
-  </div>
-)}
-        {/* Linked Services */}
-        <div className="linked-services">
-  <h3>Linked Services</h3>
-  <ul>
-    {selectedUser.profiles?.steam_link && (
-      <li><strong>Steam:</strong> <span>{selectedUser.profiles.steam_link}</span></li>
-    )}
-    {selectedUser.profiles?.Epic_link && (
-      <li><strong>Epic Games:</strong> <span>{selectedUser.profiles.Epic_link}</span></li>
-    )}
-    {selectedUser.profiles?.PSN_link && (
-      <li><strong>PSN:</strong> <span>{selectedUser.profiles.PSN_link}</span></li>
-    )}
-    {selectedUser.profiles?.Xbox_link && (
-      <li><strong>Xbox:</strong> <span>{selectedUser.profiles.Xbox_link}</span></li>
-    )}
-    {selectedUser.profiles?.Discord_link && (
-      <li><strong>Discord:</strong> <span>{selectedUser.profiles.Discord_link}</span></li>
-    )}
-  </ul>
-</div>
-
-        <button className="message-button">
-          Send Message
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+      )}
     </div>
   );
 };
