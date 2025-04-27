@@ -34,18 +34,36 @@ const HomePage = () => {
     const blipSound = useSound("/sounds/blip.mp3");
 
     //////////////////////////////////////////////////////////////
-  //////////////Preview Profile Handler///////////////////////
+  //////////////Profile Popup Handler///////////////////////
   const [selectedUser, setSelectedUser] = useState(null);
   const [showUserPopup, setShowUserPopup] = useState(false);
+  const [favoriteGames, setFavoriteGames] = useState([]);
   
-  const handleUsernameClick = (username) => {
-    // Find the clicked user's full info from the data array
+
+  const handleUsernameClick = async (username) => {
     const userData = data.find((item) => item.username === username);
     if (userData) {
       setSelectedUser(userData);
       setShowUserPopup(true);
       mouseClickSound.volume = 0.1;
       mouseClickSound.play();
+  
+      // Fetch their favorite games
+      const { data: favGames, error } = await supabase
+        .from('favorite_games')
+        .select(`
+          rank,
+          games ( title )
+        `)
+        .eq('profile_id', userData.profiles.id) // profiles.id is the primary key you want
+        .order('rank', { ascending: true });
+  
+      if (error) {
+        console.error('Error fetching favorite games:', error.message);
+        setFavoriteGames([]);
+      } else {
+        setFavoriteGames(favGames || []);
+      }
     }
   };
 
@@ -69,6 +87,7 @@ const HomePage = () => {
         .select(`
           *,
           profiles (
+          id,
       profile_pic,
       bio,
       steam_link,
@@ -304,7 +323,19 @@ const HomePage = () => {
         </div>
 
         <p className="user-bio">{selectedUser.profiles?.bio || "No bio available."}</p>
-
+{/* Favorite Games Section */}
+{favoriteGames.length > 0 && (
+  <div className="favorite-games">
+    <h3>Favorite Games</h3>
+    <ol>
+      {favoriteGames.map((game, index) => (
+        <li key={index}>
+          {game.games?.title || "Unknown Game"}
+        </li>
+      ))}
+    </ol>
+  </div>
+)}
         {/* Linked Services */}
         <div className="linked-services">
   <h3>Linked Services</h3>
