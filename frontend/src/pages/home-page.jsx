@@ -9,9 +9,12 @@ import { UserContext } from "./UserContext";
 import useSound from "../hooks/useSound"; // Custom hook
 
 const HomePage = () => {
+
+  
   //////////////////////////////////////////////////////////////
   ///////////////To navigate pages//////////////////////////////
   const navigate = useNavigate();
+
 
   //////////////////////////////////////////////////////////////
   //////////////Toggle post container///////////////////////
@@ -33,12 +36,15 @@ const HomePage = () => {
   const gameStartSound = useSound("/sounds/game-start.mp3");
   const blipSound = useSound("/sounds/blip.mp3");
 
+  
+
   //////////////////////////////////////////////////////////////
   //////////////Profile Popup Handler///////////////////////
   const [selectedUser, setSelectedUser] = useState(null);
   const [showUserPopup, setShowUserPopup] = useState(false);
   const [favoriteGames, setFavoriteGames] = useState([]);
   const [isBlueBackground, setIsBlueBackground] = useState(false);
+  
 
   const handleUsernameClick = async (username) => {
     const userData = data.find((item) => item.username === username);
@@ -136,6 +142,10 @@ const HomePage = () => {
   const handleImageChange = (e) => {
     setPostImage(e.target.files[0]);
   };
+  const { user } = useContext(UserContext);
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   // Function for image upload
   const uploadImage = async (image) => {
@@ -196,19 +206,96 @@ const HomePage = () => {
       alert("Post created successfully!");
       setPostContent("");
       setPostImage(null);
-      //fetchPosts(); // Refresh posts
+      fetchPosts(); // Refresh posts
     } catch (error) {
       console.error("Unexpected post error:", error);
       alert("Something went wrong while creating the post.");
     }
   };
-
+  
   //////////////////////////////////////////////////////////////
-  ///////////////////For user context///////////////////////////
-  const { user } = useContext(UserContext);
-  if (!user) {
-    return <div>Loading...</div>;
-  }
+  ///////////////////Function to Handle Likes///////////////////////////
+  const handleLikePost = async (postId) => {
+    if (!user) {
+      alert("You must be logged in to like a post.");
+      return;
+    }
+  
+    try {
+      // Step 1: Use the profile id directly
+      const profileId = user.id;
+  
+      // Step 2: Check if this user already liked this post
+      const { data: existingLike, error: likeError } = await supabase
+        .from('likes')
+        .select('*')
+        .eq('post_id', postId)
+        .eq('profile_id', profileId)
+        .maybeSingle(); // maybeSingle avoids crashing if not found
+  
+      if (likeError) {
+        console.error("Error checking existing like:", likeError.message);
+        return;
+      }
+  
+      if (existingLike) {
+        alert("You already liked this post!");
+        return;
+      }
+  
+      console.log("No existing like found, inserting new like...");
+  
+      // Step 3: Insert the new like
+      const { error: insertLikeError } = await supabase
+        .from('likes')
+        .insert([{ post_id: postId, profile_id: profileId }]);
+  
+      if (insertLikeError) {
+        console.error("Error inserting like:", insertLikeError.message);
+        return;
+      }
+  
+      console.log("Like inserted successfully!");
+  
+      // Step 4: Re-count the total likes for this post
+      const { count, error: countError } = await supabase
+        .from('likes')
+        .select('*', { count: 'exact', head: true })
+        .eq('post_id', postId);
+  
+      if (countError) {
+        console.error("Error counting likes:", countError.message);
+        return;
+      }
+  
+      console.log("Total likes for post:", count);
+  
+      // Step 5: Update the post.likes field
+      const { error: updateError } = await supabase
+        .from('post')
+        .update({ likes: count })
+        .eq('post_id', postId);
+  
+      if (updateError) {
+        console.error("Error updating post likes:", updateError.message);
+        return;
+      }
+  
+      console.log("Post likes updated to:", count);
+  
+      // Step 6: Refresh posts to show updated like count
+      setData(prevData => 
+        prevData.map(post => 
+          post.post_id === postId 
+            ? { ...post, likes: count } 
+            : post
+        )
+      );
+    } catch (error) {
+      console.error("Unexpected error during like:", error);
+    }
+  };
+
 
   //////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////
@@ -263,7 +350,33 @@ const HomePage = () => {
             <p>Loading data...</p>
           ) : data && data.length > 0 ? (
             data.map((item, index) => (
-              <div key={index} className="media-box">
+              <div
+                key={index}
+                className="media-box"
+                onClick={() => navigate(`/post/${item.post_id}`)}
+                style={{ position: "relative", cursor: "pointer" }} // <-- Added position: relative
+              >
+                {/* Timestamp placed here */}
+                <p className="post-timestamp">
+                  {new Date(item.created_at).toLocaleString([], {
+                    dateStyle: "short",
+                    timeStyle: "short",
+                  })}
+                </p>
+
+<div className="likes-section">
+  <button
+    className="like-button"
+    onClick={(e) => {
+      e.stopPropagation(); // prevent navigating to PostDetails
+      handleLikePost(item.post_id);
+    }}
+  >
+    Like 👍
+  </button>
+  <span className="like-count">{item.likes || 0} likes</span>
+</div>
+
                 <div className="media-left">
                   <div className="media-user-info">
                     {item.profiles?.profile_pic && (
@@ -275,12 +388,16 @@ const HomePage = () => {
                     )}
                     <span
                       className="username"
-                      onClick={() => handleUsernameClick(item.username)}
+                      onClick={(e) => {
+                        e.stopPropagation(); // ✅ STOP the event from reaching the post box
+                        handleUsernameClick(item.username);
+                      }}
                       style={{ cursor: "pointer" }}
                     >
                       {item.username}
                     </span>
                   </div>
+
                   <p className="mediapost-content">{item.post_content}</p>
                 </div>
                 {item.post_attachment && (
