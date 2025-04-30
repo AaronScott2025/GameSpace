@@ -9,7 +9,7 @@ obj/
 *.vscode/
 .env
 
-GameSpaceBackend/.env
+.env
 
 =======
 .env
