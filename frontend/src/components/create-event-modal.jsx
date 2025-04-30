@@ -196,6 +196,7 @@ function CreateEventModal({ onSubmit }) {
         <select
           name="location_state"
           value={selectedState}
+          style= {{color: "#000"}}
           onChange={(e) => setSelectedState(e.target.value)}
           required
           className="state-dropdown"
@@ -244,6 +245,7 @@ function CreateEventModal({ onSubmit }) {
         <div className="time-input-container">
           <div
             className="time-input-display"
+            style= {{color: "#000"}}
             onClick={toggleTimePicker}
           >
             <span>{selectedHour}:{selectedMinute} {selectedAmPm}</span>
@@ -259,6 +261,7 @@ function CreateEventModal({ onSubmit }) {
                     {hours.map(hour => (
                       <div
                         key={hour}
+                        style= {{color: "#000"}}
                         className={`time-picker-option ${selectedHour === hour ? 'selected' : ''}`}
                         onClick={() => setSelectedHour(hour)}
                       >
@@ -274,6 +277,7 @@ function CreateEventModal({ onSubmit }) {
                     {minutes.map(minute => (
                       <div
                         key={minute}
+                        style= {{color: "#000"}}
                         className={`time-picker-option ${selectedMinute === minute ? 'selected' : ''}`}
                         onClick={() => setSelectedMinute(minute)}
                       >
@@ -288,6 +292,7 @@ function CreateEventModal({ onSubmit }) {
                   <div className="time-picker-options">
                     <div
                       className={`time-picker-option ${selectedAmPm === 'AM' ? 'selected' : ''}`}
+                      style= {{color: "#000"}}
                       onClick={() => setSelectedAmPm('AM')}
                     >
                       AM
@@ -378,6 +383,7 @@ function CreateEventModal({ onSubmit }) {
                 <input
                   type={input.type || "text"}
                   name={input.name}
+                  style= {{color: "#000"}}
                   required={input.required || false}
                   placeholder={`Enter ${input.label.toLowerCase()}`}
                 />
@@ -393,7 +399,7 @@ function CreateEventModal({ onSubmit }) {
                 <textarea
                   name="description"
                   required={true}
-                  style={{ height: "100px", resize: "vertical" }}
+                  style={{ height: "100px", resize: "vertical", color: "#000" }}
                   placeholder="Enter description"
                 />
               </label>
