@@ -12,6 +12,8 @@ import Marketplace from "./pages/marketplace-home";
 import ProductPage from "./pages/product-page";
 import ErrorPage from "./pages/error-page";
 import EventsPage from "./pages/events-page";
+import PostDetails from './pages/PostDetails';
+import FAQ from './pages/faq'
 import "./App.css";
 
 function App() {
@@ -27,6 +29,10 @@ function App() {
     {
       path: "/signup",
       element: <SignupPage />,
+    },
+    {
+      path: "/faq",
+      element: <FAQ />,
     },
     {
       path: "/chatbot",
@@ -65,6 +71,15 @@ function App() {
         </Wrapper>
       ),
     },
+    {
+      path: "/post/:id",
+      element: (
+        <Wrapper>
+          <PostDetails />
+        </Wrapper>
+      ),
+    },
+    
     {
       path: "/partyfinder",
       element: <DuoMatchmakerPage />,

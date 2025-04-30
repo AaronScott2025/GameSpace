@@ -5,6 +5,11 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_REACT_APP_API_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export const updateUserPassword = async (newPassword) => {
+  if (!newPassword || typeof newPassword !== 'string' || newPassword.trim() === '') {
+    console.error("Invalid password provided");
+    return false;
+  }
+  
   try {
     const { data, error } = await supabase.auth.updateUser({
       password: newPassword,
@@ -13,7 +18,7 @@ export const updateUserPassword = async (newPassword) => {
       console.error("Error updating password:", error.message);
       return false;
     }
-    console.log("Password updated successfully:", data);
+    console.log("Password updated successfully");
     return true;
   } catch (err) {
     console.error("Unexpected error updating password:", err);
@@ -22,6 +27,11 @@ export const updateUserPassword = async (newPassword) => {
 };
 
 export const handleGameSelection = async (userId, username, gameId, rank) => {
+  if (!userId || !username || !gameId || !rank) {
+    console.error("Missing required parameters for handleGameSelection");
+    return { success: false, error: "Missing required parameters" };
+  }
+  
   try {
     const { data: existingEntry, error: fetchError } = await supabase
       .from("favorite_games")
@@ -49,7 +59,6 @@ export const handleGameSelection = async (userId, username, gameId, rank) => {
         return { success: false, error: updateError };
       }
     } else {
-      // Otherwise, insert a new entry
       const { error: insertError } = await supabase
         .from("favorite_games")
         .insert([
@@ -75,43 +84,63 @@ export const handleGameSelection = async (userId, username, gameId, rank) => {
 };
 
 export const uploadProfilePic = async (userId, file) => {
-  if (!file) return null;
+  if (!userId) {
+    console.error("User ID is required");
+    return null;
+  }
+  
+  if (!file) {
+    console.error("No file provided");
+    return null;
+  }
+  
   try {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      console.error("Invalid file type. Only JPEG, PNG, GIF, and WebP are supported.");
+      return null;
+    }
+    
     const { error: profileError } = await supabase
       .from("profiles")
-      .select("*")
+      .select("id")
       .eq("id", userId)
       .single();
+      
     if (profileError) {
       console.error("Error fetching profile:", profileError);
       return null;
     }
+    
     const fileExt = file.name.split(".").pop().toLowerCase();
     const fileName = `profile_${userId}_${Date.now()}.${fileExt}`;
     const filePath = fileName;
+    
     const { error: uploadError } = await supabase.storage
       .from("profile_pics")
       .upload(filePath, file, { upsert: true });
+      
     if (uploadError) {
       console.error("Error uploading file:", uploadError.message);
       return null;
     }
+    
     const { data: publicUrlData } = supabase.storage
       .from("profile_pics")
       .getPublicUrl(filePath);
+      
     const publicUrl = publicUrlData.publicUrl;
+    
     const { error: updateError } = await supabase
       .from("profiles")
       .update({ profile_pic: publicUrl })
-      .eq("id", userId)
-      .select();
+      .eq("id", userId);
+      
     if (updateError) {
-      console.error(
-        "Error updating profile with new profile_pic:",
-        updateError.message
-      );
+      console.error("Error updating profile with new profile_pic:", updateError.message);
       return null;
     }
+    
     return publicUrl;
   } catch (err) {
     console.error("Unexpected error in uploadProfilePic:", err);
@@ -120,17 +149,22 @@ export const uploadProfilePic = async (userId, file) => {
 };
 
 export const updateLinkedServices = async (userId, linkedServices) => {
+  if (!userId) {
+    console.error("User ID is required");
+    return false;
+  }
+  
   try {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("profiles")
       .update(linkedServices)
-      .eq("id", userId)
-      .select();
+      .eq("id", userId);
+      
     if (error) {
       console.error("Error updating linked services:", error.message);
       return false;
     }
-    console.log("Linked services updated:", data);
+    
     return true;
   } catch (err) {
     console.error("Unexpected error updating linked services:", err);
@@ -139,6 +173,11 @@ export const updateLinkedServices = async (userId, linkedServices) => {
 };
 
 export const getUserInfo = async (userId) => {
+  if (!userId) {
+    console.error("User ID is required");
+    return null;
+  }
+  
   try {
     const { data, error } = await supabase
       .from("profiles")
@@ -147,10 +186,12 @@ export const getUserInfo = async (userId) => {
       )
       .eq("id", userId)
       .single();
+      
     if (error) {
       console.error("Error fetching user info:", error.message);
       return null;
     }
+    
     return data;
   } catch (err) {
     console.error("Unexpected error fetching user info:", err);
@@ -159,17 +200,22 @@ export const getUserInfo = async (userId) => {
 };
 
 export const updateUserBio = async (userId, bio) => {
+  if (!userId) {
+    console.error("User ID is required");
+    return false;
+  }
+  
   try {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("profiles")
       .update({ bio })
-      .eq("id", userId)
-      .select();
+      .eq("id", userId);
+      
     if (error) {
       console.error("Error updating bio:", error.message);
       return false;
     }
-    console.log("Bio updated successfully:", data);
+    
     return true;
   } catch (err) {
     console.error("Unexpected error updating bio:", err);
@@ -178,14 +224,50 @@ export const updateUserBio = async (userId, bio) => {
 };
 
 export const generateProfilePic = async (userId, prompt) => {
+  if (!userId) {
+    console.error("User ID is required");
+    return null;
+  }
+  
+  if (!prompt || typeof prompt !== 'string' || prompt.trim() === '') {
+    console.error("Valid prompt is required");
+    return null;
+  }
+
   try {
+    console.log("Generating profile picture with prompt:", prompt);
+    
     const response = await axios.post("/api/logogen/", {
-      prompt,
+      prompt: prompt.trim(),
     });
 
-    const imageUrl = response.data.generated?.[0]?.url;
+    if (!response || !response.data) {
+      console.error("Invalid or empty response from API");
+      return null;
+    }
+
+    if (response.data.error) {
+      console.error("API returned an error:", response.data.error);
+      return null;
+    }
+
+    if (!response.data.generated ||
+        !Array.isArray(response.data.generated) || 
+        response.data.generated.length === 0) {
+      console.error("No generated images in response:", response.data);
+      return null;
+    }
+
+    const imageUrl = response.data.generated[0]?.url;
     if (!imageUrl) {
-      console.error("Error: No image URL returned from API.");
+      console.error("No image URL in first generated item:", response.data.generated[0]);
+      return null;
+    }
+
+    try {
+      new URL(imageUrl);
+    } catch (e) {
+      console.error("Invalid URL format:", imageUrl);
       return null;
     }
 
@@ -195,34 +277,47 @@ export const generateProfilePic = async (userId, prompt) => {
       .eq("id", userId);
 
     if (error) {
-      console.error(
-        "Error updating profile with generated image:",
-        error.message
-      );
+      console.error("Error updating profile with generated image:", error.message);
       return null;
     }
 
     return imageUrl;
   } catch (err) {
     console.error("Unexpected error in generateProfilePic:", err);
+    
+    if (err.response) {
+      console.error("Response data:", err.response.data);
+      console.error("Response status:", err.response.status);
+    }
+    
     return null;
   }
 };
 
 export const generateUsername = async (userId, message) => {
-  if (!message || typeof message !== "string") {
-    console.error("Invalid message provided:", message);
+  if (!userId) {
+    console.error("User ID is required");
+    return null;
+  }
+  
+  if (!message || typeof message !== "string" || message.trim() === '') {
+    console.error("Valid message is required for username generation");
     return null;
   }
 
   try {
-    console.log("Sending payload to /api/namegen/:", { message });
-    const response = await axios.post("/api/namegen/", { message });
+    const response = await axios.post("/api/namegen/", { 
+      message: message.trim() 
+    });
 
-    console.log("API response:", response.data);
-    const newUsername = response.data.response?.trim(); // Extract and trim the username
+    if (!response || !response.data) {
+      console.error("Invalid or empty response from API");
+      return null;
+    }
+
+    const newUsername = response.data.response?.trim();
     if (!newUsername) {
-      console.error("Error: No username returned from API.");
+      console.error("No username returned from API");
       return null;
     }
 
@@ -238,15 +333,21 @@ export const generateUsername = async (userId, message) => {
 
     return newUsername;
   } catch (err) {
-    console.error(
-      "Unexpected error in generateUsername:",
-      err.response?.data || err.message
-    );
+    console.error("Unexpected error in generateUsername:", err);
+    if (err.response) {
+      console.error("Response data:", err.response?.data);
+      console.error("Response status:", err.response?.status);
+    }
     return null;
   }
 };
 
 export const getFavoriteGames = async (userId, username) => {
+  if (!userId || !username) {
+    console.error("User ID and username are required");
+    return null;
+  }
+  
   try {
     const { data, error } = await supabase
       .from("favorite_games")
@@ -268,14 +369,18 @@ export const getFavoriteGames = async (userId, username) => {
     }
 
     const formattedGames = {};
-
+    
     for (let i = 1; i <= 6; i++) {
       formattedGames[i] = null;
     }
 
-    data.forEach(item => {
-      formattedGames[item.rank] = item.games;
-    });
+    if (Array.isArray(data)) {
+      data.forEach(item => {
+        if (item.rank && item.games) {
+          formattedGames[item.rank] = item.games;
+        }
+      });
+    }
 
     return formattedGames;
   } catch (err) {
@@ -285,6 +390,11 @@ export const getFavoriteGames = async (userId, username) => {
 };
 
 export const removeFavoriteGame = async (userId, username, rank) => {
+  if (!userId || !username || !rank) {
+    console.error("User ID, username, and rank are required");
+    return false;
+  }
+  
   try {
     const { error } = await supabase
       .from("favorite_games")
@@ -301,6 +411,56 @@ export const removeFavoriteGame = async (userId, username, rank) => {
     return true;
   } catch (err) {
     console.error("Unexpected error removing favorite game:", err);
+    return false;
+  }
+};
+
+export const getUserPosts = async (username) => {
+  if (!username) {
+    console.error("Username is required for getUserPosts");
+    return null;
+  }
+  
+  try {
+    const { data, error } = await supabase
+      .from("post")
+      .select("post_id, created_at, username, post_content, likes") // Removed post_attachment
+      .eq("username", username)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching user posts:", error);
+      return null;
+    }
+
+    return data || [];
+  } catch (err) {
+    console.error("Unexpected error fetching user posts:", err);
+    return null;
+  }
+};
+
+
+export const deletePost = async (postId) => {
+  if (!postId) {
+    console.error("Post ID is required for deletion");
+    return false;
+  }
+  
+  try {
+    const { error } = await supabase
+      .from("post")
+      .delete()
+      .eq("post_id", postId);
+
+    if (error) {
+      console.error("Error deleting post:", error);
+      return false;
+    }
+
+    return true;
+  } catch (err) {
+    console.error("Unexpected error deleting post:", err);
     return false;
   }
 };

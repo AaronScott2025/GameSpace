@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect  } from "react";
 import { RiAliensFill } from "react-icons/ri"; // Import the icons
 import { IoMdSend } from "react-icons/io";
 import axios from "axios";
@@ -41,6 +41,17 @@ const ChatBot = () => {
       ]);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      const initialMessage = {
+        text: "Hello! I am GameSpace Guru, a Chatbot to help you navigate GameSpace. How can I assist you today?",
+        sender: "bot"
+      };
+      setMessages([initialMessage]); // Set initial bot message
+    }
+  }, [user]);
+
   if (!user) {
     return <div>Loading...</div>;
   }
