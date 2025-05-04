@@ -105,7 +105,8 @@
 .event-modal-form input:focus,
 .event-modal-form textarea:focus,
 .event-modal-form select:focus,
-.time-input-display:focus {
+.time-input-display:focus,
+.place-autocomplete:focus {
   border-color: #0074e4;
   outline: none;
   box-shadow: 0 0 0 3px rgba(0, 116, 228, 0.1);
@@ -472,4 +473,59 @@
     width: 100%;
     text-align: center;
   }
+}
+/* Custom autocomplete container */
+.custom-autocomplete {
+  position: relative;
+  width: 100%;
+}
+
+/* Input field styling */
+.place-autocomplete {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 12px;
+  border: 1px solid #ccd6e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #f9fbfd;
+  color: black;
+  box-sizing: border-box;
+}
+
+.place-autocomplete:focus {
+  border-color: #0074e4;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 116, 228, 0.1);
+  background-color: white;
+}
+
+/* Dropdown styling */
+.autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccd6e0;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 4px;
+  padding: 0;
+  list-style: none;
+}
+
+/* Dropdown item styling */
+.autocomplete-item {
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  color: #333;
+  cursor: pointer;
+}
+
+.autocomplete-item:hover {
+  background-color: #f1f5f9;
 }

@@ -1,10 +1,10 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { FaTimes } from "react-icons/fa";
 import { IoTimeOutline } from "react-icons/io5";
 import { createPortal } from "react-dom";
-import { useRef } from "react";
-import { useMapsLibrary } from "@vis.gl/react-google-maps";
+import PlaceAutocompleteComponent from "./PlaceAutocompleteComponent";
+
 import "../styles/create-event-modal.css";
 
 const AVAILABLE_TAGS = [
@@ -75,9 +75,46 @@ const US_STATES = [
 ];
 
 function CreateEventModal({ onSubmit }) {
+  // Add this inside the CreateEventModal component
   const autocompleteInputRef = useRef(null);
-  const placesLib = useMapsLibrary("places");
-  const [addressSelected, setAddressSelected] = useState(false);
+
+  useEffect(() => {
+    if (!autocompleteInputRef.current) return;
+
+    // Initialize the Place Autocomplete Element
+    const autocomplete = new google.maps.places.Autocomplete(
+      autocompleteInputRef.current,
+      {
+        fields: ["address_components", "geometry"],
+        types: ["address"],
+        componentRestrictions: { country: "us" },
+      }
+    );
+
+    // Handle the place selection
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (!place.address_components) return;
+
+      const getComponent = (type) =>
+        place.address_components.find((c) => c.types.includes(type))
+          ?.long_name || "";
+
+      const streetNumber = getComponent("street_number");
+      const route = getComponent("route");
+      const city = getComponent("locality") || getComponent("sublocality");
+      const state = getComponent("administrative_area_level_1");
+
+      const fullStreet = `${streetNumber} ${route}`.trim();
+      document.querySelector("input[name='street_address']").value = fullStreet;
+      document.querySelector("input[name='location_city']").value = city;
+      setSelectedState(state);
+    });
+
+    return () => {
+      google.maps.event.clearInstanceListeners(autocomplete);
+    };
+  }, []);
 
   const eventFormInputs = [
     { label: "Event Name", type: "text", name: "title", required: true },
@@ -164,41 +201,6 @@ function CreateEventModal({ onSubmit }) {
         alert("You can only select up to 4 tags."); // Optional: Notify the user
       }
     };
-    useEffect(() => {
-      if (!placesLib || !autocompleteInputRef.current) return;
-
-      const autocomplete = new placesLib.Autocomplete(
-        autocompleteInputRef.current,
-        {
-          types: ["address"],
-        }
-      );
-      autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-        if (!place.address_components) return;
-
-        const getComponent = (type) =>
-          place.address_components.find((c) => c.types.includes(type))
-            ?.long_name || "";
-
-        const streetNumber = getComponent("street_number");
-        const route = getComponent("route");
-        const city = getComponent("locality") || getComponent("sublocality");
-        const state = getComponent("administrative_area_level_1");
-
-        const fullStreet = `${streetNumber} ${route}`.trim();
-        // Populate the form manually
-        document.querySelector("input[name='street_address']").value =
-          fullStreet;
-        document.querySelector("input[name='location_city']").value = city;
-        setSelectedState(state); // use your state dropdown setter
-
-        setAddressSelected(true);
-      });
-      return () => {
-        google.maps.event.clearInstanceListeners(autocomplete);
-      };
-    }, [placesLib]);
 
     return (
       <div className="tag-selector-container">
@@ -453,17 +455,7 @@ function CreateEventModal({ onSubmit }) {
                 handleEventSubmit(data);
               }}
             >
-              {!addressSelected && (
-                <label>
-                  Search Address
-                  <input
-                    ref={autocompleteInputRef}
-                    type="text"
-                    placeholder="Start typing address..."
-                    required
-                  />
-                </label>
-              )}
+              <PlaceAutocompleteComponent />
               {eventFormInputs.map((input, index) => (
                 <label key={index}>
                   {input.label}

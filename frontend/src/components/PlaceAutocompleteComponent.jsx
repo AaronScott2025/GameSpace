@@ -1,63 +1,75 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useRef } from "react";
 import "../styles/create-event-modal.css";
-function PlaceAutocompleteComponent({ className, classNamePlace }) {
-  const autocompleteRef = useRef(null); // Ref for the PlaceAutocompleteElement container
-  const [selectedPlace, setSelectedPlace] = useState(null); // State to store the selected place
 
-  useEffect(() => {
-    let placeAutocomplete;
+function PlaceAutocompleteComponent({ className }) {
+  const [inputValue, setInputValue] = useState(""); // State for the input value
+  const [predictions, setPredictions] = useState([]); // State for autocomplete predictions
+  const autocompleteService = useRef(null); // Ref for the AutocompleteService
 
-    async function initializeAutocomplete() {
-      // Request the "places" library
-      await google.maps.importLibrary("places");
+  const handleInputChange = async (e) => {
+    const value = e.target.value;
+    setInputValue(value);
 
-      // Create the PlaceAutocompleteElement
-      placeAutocomplete = new google.maps.places.PlaceAutocompleteElement();
-
-      // Append the PlaceAutocompleteElement to the container
-      if (autocompleteRef.current) {
-        autocompleteRef.current.appendChild(placeAutocomplete);
-      }
-
-      // Add the "gmp-select" event listener
-      placeAutocomplete.addEventListener(
-        "gmp-select",
-        async ({ placePrediction }) => {
-          const place = placePrediction.toPlace();
-          await place.fetchFields({
-            fields: ["displayName", "formattedAddress", "location"],
-          });
-
-          // Update the selected place state
-          setSelectedPlace(place.toJSON());
-        }
-      );
+    if (!autocompleteService.current) {
+      // Initialize the AutocompleteService
+      autocompleteService.current =
+        new google.maps.places.AutocompleteService();
     }
 
-    initializeAutocomplete();
+    if (value.trim() === "") {
+      setPredictions([]);
+      return;
+    }
 
-    // Cleanup function to remove the PlaceAutocompleteElement
-    return () => {
-      if (placeAutocomplete) {
-        placeAutocomplete.remove();
+    // Fetch autocomplete predictions
+    autocompleteService.current.getPlacePredictions(
+      {
+        input: value,
+        types: ["address"],
+        componentRestrictions: { country: "us" },
+      },
+      (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          setPredictions(results || []);
+        } else {
+          setPredictions([]);
+        }
       }
-    };
-  }, []);
+    );
+  };
+
+  const handlePredictionClick = (prediction) => {
+    setInputValue(prediction.description); // Set the input value to the selected prediction
+    setPredictions([]); // Clear the predictions dropdown
+  };
 
   return (
-    <div>
-      {/* Label for the PlaceAutocompleteElement */}
+    <div className="custom-autocomplete">
+      {/* Label for the input field */}
       <label className="form-label">Search Address</label>
 
-      {/* Container for the PlaceAutocompleteElement */}
-      <div ref={autocompleteRef} className="place-autocomplete"></div>
+      {/* Custom input field */}
+      <input
+        type="text"
+        value={inputValue}
+        onChange={handleInputChange}
+        className={`place-autocomplete ${className}`}
+        placeholder="Start typing address..."
+      />
 
-      {/* Display the selected place information */}
-      {selectedPlace && (
-        <div>
-          <h3>Selected Place:</h3>
-          <pre>{JSON.stringify(selectedPlace, null, 2)}</pre>
-        </div>
+      {/* Dropdown for autocomplete predictions */}
+      {predictions.length > 0 && (
+        <ul className="autocomplete-dropdown">
+          {predictions.map((prediction) => (
+            <li
+              key={prediction.place_id}
+              className="autocomplete-item"
+              onClick={() => handlePredictionClick(prediction)}
+            >
+              {prediction.description}
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
