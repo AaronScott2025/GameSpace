@@ -228,68 +228,93 @@ export const generateProfilePic = async (userId, prompt) => {
     console.error("User ID is required");
     return null;
   }
-  
-  if (!prompt || typeof prompt !== 'string' || prompt.trim() === '') {
+
+  if (!prompt || typeof prompt !== "string" || prompt.trim() === "") {
     console.error("Valid prompt is required");
     return null;
   }
 
   try {
     console.log("Generating profile picture with prompt:", prompt);
-    
-    const response = await axios.post("/api/logogen/", {
-      prompt: prompt.trim(),
-    });
 
-    if (!response || !response.data) {
-      console.error("Invalid or empty response from API");
+    // POST to your Flask backend expecting a blob (the image) in response.
+    const response = await axios.post(
+      "/api/logogen/",
+      { prompt: prompt.trim() },
+      { responseType: "blob" }
+    );
+
+    if (response.status !== 200) {
+      console.error("Failed to generate image, status code:", response.status);
+      console.error("Response data:", response.data);
       return null;
     }
 
-    if (response.data.error) {
-      console.error("API returned an error:", response.data.error);
+    const imageBlob = response.data;
+    const mimeType = imageBlob.type || "image/png";
+
+    // Determine file extension based on MIME type.
+    let fileExtension = "png";
+    if (mimeType === "image/jpeg") {
+      fileExtension = "jpeg";
+    } else if (mimeType === "image/webp") {
+      fileExtension = "webp";
+    }
+
+    // Construct the filename. Using the pattern: <userId>PFP.<extension>
+    const fileName = `${userId}PFP.${fileExtension}`;
+    console.log("Uploading image as:", fileName);
+
+    // Upload the image blob to Supabase Storage (with upsert to replace if it already exists)
+    const { data: storageData, error: storageError } = await supabase
+      .storage
+      .from("profile_pics")
+      .upload(fileName, imageBlob, {
+        contentType: mimeType,
+        upsert: true,
+      });
+
+    if (storageError) {
+      console.error("Error uploading image to bucket:", storageError.message);
       return null;
     }
 
-    if (!response.data.generated ||
-        !Array.isArray(response.data.generated) || 
-        response.data.generated.length === 0) {
-      console.error("No generated images in response:", response.data);
+    // Retrieve the public URL of the uploaded file.
+    // Note: getPublicUrl is synchronous.
+    const publicUrlResponse = supabase
+      .storage
+      .from("profile_pics")
+      .getPublicUrl(fileName);
+    console.log("Public URL response:", publicUrlResponse);
+
+    // Depending on your Supabase client version, the URL might be in publicUrlResponse.data.publicUrl.
+    const publicUrl = publicUrlResponse.data && publicUrlResponse.data.publicUrl;
+    if (!publicUrl) {
+      console.error("Public URL is undefined. Check your Supabase client version or bucket configuration.");
       return null;
     }
+    console.log("Retrieved public URL:", publicUrl);
 
-    const imageUrl = response.data.generated[0]?.url;
-    if (!imageUrl) {
-      console.error("No image URL in first generated item:", response.data.generated[0]);
-      return null;
-    }
-
-    try {
-      new URL(imageUrl);
-    } catch (e) {
-      console.error("Invalid URL format:", imageUrl);
-      return null;
-    }
-
-    const { error } = await supabase
+    // Update the user's profile record with the new image URL.
+    const { error: updateError } = await supabase
       .from("profiles")
-      .update({ profile_pic: imageUrl })
+      .update({ profile_pic: publicUrl })
       .eq("id", userId);
 
-    if (error) {
-      console.error("Error updating profile with generated image:", error.message);
+    if (updateError) {
+      console.error("Error updating profile with generated image:", updateError.message);
       return null;
     }
 
-    return imageUrl;
+    console.log("Successfully generated and stored profile picture:", publicUrl);
+    return publicUrl;
+
   } catch (err) {
     console.error("Unexpected error in generateProfilePic:", err);
-    
     if (err.response) {
       console.error("Response data:", err.response.data);
       console.error("Response status:", err.response.status);
     }
-    
     return null;
   }
 };

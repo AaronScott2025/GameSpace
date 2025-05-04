@@ -1,10 +1,14 @@
+import io
 import json
 import os
 import sys
+
+import requests
 from dotenv import load_dotenv
 import openai
 from supabase import create_client, Client
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.env'))
 from GameSpaceBackend.models.classes import Profile, DuoMatching
@@ -118,12 +122,17 @@ def logo():
             n=1,
             size="1024x1024"
         )
-        images = {
-            "generated": [
-                {"image_number": i + 1, "url": data['url']} for i, data in enumerate(response['data'])
-            ]
-        }
-        return images, 200
+
+        image_url = response["data"][0]["url"]
+        image_response = requests.get(image_url)
+        if image_response.status_code != 200:
+            return {"error": "Failed to fetch the generated image"}, 500
+
+        image_bytes = image_response.content
+        content_type = image_response.headers.get("Content-Type", "image/png")
+
+        return send_file(io.BytesIO(image_bytes), mimetype=content_type)
+
     except Exception as e:
         print(f"Error in /logogen/: {e}")
         return {"error": str(e)}, 500
