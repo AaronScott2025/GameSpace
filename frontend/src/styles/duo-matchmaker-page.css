@@ -56,6 +56,18 @@
 .title-description li {
   text-align: left; /* Ensure list items are also aligned to the left */
 }
+.start-button {
+  font: inherit;
+  cursor: pointer;
+  background-color: rgba(181, 103, 250, 1);
+  border-radius: 20px;
+  width: 160px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none; /* Remove the default border */
+}
 
 .preferences-form-container {
   position: relative;
@@ -73,8 +85,7 @@
   border-radius: 10px;
   box-shadow: #000000 0px 0px 10px;
   overflow-y: hidden;
-  height: 600px;
-  width: 1200px;
+
   max-width: 1200px;
   max-height: 600px;
 }

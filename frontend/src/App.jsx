@@ -15,6 +15,7 @@ import EventsPage from "./pages/events-page";
 import PostDetails from "./pages/PostDetails";
 import FAQ from "./pages/faq";
 import MatchmakingFormPage from "./pages/matchmaking-form-page";
+import MatchmakingForm from "./components/matchmaking-components/match-form";
 import "./App.css";
 
 function App() {
@@ -84,12 +85,10 @@ function App() {
     {
       path: "/partyfinder",
       element: <MatchmakingFormPage />,
-      children: [
-        {
-          path: "matches",
-          element: <DuoMatchmakerPage />,
-        },
-      ],
+    },
+    {
+      path: "/matchmaking-form",
+      element: <MatchmakingForm />,
     },
     {
       path: "/item/:id", // <-- Add this route for item details
