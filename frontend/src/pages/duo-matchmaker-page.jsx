@@ -155,7 +155,7 @@ const PreferencesForm = ({ onSubmit }) => {
           <form onSubmit={handleSubmit} className="preferences-form">
             <h2>Set Your Preferences</h2>
             <label>
-              Which of the following best describes your play style?
+              In the games that it would apply to, how would you describe your playstyle?
               <div>
                 <RadioButton
                   name="playStyle"
@@ -170,7 +170,7 @@ const PreferencesForm = ({ onSubmit }) => {
               </div>
             </label>
             <label>
-              Which of the following best describes you as a gamer?
+              How many different games do you find yourself playing during the average week?
               <div>
                 <RadioButton
                   name="playerDescription"
@@ -186,7 +186,7 @@ const PreferencesForm = ({ onSubmit }) => {
               </div>
             </label>
             <label>
-              Which of the following best describes your personality?
+              Which of the following best describes your playstyle?
               <div>
                 <RadioButton
                   name="playerPersonality"
@@ -197,7 +197,7 @@ const PreferencesForm = ({ onSubmit }) => {
               </div>
             </label>
             <label>
-              How much do you use your microphone in game?
+              How often would you say you use your microphone in game?
               <div>
                 <RadioButton
                   name="micUsage"
@@ -208,7 +208,7 @@ const PreferencesForm = ({ onSubmit }) => {
               </div>
             </label>
             <label>
-              How long do you spend playing games every week?
+              How long do you spend playing games every week?(On Average)
               <div>
                 <RadioButton
                   name="playTime"
@@ -222,34 +222,6 @@ const PreferencesForm = ({ onSubmit }) => {
                   value={preferences.playTime}
                   onChange={handleChange}
                 />
-              </div>
-            </label>
-            <label>
-              What are your top 5 favorite games?
-              <div>
-                <input
-                  type="text"
-                  id="Top5Games"
-                  name="top5Games"
-                  className="top-5-games-input"
-                  value={preferences.top5games}
-                  onChange={handleChange}
-                  required
-                ></input>
-              </div>
-            </label>
-            <label>
-              please provide a brief description of yourself:
-              <div>
-                <textarea
-                  type="textarea"
-                  id="Description"
-                  name="description"
-                  className="description-input-ta"
-                  value={preferences.description}
-                  onChange={handleChange}
-                  required
-                ></textarea>
               </div>
             </label>
             <div className="button-container">

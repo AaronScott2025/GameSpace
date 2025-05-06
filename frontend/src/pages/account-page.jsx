@@ -11,11 +11,14 @@ import {
   generateUsername,
   getFavoriteGames,
   removeFavoriteGame,
+  getUserPosts,
+  deletePost,
 } from "../scripts/account-page-scripts";
 import { UserContext } from "./UserContext.jsx";
 import defaultProfilePic from "../assets/default_pfp.jpg";
 import LoadingAnimation from "../components/loading-animation.jsx";
 import { RiAiGenerate2 } from "react-icons/ri";
+import { FaTrash } from "react-icons/fa";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import FavoriteGamesPopUp from "../components/favoriteGamesPopUp.jsx";
@@ -49,12 +52,16 @@ const AccountPage = () => {
   const [showGamePopup, setShowGamePopup] = useState(false);
   const [currentGameSlot, setCurrentGameSlot] = useState(null);
 
+  // New state for Media Posts
+  const [userPosts, setUserPosts] = useState([]);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
+
   useEffect(() => {
     const loadUserInfo = async () => {
       setLoading(true);
       setError("");
       try {
-        const userInfo = await getUserInfo(user.id);
+        const userInfo = await getUserInfo(user?.id);
         if (userInfo) {
           setUsername(userInfo.username || "");
           setEmail(userInfo.email || "");
@@ -71,17 +78,67 @@ const AccountPage = () => {
           if (games) {
             setFavoriteGames(games);
           }
+
+          // Load user posts
+          if (userInfo.username) {
+            loadUserPosts(userInfo.username);
+          }
         } else {
           setError("Unable to load user information.");
         }
       } catch (err) {
+        console.error("Error loading user info:", err);
         setError("An error occurred while fetching user data.");
       } finally {
         setLoading(false);
       }
     };
-    loadUserInfo();
+
+    if (user?.id) {
+      loadUserInfo();
+    }
   }, [user?.id]);
+
+  // Function to load user posts
+  const loadUserPosts = async (username) => {
+    if (!username) return;
+
+    setIsLoadingPosts(true);
+    try {
+      const posts = await getUserPosts(username);
+      if (Array.isArray(posts)) {
+        setUserPosts(posts);
+      } else {
+        setUserPosts([]);
+      }
+    } catch (err) {
+      console.error("Error loading user posts:", err);
+      setUserPosts([]);
+    } finally {
+      setIsLoadingPosts(false);
+    }
+  };
+
+  // Function to handle post deletion
+  const handleDeletePost = async (postId) => {
+    try {
+      const confirmDelete = window.confirm("Are you sure you want to delete this post?");
+
+      if (!confirmDelete) {
+        return;
+      }
+
+      const success = await deletePost(postId);
+      if (success) {
+        setUserPosts(prevPosts => prevPosts.filter(post => post.post_id !== postId));
+      } else {
+        setError("Failed to delete post.");
+      }
+    } catch (err) {
+      console.error("Error deleting post:", err);
+      setError("An error occurred while deleting the post.");
+    }
+  };
 
   // Preserve all original functions
   const handlePasswordChange = async () => {
@@ -115,13 +172,20 @@ const AccountPage = () => {
   };
 
   const handleGenerateProfilePic = async (prompt) => {
+    if (!prompt || prompt.trim() === '') {
+      setError("Please enter a valid prompt.");
+      return;
+    }
+
     try {
+      setIsGenerating(true);
       const newProfilePic = await generateProfilePic(user.id, prompt);
 
       if (newProfilePic) {
         console.log("Generated profile picture URL:", newProfilePic);
         setProfilePic(newProfilePic);
         setPrompt("");
+        setError("");
       } else {
         setError("Failed to generate profile picture.");
         console.error("Failed to generate profile picture.");
@@ -129,16 +193,25 @@ const AccountPage = () => {
     } catch (err) {
       console.error("Error generating profile picture:", err);
       setError("An error occurred while generating the profile picture.");
+    } finally {
+      setIsGenerating(false);
     }
   };
 
   const handleGenerateUsername = async (message) => {
+    if (!message || message.trim() === '') {
+      setError("Please enter a valid prompt for username generation.");
+      return;
+    }
+
     try {
+      setIsUsernameGenerating(true);
       const newUsername = await generateUsername(user.id, message);
       if (newUsername) {
         console.log("Generated username:", newUsername);
         setUsername(newUsername);
         setUsernamePrompt("");
+        setError("");
       } else {
         setError("Failed to generate username.");
         console.error("Failed to generate username.");
@@ -229,6 +302,19 @@ const AccountPage = () => {
     return <div className="loading">Loading user data...</div>;
   }
 
+  // Format date function
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+
+    try {
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    } catch (err) {
+      console.error("Error formatting date:", err);
+      return '';
+    }
+  };
+
   return (
     <div className="content-container">
       <div className="account-page">
@@ -278,10 +364,10 @@ const AccountPage = () => {
                     <button
                       className="action-button-generate"
                       onClick={async () => {
-                        setIsGenerating(true);
                         await handleGenerateProfilePic(prompt);
-                        setIsGenerating(false);
-                        setShowPromptInput(false);
+                        if (!error) {
+                          setShowPromptInput(false);
+                        }
                       }}
                     >
                       Generate
@@ -350,7 +436,6 @@ const AccountPage = () => {
               {
                 showUsernamePrompt && (
                   <div className="prompt-input-container">
-                    {" "}
                     {!isUsernameGenerating ? (
                       <>
                         <input
@@ -361,7 +446,6 @@ const AccountPage = () => {
                           onChange={(e) => setUsernamePrompt(e.target.value)}
                         />
                         <div className="prompt-input-buttons">
-                          {" "}
                           <button
                             className="action-button-generate"
                             onClick={() =>
@@ -580,8 +664,43 @@ const AccountPage = () => {
           </div>
         </div>
 
-        <div className="marketplace-section">
-          <div className="marketplace-title">Marketplace</div>
+        <div className="media-posts-section">
+          <div className="media-posts-title">Media Posts</div>
+          <div className="media-posts-content">
+            {isLoadingPosts ? (
+              <div className="loading-posts">
+                <LoadingAnimation />
+              </div>
+            ) : userPosts.length > 0 ? (
+              <div className="posts-list">
+                {userPosts.map((post) => (
+                  <div key={post.post_id} className="post-item">
+                    <div className="post-header">
+                      <div className="post-username">{post.username}</div>
+                      <div className="post-date">{formatDate(post.created_at)}</div>
+                    </div>
+                    <div className="post-content">{post.post_content}</div>
+                    <div className="post-actions">
+                      <div className="post-likes-display">
+                        <span>{post.likes || 0} likes</span>
+                      </div>
+                      <button
+                        className="post-delete-button"
+                        onClick={() => handleDeletePost(post.post_id)}
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="no-posts-message">
+                <p>You haven't posted anything yet.</p>
+                <p>Your public posts will appear here.</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
