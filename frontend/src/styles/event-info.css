@@ -17,7 +17,7 @@ html, body {
   .event-info-container {
     flex: 0 0 55%;
     background: linear-gradient(135deg, #0074e4 0%, #044999 100%);
-    padding: 20px 40px;
+    padding: 20px 90px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -162,13 +162,22 @@ html, body {
   
 /*//////////////////////////////////////*/
 /*//////////////////////////////////////*/
-  .event-map-container {
-    flex: 0 0 52%;
-    background-color: clear;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid #ffffff;
-  }
   
+.event-map-container {
+  background-color: white;
+  padding: 5px 5px 6px; /* Adjusted padding */
+  align-items: center;
+  border: 0px solid #ffffff;
+  margin-top: -15px; /* Optional: Move it up by adjusting the margin */
+  height: 330px; /* Set a height to match the map's size */
+  display: flex; /* Optional: To center the image within the container */
+  justify-content: center; /* Optional: To center the image horizontally */
+  align-items: center; /* Optional: To center the image vertically */
+}
+
+.online {
+  width: 100%; /* Ensure the image takes up full width of the container */
+  height: 100%; /* Ensure the image takes up full height of the container */
+  object-fit: contain; /* Image will fit within the container, maintaining aspect ratio */
+  border-radius: 12px; /* Match border-radius for smooth edges */
+}

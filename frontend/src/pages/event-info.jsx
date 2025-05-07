@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../../client.js";
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import "../styles/event-info.css";
 
 const EventDetailPage = () => {
@@ -30,20 +31,6 @@ const EventDetailPage = () => {
     setIsRSVPOpen(!isRSVPOpen);
   };
 
-  const getStaticMapUrl = (eventData) => {
-    if (eventData.is_online) return null; // No map for online events
-
-    const apiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY; // Using environment variable for API key
-    const address = `${eventData.street_address}, ${eventData.location_city}, ${eventData.location_state}, ${eventData.location_country}`;
-    const encodedAddress = encodeURIComponent(address);
-
-    const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${encodedAddress}&zoom=15&size=600x300&maptype=roadmap&markers=color:red%7Clabel:E%7C${encodedAddress}&key=${apiKey}`;
-    
-    console.log("Generated Map URL: ", mapUrl); // Debug log
-    
-    return mapUrl;
-  };
-
   if (!eventData) return <div>Loading event details...</div>;
 
   return (
@@ -62,26 +49,21 @@ const EventDetailPage = () => {
           </div>
         </div>
 
-        {/* IMAGE */}
         <div className="event-image-container">
           <img src="/planet.png" alt="Event" className="event-image" />
           <button onClick={toggleRSVP} className="rsvp-button">RSVP</button>
         </div>
       </div>
 
-      {/* BOTTOM MAP CONTAINER */}
+      {/* Interactive Map */}
       <div className="event-map-container">
-        <div id="map">
-          {eventData.is_online ? (
-            <p>This is an online event, no physical map available.</p>
-          ) : (
-            <img
-              src={getStaticMapUrl(eventData)}
-              alt="Event Location"
-              className="event-map"
-            />
-          )}
-        </div>
+        {eventData.is_online ? (
+        <img src="/online_event.jpg" alt="online" className="online" />
+        ) : (
+          <GoogleEventMap
+            address={`${eventData.street_address}, ${eventData.location_city}, ${eventData.location_state}, ${eventData.location_country}`}
+          />
+        )}
       </div>
 
       {/* RSVP Modal */}
@@ -101,6 +83,49 @@ const EventDetailPage = () => {
         </div>
       )}
     </div>
+  );
+};
+
+const GoogleEventMap = ({ address }) => {
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_API_KEY,
+    libraries: ['places'],
+  });
+
+  const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    const geocodeAddress = async () => {
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode({ address }, (results, status) => {
+        if (status === "OK" && results[0]) {
+          const { lat, lng } = results[0].geometry.location;
+          setLocation({ lat: lat(), lng: lng() });
+        } else {
+          console.error("Geocode failed: " + status);
+        }
+      });
+    };
+
+    if (isLoaded) geocodeAddress();
+  }, [isLoaded, address]);
+
+  if (!isLoaded) return <p>Loading map...</p>;
+  if (!location) return <p>Locating event...</p>;
+
+  return (
+    <GoogleMap
+      center={location}
+      zoom={15}
+      mapContainerStyle={{
+        width: "100%",
+        height: "300px",
+        borderRadius: "12px",
+        marginTop: "1rem",
+      }}
+    >
+      <Marker position={location} />
+    </GoogleMap>
   );
 };
 
