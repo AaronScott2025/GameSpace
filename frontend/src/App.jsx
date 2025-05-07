@@ -14,7 +14,11 @@ import ErrorPage from "./pages/error-page";
 import EventsPage from "./pages/events-page";
 import PostDetails from './pages/PostDetails';
 import FAQ from './pages/faq'
+import EventInfoPage from "./pages/event-info";
+
+
 import "./App.css";
+
 
 function App() {
   const routes = useRoutes([
@@ -33,6 +37,10 @@ function App() {
     {
       path: "/faq",
       element: <FAQ />,
+    },
+    {
+      path: "/event-info",
+      element: <EventInfoPage />,
     },
     {
       path: "/chatbot",
@@ -62,6 +70,7 @@ function App() {
         </Wrapper>
       ),
     },
+
 
     {
       path: "/home",
@@ -101,10 +110,19 @@ function App() {
       ),
     },
     {
+      path: "/events/:eventId",
+      element: (
+        <Wrapper>
+          <EventInfoPage />
+        </Wrapper>
+      ),
+    },
+    {
       path: "*",
       element: <ErrorPage />,
     },
   ]);
+
 
   return (
     <>
@@ -113,4 +131,7 @@ function App() {
   );
 }
 
+
 export default App;
+
+
