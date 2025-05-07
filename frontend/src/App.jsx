@@ -16,6 +16,8 @@ import PostDetails from "./pages/PostDetails";
 import FAQ from "./pages/faq";
 import MatchmakingFormPage from "./pages/matchmaking-form-page";
 import MatchmakingForm from "./components/matchmaking-components/match-form";
+import EventInfoPage from "./pages/event-info";
+
 import "./App.css";
 
 function App() {
@@ -35,6 +37,10 @@ function App() {
     {
       path: "/faq",
       element: <FAQ />,
+    },
+    {
+      path: "/event-info",
+      element: <EventInfoPage />,
     },
     {
       path: "/chatbot",
@@ -103,6 +109,14 @@ function App() {
       element: (
         <Wrapper>
           <EventsPage />
+        </Wrapper>
+      ),
+    },
+    {
+      path: "/events/:eventId",
+      element: (
+        <Wrapper>
+          <EventInfoPage />
         </Wrapper>
       ),
     },

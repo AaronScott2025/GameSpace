@@ -1,0 +1,183 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* Prevent scrolling */
+  }
+
+/*//////////////////////////////////////*/
+/*///////// EVENT INFORMATION //////////*/
+
+  .event-detail-page {
+    display: flex;
+    flex-direction: column;
+    height: 77.2vh;
+    margin: 0;
+  }
+  
+  .event-info-container {
+    flex: 0 0 55%;
+    background: linear-gradient(135deg, #0074e4 0%, #044999 100%);
+    padding: 20px 90px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  
+  .event-text-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+  }
+  
+  .event-name {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .event-organizer {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 8px;
+  }
+  
+  .event-name,
+  .event-organizer {
+    color: white;
+    text-align: left; /* Align text to the left */
+    margin-left: 0; /* Remove any left margin */
+    width: 100%; /* Take up full width to ensure alignment */
+  }
+  
+  .event-description {
+    font-size: 1rem;
+    color: #d8d8d8;
+  }
+  
+  .event-image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .event-image {
+    width: 200px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-left: 40px;
+  }
+  
+
+/*//////////////////////////////////////*/
+/*//////////RSVP INFORMATION/////////////*/
+
+/*rsvp button*/
+  .rsvp-button {
+    margin-top: 20px;
+    margin-right: -40px;
+    padding: 10px 20px;
+    background-color: #004cff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  .rsvp-button:hover {
+    background-color: #457dff;
+  }
+  
+  /* Pop up box */
+  .rsvp-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .rsvp-modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative; /* Allow for absolute positioning of the close button */
+  }
+  
+  /* Close button "X" */
+  .rsvp-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #000000;
+    cursor: pointer;
+  }
+  .rsvp-close-button:hover {
+    color: #f44336;
+  }
+  
+  .rsvp-modal input {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  .rsvp-submit-button {
+    margin-top: 45px;
+  }
+
+  .rsvp-modal 
+  .rsvp-submit-button {
+    padding: 10px 20px;
+    background-color: #004cff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  .rsvp-modal 
+  .rsvp-submit-button:hover {
+    background-color: #457dff;
+  }
+
+  
+/*//////////////////////////////////////*/
+/*//////////////////////////////////////*/
+  
+.event-map-container {
+  background-color: white;
+  padding: 5px 5px 6px; /* Adjusted padding */
+  align-items: center;
+  border: 0px solid #ffffff;
+  margin-top: -15px; /* Optional: Move it up by adjusting the margin */
+  height: 330px; /* Set a height to match the map's size */
+  display: flex; /* Optional: To center the image within the container */
+  justify-content: center; /* Optional: To center the image horizontally */
+  align-items: center; /* Optional: To center the image vertically */
+}
+
+.online {
+  width: 100%; /* Ensure the image takes up full width of the container */
+  height: 100%; /* Ensure the image takes up full height of the container */
+  object-fit: contain; /* Image will fit within the container, maintaining aspect ratio */
+  border-radius: 12px; /* Match border-radius for smooth edges */
+}
