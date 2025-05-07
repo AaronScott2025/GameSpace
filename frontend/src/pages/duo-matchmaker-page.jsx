@@ -108,6 +108,7 @@ const PreferencesForm = ({ onSubmit }) => {
       console.error("Error updating preferences:", error);
     } else {
       onSubmit(preferences);
+      console.log("Preferences submitted successfully!");
     }
   };
 
@@ -155,7 +156,8 @@ const PreferencesForm = ({ onSubmit }) => {
           <form onSubmit={handleSubmit} className="preferences-form">
             <h2>Set Your Preferences</h2>
             <label>
-              In the games that it would apply to, how would you describe your playstyle?
+              In the games that it would apply to, how would you describe your
+              playstyle?
               <div>
                 <RadioButton
                   name="playStyle"
@@ -170,7 +172,8 @@ const PreferencesForm = ({ onSubmit }) => {
               </div>
             </label>
             <label>
-              How many different games do you find yourself playing during the average week?
+              How many different games do you find yourself playing during the
+              average week?
               <div>
                 <RadioButton
                   name="playerDescription"
