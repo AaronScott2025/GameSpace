@@ -12,6 +12,10 @@ import Marketplace from "./pages/marketplace-home";
 import ProductPage from "./pages/product-page";
 import ErrorPage from "./pages/error-page";
 import EventsPage from "./pages/events-page";
+import PostDetails from "./pages/PostDetails";
+import FAQ from "./pages/faq";
+import EventInfoPage from "./pages/event-info";
+
 import "./App.css";
 
 function App() {
@@ -27,6 +31,14 @@ function App() {
     {
       path: "/signup",
       element: <SignupPage />,
+    },
+    {
+      path: "/faq",
+      element: <FAQ />,
+    },
+    {
+      path: "/event-info",
+      element: <EventInfoPage />,
     },
     {
       path: "/chatbot",
@@ -82,6 +94,14 @@ function App() {
       element: (
         <Wrapper>
           <EventsPage />
+        </Wrapper>
+      ),
+    },
+    {
+      path: "/events/:eventId",
+      element: (
+        <Wrapper>
+          <EventInfoPage />
         </Wrapper>
       ),
     },
