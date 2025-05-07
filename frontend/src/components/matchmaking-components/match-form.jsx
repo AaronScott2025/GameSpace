@@ -1,10 +1,12 @@
-import React from "react";
+import React, { use } from "react";
 import { supabase } from "../../../client";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../pages/UserContext";
 import "../../styles/duo-matchmaker-page.css";
 import { LuSwords } from "react-icons/lu";
+import { getFavoriteGames } from "../../scripts/account-page-scripts";
 import RadioButton from "../Radio-button";
+import FavoriteGamesSection from "../FavoriteGameSection";
 
 function MatchmakingForm() {
   const { user } = useContext(UserContext);
@@ -17,6 +19,8 @@ function MatchmakingForm() {
 
     description: "",
   });
+
+  const [showNextSteps, setShowNextSteps] = useState(false); // State to toggle NextSteps
   const handleChange = (e) => {
     const { name, value } = e.target;
     setPreferences((prev) => ({ ...prev, [name]: value }));
@@ -69,6 +73,8 @@ function MatchmakingForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("Preferences before submission:", preferences); // Debugging
+
     const playerType = [
       preferences.playStyle,
       preferences.playerDescription,
@@ -90,120 +96,193 @@ function MatchmakingForm() {
         .eq("username", user.username);
 
       if (error) {
-        console.error("Error updating preferences:", error);
         alert("Failed to update preferences. Please try again.");
       } else {
-        console.log("Preferences updated successfully:", data);
-        alert("Preferences updated successfully!");
+        setShowNextSteps(true);
       }
     } catch (err) {
-      console.error("Unexpected error:", err);
       alert("An unexpected error occurred. Please try again.");
     }
   };
   return (
     <div className="preferences-form-container">
       <div className="preferences-form-wrapper">
-        <div className="matchmaking-form">
-          <h2>Tell use your preferences</h2>
-          <form className="preferences-form" onSubmit={handleSubmit}>
-            <label>
-              In the games that it would apply to, how would you describe your
-              playstyle?
-              <div>
-                <RadioButton
-                  name="playStyle"
-                  options={[
-                    "Supportive/Backline",
-                    "Neutral/Middle",
-                    "Aggressive/Frontline",
-                  ]}
-                  value={preferences.playStyle}
-                  onChange={handleChange}
-                />
+        {showNextSteps ? (
+          <NextSteps setShowNextSteps={setShowNextSteps} /> // Render NextSteps if showNextSteps is true
+        ) : (
+          <div className="matchmaking-form">
+            <h2>Tell us your preferences</h2>
+            <form className="preferences-form" onSubmit={handleSubmit}>
+              <label>
+                In the games that it would apply to, how would you describe your
+                playstyle?
+                <div>
+                  <RadioButton
+                    name="playStyle"
+                    options={[
+                      "Supportive/Backline",
+                      "Neutral/Middle",
+                      "Aggressive/Frontline",
+                    ]}
+                    value={preferences.playStyle}
+                    onChange={handleChange}
+                  />
+                </div>
+              </label>
+              <label>
+                How many different games do you find yourself playing during the
+                average week?
+                <div>
+                  <RadioButton
+                    name="playerDescription"
+                    options={[
+                      "Exclusive(1 or 2 games at a time)",
+                      "Non-Exclusive (3 or 5 games at a time)",
+                      "Casual (6 or 8 games at a time)",
+                      "Variety Gamer(9+ games at a time)",
+                    ]}
+                    value={preferences.playerDescription}
+                    onChange={handleChange}
+                  />
+                </div>
+              </label>
+              <label>
+                Which of the following best describes your playstyle?
+                <div>
+                  <RadioButton
+                    name="playerPersonality"
+                    options={["Competitive", "Casual", "Both", "Neither"]}
+                    value={preferences.playerPersonality}
+                    onChange={handleChange}
+                  />
+                </div>
+              </label>
+              <label>
+                How often would you say you use your microphone in game?
+                <div>
+                  <RadioButton
+                    name="micUsage"
+                    options={["Never", "Sometimes", "Often", "Very Often"]}
+                    value={preferences.micUsage}
+                    onChange={handleChange}
+                  />
+                </div>
+              </label>
+              <label>
+                How long do you spend playing games every week? (On Average)
+                <div>
+                  <RadioButton
+                    name="playTime"
+                    options={[
+                      "1-3 Hours",
+                      "4-7 Hours",
+                      "8-11 hours",
+                      "12-15 hours",
+                      "16+ hour",
+                    ]}
+                    value={preferences.playTime}
+                    onChange={handleChange}
+                  />
+                </div>
+              </label>
+              <div className="button-container">
+                <button type="submit">
+                  <LuSwords />
+                  Next Steps
+                </button>
               </div>
-            </label>
-            <label>
-              How many different games do you find yourself playing during the
-              average week?
-              <div>
-                <RadioButton
-                  name="playerDescription"
-                  options={[
-                    "Exclusive(1 or 2 games at a time)",
-                    "Non-Exclusive (3 or 5 games at a time)",
-                    "Casual (6 or 8 games at a time)",
-                    "Variety Gamer(9+ games at a time)",
-                  ]}
-                  value={preferences.playerDescription}
-                  onChange={handleChange}
-                />
-              </div>
-            </label>
-            <label>
-              Which of the following best describes your playstyle?
-              <div>
-                <RadioButton
-                  name="playerPersonality"
-                  options={["Competitive", "Casual", "Both", "Neither"]}
-                  value={preferences.playerPersonality}
-                  onChange={handleChange}
-                />
-              </div>
-            </label>
-            <label>
-              How often would you say you use your microphone in game?
-              <div>
-                <RadioButton
-                  name="micUsage"
-                  options={["Never", "Sometimes", "Often", "Very Often"]}
-                  value={preferences.micUsage}
-                  onChange={handleChange}
-                />
-              </div>
-            </label>
-            <label>
-              How long do you spend playing games every week?(On Average)
-              <div>
-                <RadioButton
-                  name="playTime"
-                  options={[
-                    "1-3 Hours",
-                    "4-7 Hours",
-                    "8-11 hours",
-                    "12-15 hours",
-                    "16+ hour",
-                  ]}
-                  value={preferences.playTime}
-                  onChange={handleChange}
-                />
-              </div>
-            </label>
-            <div className="button-container">
-              <button type="submit">
-                <LuSwords />
-                Next Steps
-              </button>
-            </div>
-            <NextSteps />
-          </form>
-        </div>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );
 }
-export default MatchmakingForm;
+const NextSteps = ({ setShowNextSteps }) => {
+  const { user } = useContext(UserContext);
+  const [favoriteGames, setFavoriteGames] = useState({});
+  const [showGamePopup, setShowGamePopup] = useState(false);
+  const [currentGameSlot, setCurrentGameSlot] = useState(null);
 
-const NextSteps = () => {
+  const handleGameClick = (slotNumber) => {
+    setCurrentGameSlot(slotNumber);
+    setShowGamePopup(true);
+  };
+
+  const handleSelectGame = (game, slotNumber) => {
+    setFavoriteGames((prev) => {
+      const newGames = { ...prev };
+      newGames[slotNumber] = game;
+      return newGames;
+    });
+    setShowGamePopup(false);
+  };
+
+  const handleRemoveGame = (slotNumber) => {
+    setFavoriteGames((prev) => {
+      const newGames = { ...prev };
+      newGames[slotNumber] = null;
+      return newGames;
+    });
+  };
+  useEffect(() => {
+    const fetchFavoriteGames = async () => {
+      try {
+        console.log("Fetching favorite games for:", user.id, user.username);
+        const games = await getFavoriteGames(user.id, user.username);
+        if (games) {
+          setFavoriteGames(games);
+        } else {
+          console.error("No favorite games found.");
+        }
+      } catch (err) {
+        console.error("Error fetching favorite games:", err);
+      }
+    };
+
+    if (user?.id && user?.username) {
+      fetchFavoriteGames();
+    }
+  }, [user?.id, user?.username]);
+
+  if (!favoriteGames) {
+    return <div>Loading...</div>;
+  }
   return (
-    <div className="preferences-form-container">
-      <div className="preferences-form-wrapper">
-        <form className="preferences-form">
-          <label>Tell people what you looking for?</label>
-          <textarea></textarea>
-          {/** favorites games component here */}
-        </form>
+    <div className="preferences-form">
+      <form>
+        <label className="preferences-description-label">
+          What are you looking for in a gaming partner?
+        </label>
+        <textarea className="description-textarea"></textarea>
+        <label className="preferences-description-label">
+          Here are your favorite games based on our records:
+        </label>
+        <FavoriteGamesSection
+          favoriteGames={favoriteGames}
+          handleGameClick={handleGameClick}
+          handleRemoveGame={handleRemoveGame}
+          showGamePopup={showGamePopup}
+          setShowGamePopup={setShowGamePopup}
+          handleSelectGame={handleSelectGame}
+          currentGameSlot={currentGameSlot}
+        />
+      </form>
+      <div className="buttons-container">
+        <button
+          type="button"
+          className="cancel-button"
+          onClick={() => setShowNextSteps(false)}
+        >
+          Back
+        </button>
+        <button type="submit">
+          <LuSwords />
+          Submit
+        </button>
       </div>
     </div>
   );
 };
+
+export default MatchmakingForm;

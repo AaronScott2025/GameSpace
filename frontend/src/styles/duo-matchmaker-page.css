@@ -336,3 +336,29 @@
   background-color: #f9f9f9; /* Light background for textareas */
   color: #000000;
 }
+/* this for the descrption and the games input */
+.preferences-description-label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+.description-textarea {
+  width: 100%; /* Make textareas take full width */
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background-color: #f9f9f9; /* Light background for textareas */
+  color: #000000;
+}
+
+.buttons-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin-top: 20px;
+}
