@@ -7,6 +7,7 @@ import { supabase } from "../../client";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
 import useSound from "../hooks/useSound"; // Custom hook
+import StartDmButton from "../components/startdms.jsx"
 
 const HomePage = () => {
 
@@ -508,16 +509,7 @@ const HomePage = () => {
                   )}
                 </ul>
               </div>
-
-              <button
-                className={`message-button ${
-                  isBlueBackground
-                    ? "message-button-blue"
-                    : "message-button-white"
-                }`}
-              >
-                Send Message
-              </button>
+              <StartDmButton currentUserId={user.user_id} participantId={selectedUser.profiles.user_id} />
             </div>
           </div>
         </div>

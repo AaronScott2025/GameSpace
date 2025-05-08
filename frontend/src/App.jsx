@@ -12,8 +12,12 @@ import Marketplace from "./pages/marketplace-home";
 import ProductPage from "./pages/product-page";
 import ErrorPage from "./pages/error-page";
 import EventsPage from "./pages/events-page";
-import PostDetails from './pages/PostDetails';
-import FAQ from './pages/faq'
+import PostDetails from "./pages/PostDetails";
+import FAQ from "./pages/faq";
+import MatchmakingFormPage from "./pages/matchmaking-form-page";
+import MatchmakingForm from "./components/matchmaking-components/match-form";
+import EventInfoPage from "./pages/event-info";
+
 import "./App.css";
 
 function App() {
@@ -33,6 +37,10 @@ function App() {
     {
       path: "/faq",
       element: <FAQ />,
+    },
+    {
+      path: "/event-info",
+      element: <EventInfoPage />,
     },
     {
       path: "/chatbot",
@@ -79,10 +87,22 @@ function App() {
         </Wrapper>
       ),
     },
-    
+
     {
       path: "/partyfinder",
-      element: <DuoMatchmakerPage />,
+      element: <MatchmakingFormPage />,
+    },
+    {
+      path: "/matchmaking-form",
+      element: <MatchmakingForm />,
+    },
+    {
+      path: "/matches",
+      element: (
+        <Wrapper>
+          <DuoMatchmakerPage />
+        </Wrapper>
+      ),
     },
     {
       path: "/item/:id", // <-- Add this route for item details
@@ -97,6 +117,14 @@ function App() {
       element: (
         <Wrapper>
           <EventsPage />
+        </Wrapper>
+      ),
+    },
+    {
+      path: "/events/:eventId",
+      element: (
+        <Wrapper>
+          <EventInfoPage />
         </Wrapper>
       ),
     },

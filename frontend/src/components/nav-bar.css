@@ -111,7 +111,7 @@ import Navbar from "../components/nav-bar";
   height: 66%;
   background-color: clear; /* clear or Lighter grey background #d3d3d3*/
   transition: left 0.3s ease-in-out;
-  z-index: 50;
+  z-index: 2000; /* Increase z-index to ensure it is above other elements */
   padding-top: 85px;
 }
 
