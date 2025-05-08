@@ -9,14 +9,17 @@ obj/
 *.vscode/
 .env
 
-GameSpaceBackend/.env
+.env
 
 =======
 .env
 .venv
 __pycache__/
+GameSpaceBackend/models/__pycache__/
+GameSpaceBackend/services/__pycache__/
 
 # Ignore dependency-related files
 packages/
 project.lock.json
 .fake
+node_modules/

@@ -1,0 +1,288 @@
+/* Overlay remains mostly unchanged */
+.game-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.game-popup-container {
+  width: 75%;
+  max-width: 600px;
+  max-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, var(--secondary-bg, #3c006e), var(--primary-bg, #5b168f));
+  border-radius: var(--border-radius, 10px);
+  overflow: hidden;
+  box-shadow: var(--box-shadow, 0 8px 25px rgba(0, 0, 0, 0.35));
+  animation: slideUp 0.4s ease-out;
+  color: var(--body-font-color, #ffffff);
+}
+
+.game-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.game-popup-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--accent-color, #eeff00);
+}
+
+.game-popup-close {
+  background: none;
+  border: none;
+  color: var(--body-font-color, #ffffff);
+  font-size: 1.2rem; /* reduced icon size */
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+  margin-left: 10px;
+  line-height: 0.8;
+}
+
+.game-popup-close:hover {
+  color: var(--accent-color, #eeff00);
+}
+
+.game-popup-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0.4rem 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 4px;
+  align-items: center;
+}
+
+.game-popup-search {
+  flex: 0 0 40%;
+  min-width: 100px;
+}
+
+.game-popup-search input {
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--body-font-color, #ffffff);
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+}
+
+.game-popup-search input:focus {
+  outline: none;
+  border-color: var(--accent-color, #eeff00);
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.game-popup-nav {
+  flex: 1 1 auto;
+  display: flex;
+  overflow-x: auto;
+  gap: 4px;
+  align-items: center;
+  padding: 0 4px;
+}
+
+.game-popup-nav-item {
+  padding: 0.3rem 0.6rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.game-popup-nav-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.game-popup-nav-item.active {
+  background: rgba(238, 255, 0, 0.2);
+  border-color: var(--accent-color, #eeff00);
+  color: var(--accent-color, #eeff00);
+}
+
+.game-popup-nav::-webkit-scrollbar {
+  height: 2px;
+}
+
+.game-popup-nav::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.game-popup-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+
+.game-popup-content {
+  padding: 0.6rem;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.game-popup-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.7rem;
+}
+
+.game-popup-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.game-popup-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.game-popup-image {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.game-popup-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.game-popup-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem; /* smaller placeholder font */
+  font-weight: bold;
+  color: var(--accent-color, #eeff00);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.game-popup-title {
+  padding: 0.45rem;
+  text-align: center;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.game-popup-loading,
+.game-popup-no-results {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  height: 120px;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+/* Thinner scrollbar for content */
+.game-popup-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.game-popup-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+}
+
+.game-popup-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.game-popup-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive adjustments for tablets and mobiles */
+@media (max-width: 768px) {
+  .game-popup-container {
+    width: 80%;
+    max-width: 550px;
+    max-height: 45vh;
+  }
+
+  .game-popup-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-popup-container {
+    width: 90%;
+    max-height: 50vh;
+  }
+
+  .game-popup-header {
+    padding: 0.4rem 0.6rem;
+  }
+
+  .game-popup-header h2 {
+    font-size: 0.9rem;
+  }
+
+  .game-popup-content {
+    padding: 0.5rem;
+  }
+
+  .game-popup-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .game-popup-placeholder {
+    font-size: 1.3rem;
+  }
+
+  .game-popup-title {
+    padding: 0.4rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Animations remain unchanged */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

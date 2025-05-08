@@ -10,13 +10,11 @@ env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.env')
 from GameSpaceBackend.models.classes import Profile, DuoMatching
 import GameSpaceBackend.services.MatchmakingService as ms
 load_dotenv(dotenv_path=env_path)
-from flask_socketio import SocketIO, emit
 
 SUPABASE_API_KEY = os.getenv("SUPABASE")
 OPEN_AI_KEY = os.getenv("OPEN_AI")
 
 app = Flask(__name__)
-socketio = SocketIO(app)
 supabase = create_client("https://xfmccwekbxjkrjwuheyv.supabase.co", SUPABASE_API_KEY)
 
 
@@ -34,8 +32,23 @@ def mediaGet():
             return jsonify({"message": "No more posts available"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
+# marketplace get endpoint, will retrieve the first 5 posts from the marketplace table in supabase
+# and return them in a json format. It will also return the next offset for pagination.
+@app.route('/marketplaceGet/', methods=['GET'])
+def marketplaceGet():
+    try:
+        offset = int(request.args.get('offset', 0))  # Default offset is 0
+        response = supabase.table('marketplace').select('*').order('sale_id', desc=False).range(offset, offset + 4).execute()  # Fetch 5 records in ascending order
+        if response.data:
+            return jsonify({
+                "posts": response.data,
+                "next_offset": offset + 5  # Provide the next offset for pagination
+            }), 200
+        else:
+            return jsonify({"message": "No more posts available"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 @app.route('/chatbot/', methods=['POST'])
 def chatbot():
     try:
@@ -74,55 +87,81 @@ def chatbot():
 @app.route('/matchmaker/', methods=['GET'])
 def matchmaker():
     try:
-        mminfo = request.args
+        username = request.args.get('username', '')  # Only require the username
+        if not username:
+            return jsonify({'error': 'Username is required'}), 400
+
+        # Fetch user data from the database
+        response = supabase.table("duo_matchmaker").select("*").eq("username", username).execute()
+        if not response.data or len(response.data) == 0:
+            return jsonify({'error': 'User not found'}), 404
+        
+         # Fetch favorite games using the database function
+        favorite_games_response = supabase.rpc("get_favorite_games_by_username", {"username": username}).execute()
+        if not favorite_games_response.data:
+            return jsonify({'error': 'Could not fetch favorite games'}), 500
+
+        # Extract user data
+        user_data = response.data[0]
         match = DuoMatching(
-            username=mminfo.get('username', ''),
-            top5games=mminfo.get('Top5Games', '').split(','),
-            playertype=mminfo.get('PlayerType', '').split(','),
-            playertypeints=[int(i) for i in mminfo.get('PlayerTypeInts', '').split(',')],
-            description=mminfo.get('Description', ''),
-            weight=float(mminfo.get('Weight', 0))  # Assuming Weight is required
+            username=user_data.get('username', ''),
+            top5games=favorite_games_response.data,  # Use the result from the database function
+            playertype=user_data.get('playerType', '').split(','),
+            playertypeints=[int(i.strip('[]')) for i in user_data.get('playerTypeInts', '').split(',') if i.strip('[]').isdigit()],
+            description=user_data.get('description', ''),
+            weight=float(user_data.get('weight', 0))  # Assuming weight is optional
         )
-        data,listofallduos = ms.importSpecificProfiles(supabase, match)
+
+        # Fetch all profiles and perform matchmaking
+        data, listofallduos = ms.importSpecificProfiles(supabase, match)
         listofpotentialduos = ms.matchMaking(listofallduos, match)
-        return jsonify({
-            'Matches': listofpotentialduos}), 200
+
+        return jsonify({'Matches': listofpotentialduos}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
 
-@app.route('/logogen/', methods=['GET'])
+@app.route('/logogen/', methods=['POST'])
 def logo():
     try:
-        prompt = request.args.get('prompt')
+        openai.api_key = OPEN_AI_KEY
+        data = request.get_json()  # Get JSON data from the request body
+        prompt = data.get('prompt')  # Extract the prompt
+        if not prompt:
+            return {"error": "Prompt is required"}, 400
+
         response = openai.Image.create(
             prompt=prompt,
-            n=4,
-            size="1000x1000"
+            n=1,
+            size="1024x1024"
         )
         images = {
             "generated": [
                 {"image_number": i + 1, "url": data['url']} for i, data in enumerate(response['data'])
             ]
         }
-        jsonimages = json.dumps(images)
-        return jsonimages, 200
+        return images, 200
     except Exception as e:
-        error_message = {"error": str(e)}
-        return json.dumps(error_message), 500
+        print(f"Error in /logogen/: {e}")
+        return {"error": str(e)}, 500
 
 
 @app.route('/namegen/', methods=['POST'])
 def namegen():
     try:
-        previous = request.args.get('previous')
+        openai.api_key = OPEN_AI_KEY
+        data = request.get_json()  # Get JSON data from the request body
+        message = data.get('message')  # Extract the message
+
+        if not message:
+            return {"error": "Message is required"}, 400
 
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0125",
             messages=[
                 {"role": "system", "content": (
-                    "Generate 5 Gaming clan names. Exclude the following, previously generated names:"
-                    f"{previous}"
+                    "Generate a username for a user on the Game Space Application. Format it similarly to how most gamer-tags are made. Single expression with no spaces, limit to 20 characters"
+                    f"{message}"
                 )},
             ]
         )
@@ -131,37 +170,6 @@ def namegen():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-@app.route('/sendmessage/', methods=['POST'])
-def send_message():
-    try:
-        data = request.json
-        response = supabase.table('Messages').insert({
-            'sender_id': data['sender_id'],
-            'receiver_id': data['receiver_id'],
-            'message_content': data['message_content']
-        }).execute()
-        return jsonify(response.data), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route('/getmessage/', methods=['GET'])
-def get_messages():
-    print("wip")
-
-@socketio.on('send_message')
-def handle_send_message(data):
-    # Save message to database (Supabase)
-    supabase.table('Messages').insert({
-        'sender_id': data['sender_id'],
-        'receiver_id': data['receiver_id'],
-        'message_content': data['message_content']
-    }).execute()
-
-    # Broadcast the message to the receiver
-    emit('receive_message', data, room=data['receiver_id'])
-
-
 if __name__ == '__main__':
     app.run(debug=True)
-    socketio.run(app, debug=True)
+

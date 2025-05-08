@@ -1,0 +1,553 @@
+.event-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999;
+  backdrop-filter: blur(4px);
+}
+
+.event-modal-container {
+  background: white;
+  border-radius: 12px;
+  padding: 24px 28px;
+  width: 90%;
+  max-width: 900px;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  z-index: 1000000;
+}
+
+.event-modal-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.event-modal-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+
+.event-modal-container::-webkit-scrollbar-thumb {
+  background: #0074e4;
+  border-radius: 8px;
+}
+
+.event-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #f0f7ff;
+  border: none;
+  font-size: 24px;
+  height: 36px;
+  width: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #044999;
+  transition: all 0.2s ease;
+}
+
+.event-modal-close:hover {
+  background: #044999;
+  color: white;
+}
+
+.event-modal-title {
+  margin-top: 0;
+  margin-bottom: 24px;
+  text-align: center;
+  color: #044999;
+  font-size: 1.8rem;
+  font-weight: 700;
+  border-bottom: 2px solid #e0eeff;
+  padding-bottom: 12px;
+}
+
+.event-modal-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  row-gap: 16px;
+}
+
+.event-modal-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #044999;
+}
+
+.event-modal-form input,
+.event-modal-form textarea,
+.event-modal-form select,
+.time-input-display {
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid #ccd6e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #f9fbfd;
+  transition: all 0.2s ease;
+}
+
+.event-modal-form input:focus,
+.event-modal-form textarea:focus,
+.event-modal-form select:focus,
+.time-input-display:focus {
+  border-color: #0074e4;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 116, 228, 0.1);
+  background-color: white;
+}
+
+.state-dropdown {
+  width: 100%;
+  height: 42px;
+  appearance: menulist;
+  -webkit-appearance: menulist;
+  -moz-appearance: menulist;
+  cursor: pointer;
+}
+
+/* Time Picker Styles */
+.time-input-label {
+  position: relative;
+}
+
+.time-input-container {
+  position: relative;
+}
+
+.time-input-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.time-icon {
+  color: #0074e4;
+}
+
+.time-picker-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 260px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  padding: 12px;
+  border: 1px solid #e0eeff;
+}
+
+.time-picker-columns {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.time-picker-column {
+  flex: 1;
+  text-align: center;
+}
+
+.am-pm-column {
+  flex: 0.7;
+}
+
+.time-picker-column-header {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #044999;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #e0eeff;
+}
+
+.time-picker-options {
+  max-height: 180px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.time-picker-options::-webkit-scrollbar {
+  width: 4px;
+}
+
+.time-picker-options::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.time-picker-options::-webkit-scrollbar-thumb {
+  background: #0074e4;
+  border-radius: 4px;
+}
+
+.time-picker-option {
+  padding: 8px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+}
+
+.time-picker-option:hover {
+  background-color: #f0f7ff;
+}
+
+.time-picker-option.selected {
+  background-color: #0074e4;
+  color: white;
+  font-weight: 500;
+}
+
+.time-picker-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #e0eeff;
+}
+
+.time-picker-done-btn {
+  background-color: #0074e4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.time-picker-done-btn:hover {
+  background-color: #0062c1;
+}
+
+.description-container {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.description-container textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.selection-container {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 16px;
+}
+
+.event-type-selector {
+  background-color: #f0f7ff;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e0eeff;
+  flex: 0 0 auto;
+  width: 180px;
+  align-self: flex-start;
+}
+
+.event-type-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #044999;
+  margin-bottom: 8px;
+}
+
+.event-type-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.event-type-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.event-type-option:hover {
+  background-color: #e0eeff;
+}
+
+.event-type-option input[type="radio"] {
+  accent-color: #0074e4;
+  width: 18px;
+  height: 18px;
+}
+
+.tag-selector-container {
+  background-color: #f0f7ff;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e0eeff;
+  flex: 1;
+}
+
+.tag-selector-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #044999;
+  margin-bottom: 8px;
+}
+
+.event-modal-form .tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 90px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #e0eeff;
+  border-radius: 6px;
+  background-color: white;
+}
+
+.event-modal-form .tag-item {
+  background-color: #0074e4;
+  border-radius: 16px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  color: white;
+}
+
+.event-modal-form .tag-item:hover {
+  background-color: #0062c1;
+}
+
+.event-modal-form .tag-item.selected {
+  background-color: #044999;
+  color: white;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 116, 228, 0.3);
+}
+
+.event-modal-form .remove-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+}
+
+.event-modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+  grid-column: 1 / -1;
+  border-top: 1px solid #e0eeff;
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+.event-modal-cancel {
+  padding: 12px 20px;
+  background-color: #f5f7fa;
+  border: 1px solid #ccd6e0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #555;
+  transition: all 0.2s ease;
+}
+
+.event-modal-cancel:hover {
+  background-color: #e5e9ef;
+}
+
+.event-modal-submit {
+  padding: 12px 24px;
+  background-color: #0074e4;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+.event-modal-submit:hover {
+  background-color: #0062c1;
+}
+
+.create-event-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #0074e4;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.create-event-button:hover {
+  background-color: #0062c1;
+}
+
+.error-message {
+  color: #e53935;
+  background-color: #ffebee;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .event-modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .selection-container {
+    flex-direction: column;
+  }
+
+  .event-type-selector {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .event-type-options {
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0 10px;
+  }
+
+  .tags-container {
+    max-height: 120px;
+  }
+
+  .state-dropdown {
+    width: 100%;
+  }
+
+  .event-modal-container {
+    padding: 20px 16px;
+    width: 95%;
+  }
+
+  .event-modal-buttons {
+    flex-direction: column;
+  }
+
+  .event-modal-cancel,
+  .event-modal-submit {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Custom autocomplete container */
+.custom-autocomplete {
+  position: relative;
+  width: 100%;
+}
+
+/* Styles for the autocomplete input field */
+.place-autocomplete {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 12px;
+  border: 1px solid #ccd6e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #f9fbfd;
+  color: #044999; /* Blue text color */
+  box-sizing: border-box;
+}
+
+.place-autocomplete:focus {
+  border-color: #0074e4;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 116, 228, 0.1);
+  background-color: white;
+}
+
+/* Styles for the autocomplete dropdown */
+.autocomplete-dropdown {
+  position: absolute;
+  top: 100%; /* Align directly below the input field */
+  left: 0;
+  width: 100%; /* Match the width of the input field */
+  background-color: white;
+  border: 1px solid #ccd6e0;
+  border-radius: 6px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/* Styles for individual suggestion items */
+.autocomplete-item {
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  color: #044999; /* Blue text color for suggestions */
+  cursor: pointer;
+}
+
+.autocomplete-item:hover {
+  background-color: #f0f7ff;
+}
+
+/* Selected suggestion item */
+.autocomplete-item.selected {
+  background-color: #f1f5f9;
+}
+.autocomplete-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.clear-autocomplete-button {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+}
+
+.clear-autocomplete-button:hover {
+  color: #333;
+}

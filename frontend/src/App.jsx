@@ -5,8 +5,19 @@ import SignupPage from "./pages/signup-page";
 import HomePage from "./pages/home-page";
 import DuoMatchmakerPage from "./pages/duo-matchmaker-page";
 import ChatBot from "./pages/chat-bot";
+import DMPage from "./pages/dm-page";
 import Wrapper from "./pages/Wrapper";
 import AccountPage from "./pages/account-page";
+import Marketplace from "./pages/marketplace-home";
+import ProductPage from "./pages/product-page";
+import ErrorPage from "./pages/error-page";
+import EventsPage from "./pages/events-page";
+import PostDetails from "./pages/PostDetails";
+import FAQ from "./pages/faq";
+import MatchmakingFormPage from "./pages/matchmaking-form-page";
+import MatchmakingForm from "./components/matchmaking-components/match-form";
+import EventInfoPage from "./pages/event-info";
+
 import "./App.css";
 
 function App() {
@@ -24,6 +35,14 @@ function App() {
       element: <SignupPage />,
     },
     {
+      path: "/faq",
+      element: <FAQ />,
+    },
+    {
+      path: "/event-info",
+      element: <EventInfoPage />,
+    },
+    {
       path: "/chatbot",
       element: (
         <Wrapper>
@@ -32,13 +51,26 @@ function App() {
       ),
     },
     {
+      path: "/dm-page",
+      element: (
+        <Wrapper>
+          <DMPage />
+        </Wrapper>
+      ),
+    },
+    {
       path: "/account",
       element: <AccountPage />,
     },
     {
-      path: "/chatbot",
-      element: < ChatBot/>,
+      path: "/marketplace",
+      element: (
+        <Wrapper>
+          <Marketplace />,
+        </Wrapper>
+      ),
     },
+
     {
       path: "/home",
       element: (
@@ -48,8 +80,57 @@ function App() {
       ),
     },
     {
+      path: "/post/:id",
+      element: (
+        <Wrapper>
+          <PostDetails />
+        </Wrapper>
+      ),
+    },
+
+    {
       path: "/partyfinder",
-      element: <DuoMatchmakerPage />,
+      element: <MatchmakingFormPage />,
+    },
+    {
+      path: "/matchmaking-form",
+      element: <MatchmakingForm />,
+    },
+    {
+      path: "/matches",
+      element: (
+        <Wrapper>
+          <DuoMatchmakerPage />
+        </Wrapper>
+      ),
+    },
+    {
+      path: "/item/:id", // <-- Add this route for item details
+      element: (
+        <Wrapper>
+          <ProductPage />,
+        </Wrapper>
+      ),
+    },
+    {
+      path: "/events",
+      element: (
+        <Wrapper>
+          <EventsPage />
+        </Wrapper>
+      ),
+    },
+    {
+      path: "/events/:eventId",
+      element: (
+        <Wrapper>
+          <EventInfoPage />
+        </Wrapper>
+      ),
+    },
+    {
+      path: "*",
+      element: <ErrorPage />,
     },
   ]);
 
