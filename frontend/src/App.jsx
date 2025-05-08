@@ -97,6 +97,14 @@ function App() {
       element: <MatchmakingForm />,
     },
     {
+      path: "/matches",
+      element: (
+        <Wrapper>
+          <DuoMatchmakerPage />
+        </Wrapper>
+      ),
+    },
+    {
       path: "/item/:id", // <-- Add this route for item details
       element: (
         <Wrapper>
