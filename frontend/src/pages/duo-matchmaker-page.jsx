@@ -61,7 +61,7 @@ const MatchProfileCard = ({
       animate={animControls}
     >
       <div className="profile-picture">
-        <img src={imgSrc} alt="profile picture" />
+        <img src={imgSrc || "pic.jpg"} alt="profile picture" />
       </div>
       <h1 className="match-username">{username}</h1>
       <div className="profile-information">
@@ -111,9 +111,11 @@ const DuoMatchmakerPage = () => {
   const [profilesData, setProfilesData] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [triggerSwipe, setTriggerSwipe] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchProfiles = async () => {
+      setIsLoading(true); // Set loading state to true
       try {
         const { data } = await axios.get("api/matchmaker/", {
           params: { username: user?.username },
@@ -130,15 +132,22 @@ const DuoMatchmakerPage = () => {
               : profile.top5games.split(", "),
             playertypeints: JSON.parse(profile.playertypeints),
           }));
+          console.log("Fetched Matches:", formattedProfiles); // Log the matches
           setProfilesData(formattedProfiles);
         } else {
           console.warn("No matches found in the API response");
         }
       } catch (error) {
         console.error("Error fetching profiles:", error);
+      } finally {
+        setIsLoading(false); // Set loading state to false
       }
     };
-    fetchProfiles();
+
+    // Only fetch profiles if username is available
+    if (user?.username) {
+      fetchProfiles();
+    }
   }, [user?.username]);
 
   const handleSwipe = (direction) => {
