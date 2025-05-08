@@ -197,6 +197,29 @@ function EventsPage() {
       console.error("Error creating event:", error);
     }
   };
+  // Group events by location coordinates
+  const groupedEvents = useMemo(() => {
+    const groups = {};
+
+    enrichedEvents.forEach((event) => {
+      // Create a unique key for each location
+      const locationKey = `${event.lat.toFixed(6)},${event.lng.toFixed(6)}`;
+
+      if (!groups[locationKey]) {
+        groups[locationKey] = {
+          position: { lat: event.lat, lng: event.lng },
+          events: [],
+        };
+      }
+
+      groups[locationKey].events.push(event);
+    });
+
+    return groups;
+  }, [enrichedEvents]);
+
+  // Track active location instead of just active event
+  const [activeLocationKey, setActiveLocationKey] = useState(null);
 
   // Error handling logic
   const renderErrors = () => {
