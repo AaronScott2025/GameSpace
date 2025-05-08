@@ -99,6 +99,52 @@ function CreateEventModal({ onSubmit }) {
   const [selectedMinute, setSelectedMinute] = useState("00");
   const [selectedAmPm, setSelectedAmPm] = useState("PM");
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [title, setTitle] = useState("");
+  const [date, setDate] = useState("");
+
+  const [streetAddress, setStreetAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+
+  const handleAddressSelect = async (prediction) => {
+    try {
+      const geocoder = new google.maps.Geocoder();
+      const { results } = await geocoder.geocode({
+        placeId: prediction.place_id,
+      });
+
+      if (results && results.length > 0) {
+        const addressComponents = results[0].address_components;
+
+        // Extract street address
+        const street = addressComponents.find((comp) =>
+          comp.types.includes("route")
+        )?.long_name;
+
+        const streetNumber = addressComponents.find((comp) =>
+          comp.types.includes("street_number")
+        )?.long_name;
+
+        setStreetAddress(
+          `${streetNumber ? streetNumber + " " : ""}${street || ""}`
+        );
+
+        // Extract city
+        const city = addressComponents.find((comp) =>
+          comp.types.includes("locality")
+        )?.long_name;
+        setCity(city || "");
+
+        // Extract state
+        const state = addressComponents.find((comp) =>
+          comp.types.includes("administrative_area_level_1")
+        )?.short_name;
+        setState(state || "");
+      }
+    } catch (error) {
+      console.error("Error fetching address details:", error);
+    }
+  };
 
   const handleEventSubmit = async (formData) => {
     setLoading(true);
@@ -225,7 +271,7 @@ function CreateEventModal({ onSubmit }) {
         State
         <select
           name="location_state"
-          value={selectedState}
+          value={state}
           style={{ color: "#000" }}
           onChange={(e) => setSelectedState(e.target.value)}
           required
@@ -423,7 +469,9 @@ function CreateEventModal({ onSubmit }) {
                 handleEventSubmit(data);
               }}
             >
-              <PlaceAutocompleteComponent />
+              <PlaceAutocompleteComponent
+                onAddressSelect={handleAddressSelect}
+              />
 
               {eventFormInputs.map((input, index) => (
                 <label key={index}>
@@ -434,6 +482,28 @@ function CreateEventModal({ onSubmit }) {
                     style={{ color: "#000" }}
                     required={input.required || false}
                     placeholder={`Enter ${input.label.toLowerCase()}`}
+                    value={
+                      input.name === "title"
+                        ? title
+                        : input.name === "date"
+                        ? date
+                        : input.name === "street_address"
+                        ? streetAddress
+                        : input.name === "location_city"
+                        ? city
+                        : ""
+                    } // Bind the value dynamically
+                    onChange={(e) => {
+                      if (input.name === "title") {
+                        setTitle(e.target.value);
+                      } else if (input.name === "date") {
+                        setDate(e.target.value);
+                      } else if (input.name === "street_address") {
+                        setStreetAddress(e.target.value);
+                      } else if (input.name === "location_city") {
+                        setCity(e.target.value);
+                      }
+                    }} // Update the state dynamically
                   />
                 </label>
               ))}

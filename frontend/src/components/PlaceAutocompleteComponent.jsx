@@ -54,14 +54,13 @@ function PlaceAutocompleteComponent({ className, onAddressSelect }) {
     }
   };
 
-  const handlePredictionClick = (prediction) => {
+  const handlePredictionClick = async (prediction) => {
     setInputValue(prediction.description); // Use the description of the selected prediction
     setPredictions([]);
     if (onAddressSelect) {
-      onAddressSelect(prediction.description);
+      onAddressSelect(prediction); // Pass the full prediction object to the parent
     }
   };
-
   const handleClear = () => {
     setInputValue(""); // Clear the input value
     setPredictions([]); // Clear the predictions
