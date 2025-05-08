@@ -56,6 +56,18 @@
 .title-description li {
   text-align: left; /* Ensure list items are also aligned to the left */
 }
+.start-button {
+  font: inherit;
+  cursor: pointer;
+  background-color: rgba(181, 103, 250, 1);
+  border-radius: 20px;
+  width: 160px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none; /* Remove the default border */
+}
 
 .preferences-form-container {
   position: relative;
@@ -73,8 +85,7 @@
   border-radius: 10px;
   box-shadow: #000000 0px 0px 10px;
   overflow-y: hidden;
-  height: 600px;
-  width: 1200px;
+
   max-width: 1200px;
   max-height: 600px;
 }
@@ -324,4 +335,63 @@
   box-sizing: border-box;
   background-color: #f9f9f9; /* Light background for textareas */
   color: #000000;
+}
+/* this for the descrption and the games input */
+.preferences-description-label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+.description-textarea {
+  width: 100%; /* Make textareas take full width */
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background-color: #f9f9f9; /* Light background for textareas */
+  color: #000000;
+}
+
+.buttons-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin-top: 20px;
+}
+.reload-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.reload-button:hover {
+  background-color: #45a049;
+}
+
+.change-preferences-button {
+  position: absolute; /* Position the button absolutely */
+  top: 120px; /* Distance from the top to avoid the navbar */
+  left: 20px; /* Move the button closer to the left */
+  padding: 5px 10px;
+  font-size: 16px;
+  background-color: rgba(181, 103, 250, 1);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 999; /* Ensure the button is above other elements */
+  font: inherit;
+}
+
+.change-preferences-button:hover {
+  background-color: #45a049;
 }

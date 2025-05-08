@@ -12,13 +12,13 @@ import Marketplace from "./pages/marketplace-home";
 import ProductPage from "./pages/product-page";
 import ErrorPage from "./pages/error-page";
 import EventsPage from "./pages/events-page";
-import PostDetails from './pages/PostDetails';
-import FAQ from './pages/faq'
+import PostDetails from "./pages/PostDetails";
+import FAQ from "./pages/faq";
+import MatchmakingFormPage from "./pages/matchmaking-form-page";
+import MatchmakingForm from "./components/matchmaking-components/match-form";
 import EventInfoPage from "./pages/event-info";
 
-
 import "./App.css";
-
 
 function App() {
   const routes = useRoutes([
@@ -71,7 +71,6 @@ function App() {
       ),
     },
 
-
     {
       path: "/home",
       element: (
@@ -88,10 +87,22 @@ function App() {
         </Wrapper>
       ),
     },
-    
+
     {
       path: "/partyfinder",
-      element: <DuoMatchmakerPage />,
+      element: <MatchmakingFormPage />,
+    },
+    {
+      path: "/matchmaking-form",
+      element: <MatchmakingForm />,
+    },
+    {
+      path: "/matches",
+      element: (
+        <Wrapper>
+          <DuoMatchmakerPage />
+        </Wrapper>
+      ),
     },
     {
       path: "/item/:id", // <-- Add this route for item details
@@ -123,7 +134,6 @@ function App() {
     },
   ]);
 
-
   return (
     <>
       <div className="App">{routes}</div>
@@ -131,7 +141,4 @@ function App() {
   );
 }
 
-
 export default App;
-
-
