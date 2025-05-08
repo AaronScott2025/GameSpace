@@ -50,12 +50,8 @@ def test_chatbot():
 def test_matchmaker():
     url = f"{BASE_URL}/matchmaker/"
     params = {
-        'username': 'gamer123',
-        'Top5Games': 'Apex Legends,Fortnite,PUBG,Valorant,Overwatch',
-        'PlayerType': 'Supportive/Backline, Exclusive(1 or 2 games at a time), Casual, Never, 1-3 Hours',
-        'PlayerTypeInts': '3, 2, 4, 3, 1',
-        'Description': 'Looking for a duo partner',
-        'Weight': '1.5'
+        'username': 'KaisenMaster88',
+        
     }
     response = requests.get(url, params=params)
     print("Testing /matchmaker endpoint")
@@ -93,7 +89,7 @@ def test_name_gen():
 if __name__ == "__main__":
      #test_media_get()
     # test_chatbot()
-    #est_matchmaker()
+    test_matchmaker()
     #test_marketplace()
     #test_logo_gen()
-    test_name_gen()
+    #test_name_gen()
