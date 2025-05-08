@@ -283,7 +283,7 @@ const NextSteps = ({ setShowNextSteps }) => {
     try {
       const { data, error } = await supabase
         .from("duo_matchmaker")
-        .update({ description }) // Update the description column
+        .update({ description, is_first_time: false }) // Update the description column
         .eq("username", user.username); // Match the row by username
 
       if (error) {

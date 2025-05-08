@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import {
   motion,
   AnimatePresence,
@@ -112,6 +113,7 @@ const DuoMatchmakerPage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [triggerSwipe, setTriggerSwipe] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -200,41 +202,51 @@ const DuoMatchmakerPage = () => {
 
     fetchProfiles(); // Fetch new profiles
   };
-
+  const handleChangePreferences = () => {
+    navigate("/matchmaking-form"); // Navigate to the matchmaking form
+  };
   return (
     <div className="page-layout">
-      <div className="matches-layout">
-        {activeIndex >= profilesData.length ? (
-          <div className="no-more-matches">
-            <p>No more matches available</p>
-            <button onClick={reloadMatches} className="reload-button">
-              Reload Matches
-            </button>
-          </div>
-        ) : (
-          <>
-            <LeftButton onClick={() => handleSwipe("left")} />
-            <div className="match-profiles-container">
-              <AnimatePresence>
-                {profilesData.length > 0 &&
-                  activeIndex < profilesData.length && (
-                    <MatchProfileCard
-                      key={activeIndex}
-                      imgSrc={profilesData[activeIndex].imgSrc}
-                      username={profilesData[activeIndex].username}
-                      topGames={profilesData[activeIndex].top5games}
-                      playerType={profilesData[activeIndex].playertype}
-                      description={profilesData[activeIndex].description}
-                      isActive={true}
-                      onSwipe={() => setActiveIndex((prev) => prev + 1)}
-                      triggerSwipe={triggerSwipe}
-                    />
-                  )}
-              </AnimatePresence>
+      <button
+        onClick={handleChangePreferences}
+        className="change-preferences-button"
+      >
+        Change Preferences
+      </button>
+      <div className="content-container">
+        <div className="matches-layout">
+          {activeIndex >= profilesData.length ? (
+            <div className="no-more-matches">
+              <p>No more matches available</p>
+              <button onClick={reloadMatches} className="reload-button">
+                Reload Matches
+              </button>
             </div>
-            <RightButton onClick={() => handleSwipe("right")} />
-          </>
-        )}
+          ) : (
+            <>
+              <LeftButton onClick={() => handleSwipe("left")} />
+              <div className="match-profiles-container">
+                <AnimatePresence>
+                  {profilesData.length > 0 &&
+                    activeIndex < profilesData.length && (
+                      <MatchProfileCard
+                        key={activeIndex}
+                        imgSrc={profilesData[activeIndex].imgSrc}
+                        username={profilesData[activeIndex].username}
+                        topGames={profilesData[activeIndex].top5games}
+                        playerType={profilesData[activeIndex].playertype}
+                        description={profilesData[activeIndex].description}
+                        isActive={true}
+                        onSwipe={() => setActiveIndex((prev) => prev + 1)}
+                        triggerSwipe={triggerSwipe}
+                      />
+                    )}
+                </AnimatePresence>
+              </div>
+              <RightButton onClick={() => handleSwipe("right")} />
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

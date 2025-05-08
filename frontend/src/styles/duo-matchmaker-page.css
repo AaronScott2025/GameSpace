@@ -376,3 +376,22 @@
 .reload-button:hover {
   background-color: #45a049;
 }
+
+.change-preferences-button {
+  position: absolute; /* Position the button absolutely */
+  top: 120px; /* Distance from the top to avoid the navbar */
+  left: 20px; /* Move the button closer to the left */
+  padding: 5px 10px;
+  font-size: 16px;
+  background-color: rgba(181, 103, 250, 1);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000; /* Ensure the button is above other elements */
+  font: inherit;
+}
+
+.change-preferences-button:hover {
+  background-color: #45a049;
+}

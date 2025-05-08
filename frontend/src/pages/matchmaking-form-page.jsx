@@ -1,13 +1,54 @@
 import React from "react";
 import "../styles/duo-matchmaker-page.css";
+import { supabase } from "../../client";
+import { useState, useEffect, useContext } from "react";
+import { UserContext } from "./UserContext";
 import { useNavigate, Outlet } from "react-router-dom";
 
 import { FaUsers } from "react-icons/fa6";
 function MatchmakingFormPage() {
+  const { user } = useContext(UserContext); // Get the logged-in user's email from context
+  const [isFirstTime, setIsFirstTime] = useState(null); // Track if it's the user's first time
+  const [loading, setLoading] = useState(true); // Track loading state
+  useEffect(() => {
+    const fetchUserStatus = async () => {
+      try {
+        // Fetch the current user's data from the Supabase table
+        const { data, error } = await supabase
+          .from("duo_matchmaker")
+          .select("is_first_time")
+          .eq("username", user?.username) // Use the logged-in user's email
+          .single();
+
+        if (error) {
+          console.error("Error fetching user status:", error);
+        } else {
+          setIsFirstTime(data.is_first_time); // Set the value of is_first_time
+        }
+      } catch (error) {
+        console.error("Unexpected error fetching user status:", error);
+      } finally {
+        setLoading(false); // Stop loading
+      }
+    };
+
+    fetchUserStatus();
+  }, []);
+
   const navigate = useNavigate();
   const handleNavigate = () => {
-    navigate("/matchmaking-form");
+    if (isFirstTime === true) {
+      navigate("/matchmaking-form"); // Navigate to the form if it's the user's first time
+    } else if (isFirstTime === false) {
+      navigate("/matches"); // Navigate to matches otherwise
+    }
   };
+
+  if (loading) {
+    // Show a loading state while fetching user status
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className="matchmaking-form-page">
       <div className="title-description">
