@@ -91,7 +91,7 @@ const LeftButton = ({ onClick }) => (
     className="decision-button left-button"
     onClick={() => onClick("left")}
   >
-    <img />
+    <img src="edit.png" />
     Game Over
   </button>
 );
@@ -101,8 +101,8 @@ const RightButton = ({ onClick }) => (
     className="decision-button right-button"
     onClick={() => onClick("right")}
   >
-    <img />
-    Game On
+    <img src="edit-2.png" />
+    Game Start
   </button>
 );
 
