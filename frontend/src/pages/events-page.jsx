@@ -26,7 +26,7 @@ import {
   useEventsToGeo,
 } from "../hooks/geolocation.jsx";
 import { useEventswithTags } from "../hooks/events-supabase.jsx";
-
+import { supabase } from "../../client.js";
 import CreateEventModal from "../components/create-event-modal.jsx"; // Import your modal component
 
 import { GiAstronautHelmet } from "react-icons/gi"; // TODO: figure out how to use this icon
@@ -132,6 +132,71 @@ function EventsPage() {
     setUserPositionInfoWindow(false);
   }, [position]); // Dependency ensures it runs when the position changes
 
+  const handleCreateEvent = async (eventData) => {
+    try {
+      // Insert the event into the Supabase database
+      const { data: eventInsertData, error: eventInsertError } = await supabase
+        .from("events")
+        .insert([
+          {
+            organizer_username: user?.username,
+            event_time: eventData.event_time,
+            title: eventData.title,
+            description: eventData.description,
+            date: eventData.date,
+            street_address: eventData.street_address,
+            location_city: eventData.location_city,
+            location_state: eventData.location_state,
+            location_country: eventData.location_country || "USA", // Default to USA
+            image_url: eventData.image_url || null, // Optional image URL
+            is_online: eventData.is_online,
+          },
+        ])
+        .select("event_id");
+
+      if (eventInsertError) {
+        throw new Error(eventInsertError.message);
+      }
+
+      const newEventId = eventInsertData[0].event_id;
+
+      // Insert tags into the event_event_tags table
+      if (eventData.tags && eventData.tags.length > 0) {
+        const { data: tagIds, error: tagFetchError } = await supabase
+          .from("event_tags")
+          .select("tag_id")
+          .in("tag_name", eventData.tags);
+
+        if (tagFetchError) {
+          throw new Error(tagFetchError.message);
+        }
+
+        const tagInsertData = tagIds.map((tag) => ({
+          event_id: newEventId,
+          tag_id: tag.tag_id,
+        }));
+
+        const { error: tagInsertError } = await supabase
+          .from("event_event_tags")
+          .insert(tagInsertData);
+
+        if (tagInsertError) {
+          throw new Error(tagInsertError.message);
+        }
+      }
+
+      // Update the local state with the new event
+      const newEvent = {
+        ...eventData,
+        event_id: newEventId,
+        tags: eventData.tags || [],
+      };
+      setFilteredEvents((prevEvents) => [...prevEvents, newEvent]);
+    } catch (error) {
+      console.error("Error creating event:", error);
+    }
+  };
+
   // Error handling logic
   const renderErrors = () => {
     const errors = [];
@@ -179,7 +244,7 @@ function EventsPage() {
            * change the tag logic for a better user experience
            * add a loading state when creating an event
            */}
-          <CreateEventModal />
+          <CreateEventModal onSubmit={handleCreateEvent} />
           <div className="events-filter">
             <input
               className="events-filter-checkbox"

@@ -6,8 +6,16 @@ import { createPortal } from "react-dom";
 import "../styles/create-event-modal.css";
 
 const AVAILABLE_TAGS = [
-  "Gaming", "Tournament", "Casual", "Competitive",
-  "Board Games", "Card Games", "RPG", "Strategy", "Sports", "Social"
+  "Gaming",
+  "Tournament",
+  "Casual",
+  "Competitive",
+  "Board Games",
+  "Card Games",
+  "RPG",
+  "Strategy",
+  "Sports",
+  "Social",
 ];
 
 const US_STATES = [
@@ -61,15 +69,20 @@ const US_STATES = [
   { value: "WV", label: "West Virginia" },
   { value: "WI", label: "Wisconsin" },
   { value: "WY", label: "Wyoming" },
-  { value: "DC", label: "District of Columbia" }
+  { value: "DC", label: "District of Columbia" },
 ];
 
 function CreateEventModal({ onSubmit }) {
   const eventFormInputs = [
     { label: "Event Name", type: "text", name: "title", required: true },
     { label: "Date", type: "date", name: "date", required: true },
-    { label: "Street Address", type: "text", name: "street_address", required: true },
-    { label: "City", type: "text", name: "location_city", required: true }
+    {
+      label: "Street Address",
+      type: "text",
+      name: "street_address",
+      required: true,
+    },
+    { label: "City", type: "text", name: "location_city", required: true },
   ];
 
   const [selectedEventType, setSelectedEventType] = useState("in-person");
@@ -89,6 +102,10 @@ function CreateEventModal({ onSubmit }) {
     setError(null);
 
     try {
+      // Ensure at least one tag is selected
+      if (selectedTags.length === 0) {
+        throw new Error("You must select at least one tag.");
+      }
       let formattedHour = parseInt(selectedHour);
       if (selectedAmPm === "PM" && formattedHour !== 12) {
         formattedHour += 12;
@@ -97,7 +114,9 @@ function CreateEventModal({ onSubmit }) {
       }
 
       const eventDate = formData.date;
-      const timeStr = `${formattedHour.toString().padStart(2, '0')}:${selectedMinute}:00`;
+      const timeStr = `${formattedHour
+        .toString()
+        .padStart(2, "0")}:${selectedMinute}:00`;
 
       const event_time = `${eventDate}T${timeStr}`;
 
@@ -107,11 +126,11 @@ function CreateEventModal({ onSubmit }) {
         date: formData.date,
         location_city: formData.location_city,
         location_state: selectedState,
-        location_country: 'USA', // Default to USA
+        location_country: "USA", // Default to USA
         is_online: selectedEventType === "online",
         street_address: formData.street_address,
         event_time: event_time,
-        tags: selectedTags
+        tags: selectedTags,
       };
 
       if (onSubmit) {
@@ -130,20 +149,28 @@ function CreateEventModal({ onSubmit }) {
   const TagSelector = () => {
     const toggleTag = (tag) => {
       if (selectedTags.includes(tag)) {
-        setSelectedTags(selectedTags.filter(t => t !== tag));
-      } else {
+        // Remove the tag if it's already selected
+        setSelectedTags(selectedTags.filter((t) => t !== tag));
+      } else if (selectedTags.length < 4) {
+        // Add the tag only if the limit of 4 tags is not reached
         setSelectedTags([...selectedTags, tag]);
+      } else {
+        alert("You can only select up to 4 tags."); // Optional: Notify the user
       }
     };
 
     return (
       <div className="tag-selector-container">
-        <div className="tag-selector-label">Select Tags (optional)</div>
+        <div className="tag-selector-label">
+          Select Tags (1 required, up to 4)
+        </div>
         <div className="tags-container">
           {AVAILABLE_TAGS.map((tag) => (
             <div
               key={tag}
-              className={`tag-item ${selectedTags.includes(tag) ? 'selected' : ''}`}
+              className={`tag-item ${
+                selectedTags.includes(tag) ? "selected" : ""
+              }`}
               onClick={() => toggleTag(tag)}
             >
               {tag}
@@ -196,12 +223,14 @@ function CreateEventModal({ onSubmit }) {
         <select
           name="location_state"
           value={selectedState}
-          style= {{color: "#000"}}
+          style={{ color: "#000" }}
           onChange={(e) => setSelectedState(e.target.value)}
           required
           className="state-dropdown"
         >
-          <option value="" disabled>Select a state</option>
+          <option value="" disabled>
+            Select a state
+          </option>
           {US_STATES.map((state) => (
             <option key={state.value} value={state.value}>
               {state.label}
@@ -213,29 +242,35 @@ function CreateEventModal({ onSubmit }) {
   };
 
   const TimePicker = () => {
-    const hours = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
-    const minutes = Array.from({ length: 12 }, (_, i) => (i * 5).toString().padStart(2, '0'));
+    const hours = Array.from({ length: 12 }, (_, i) =>
+      (i + 1).toString().padStart(2, "0")
+    );
+    const minutes = Array.from({ length: 12 }, (_, i) =>
+      (i * 5).toString().padStart(2, "0")
+    );
 
     const toggleTimePicker = () => {
       setShowTimePicker(!showTimePicker);
     };
 
     const handleClickOutside = (e) => {
-      if (e.target.closest('.time-picker-dropdown') === null &&
-          e.target.closest('.time-input-container') === null) {
+      if (
+        e.target.closest(".time-picker-dropdown") === null &&
+        e.target.closest(".time-input-container") === null
+      ) {
         setShowTimePicker(false);
       }
     };
 
     useEffect(() => {
       if (showTimePicker) {
-        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener("mousedown", handleClickOutside);
       } else {
-        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener("mousedown", handleClickOutside);
       }
 
       return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener("mousedown", handleClickOutside);
       };
     }, [showTimePicker]);
 
@@ -245,10 +280,12 @@ function CreateEventModal({ onSubmit }) {
         <div className="time-input-container">
           <div
             className="time-input-display"
-            style= {{color: "#000"}}
+            style={{ color: "#000" }}
             onClick={toggleTimePicker}
           >
-            <span>{selectedHour}:{selectedMinute} {selectedAmPm}</span>
+            <span>
+              {selectedHour}:{selectedMinute} {selectedAmPm}
+            </span>
             <IoTimeOutline size={18} className="time-icon" />
           </div>
 
@@ -258,11 +295,13 @@ function CreateEventModal({ onSubmit }) {
                 <div className="time-picker-column">
                   <div className="time-picker-column-header">Hour</div>
                   <div className="time-picker-options">
-                    {hours.map(hour => (
+                    {hours.map((hour) => (
                       <div
                         key={hour}
-                        style= {{color: "#000"}}
-                        className={`time-picker-option ${selectedHour === hour ? 'selected' : ''}`}
+                        style={{ color: "#000" }}
+                        className={`time-picker-option ${
+                          selectedHour === hour ? "selected" : ""
+                        }`}
                         onClick={() => setSelectedHour(hour)}
                       >
                         {hour}
@@ -274,11 +313,13 @@ function CreateEventModal({ onSubmit }) {
                 <div className="time-picker-column">
                   <div className="time-picker-column-header">Minute</div>
                   <div className="time-picker-options">
-                    {minutes.map(minute => (
+                    {minutes.map((minute) => (
                       <div
                         key={minute}
-                        style= {{color: "#000"}}
-                        className={`time-picker-option ${selectedMinute === minute ? 'selected' : ''}`}
+                        style={{ color: "#000" }}
+                        className={`time-picker-option ${
+                          selectedMinute === minute ? "selected" : ""
+                        }`}
                         onClick={() => setSelectedMinute(minute)}
                       >
                         {minute}
@@ -291,15 +332,19 @@ function CreateEventModal({ onSubmit }) {
                   <div className="time-picker-column-header">AM/PM</div>
                   <div className="time-picker-options">
                     <div
-                      className={`time-picker-option ${selectedAmPm === 'AM' ? 'selected' : ''}`}
-                      style= {{color: "#000"}}
-                      onClick={() => setSelectedAmPm('AM')}
+                      className={`time-picker-option ${
+                        selectedAmPm === "AM" ? "selected" : ""
+                      }`}
+                      style={{ color: "#000" }}
+                      onClick={() => setSelectedAmPm("AM")}
                     >
                       AM
                     </div>
                     <div
-                      className={`time-picker-option ${selectedAmPm === 'PM' ? 'selected' : ''}`}
-                      onClick={() => setSelectedAmPm('PM')}
+                      className={`time-picker-option ${
+                        selectedAmPm === "PM" ? "selected" : ""
+                      }`}
+                      onClick={() => setSelectedAmPm("PM")}
                     >
                       PM
                     </div>
@@ -355,84 +400,86 @@ function CreateEventModal({ onSubmit }) {
     };
   }, [isModalOpen]);
 
-  const modalContent = isModalOpen && createPortal(
-    <div className="event-modal-overlay">
-      <div className="event-modal-container">
-        <button className="event-modal-close" onClick={handleCloseModal}>
-          &times;
-        </button>
-        <h2 className="event-modal-title">Create New Event</h2>
-        <div className="event-modal-content">
-          {error && (
-            <div className="error-message">
-              Error: {error}
-            </div>
-          )}
-          <form
-            className="event-modal-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.target);
-              const data = Object.fromEntries(formData.entries());
-              handleEventSubmit(data);
-            }}
-          >
-            {eventFormInputs.map((input, index) => (
-              <label key={index}>
-                {input.label}
-                <input
-                  type={input.type || "text"}
-                  name={input.name}
-                  style= {{color: "#000"}}
-                  required={input.required || false}
-                  placeholder={`Enter ${input.label.toLowerCase()}`}
-                />
-              </label>
-            ))}
+  const modalContent =
+    isModalOpen &&
+    createPortal(
+      <div className="event-modal-overlay">
+        <div className="event-modal-container">
+          <button className="event-modal-close" onClick={handleCloseModal}>
+            &times;
+          </button>
+          <h2 className="event-modal-title">Create New Event</h2>
+          <div className="event-modal-content">
+            {error && <div className="error-message">Error: {error}</div>}
+            <form
+              className="event-modal-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+                handleEventSubmit(data);
+              }}
+            >
+              {eventFormInputs.map((input, index) => (
+                <label key={index}>
+                  {input.label}
+                  <input
+                    type={input.type || "text"}
+                    name={input.name}
+                    style={{ color: "#000" }}
+                    required={input.required || false}
+                    placeholder={`Enter ${input.label.toLowerCase()}`}
+                  />
+                </label>
+              ))}
 
-            <TimePicker />
-            <StateSelector />
+              <TimePicker />
+              <StateSelector />
 
-            <div className="description-container">
-              <label>
-                Description
-                <textarea
-                  name="description"
-                  required={true}
-                  style={{ height: "100px", resize: "vertical", color: "#000" }}
-                  placeholder="Enter description"
-                />
-              </label>
-            </div>
+              <div className="description-container">
+                <label>
+                  Description
+                  <textarea
+                    name="description"
+                    required={true}
+                    style={{
+                      height: "100px",
+                      resize: "vertical",
+                      color: "#000",
+                    }}
+                    placeholder="Enter description"
+                  />
+                </label>
+              </div>
 
-            <div className="selection-container">
-              <EventTypeSelector />
-              <TagSelector />
-            </div>
+              <div className="selection-container">
+                <EventTypeSelector />
+                <TagSelector />
+              </div>
 
-            <div className="event-modal-buttons">
-              <button
-                type="button"
-                className="event-modal-cancel"
-                onClick={handleCloseModal}
-                disabled={loading}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="event-modal-submit"
-                disabled={loading}
-              >
-                {loading ? 'Creating...' : 'Create Event'}
-              </button>
-            </div>
-          </form>
+              <div className="event-modal-buttons">
+                <button
+                  type="button"
+                  className="event-modal-cancel"
+                  onClick={handleCloseModal}
+                  disabled={loading}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="event-modal-submit"
+                  disabled={loading}
+                >
+                  {loading ? "Creating..." : "Create Event"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
-    </div>,
-    document.body
-  );
+      </div>,
+      document.body
+    );
 
   return (
     <>

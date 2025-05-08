@@ -9,7 +9,7 @@ function EventsCard({
   date,
   location,
   is_Online,
-  tags,
+  tags = [],
   isSelected,
   onSelect,
 }) {
