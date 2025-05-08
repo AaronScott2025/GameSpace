@@ -362,3 +362,17 @@
   gap: 20px;
   margin-top: 20px;
 }
+.reload-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.reload-button:hover {
+  background-color: #45a049;
+}

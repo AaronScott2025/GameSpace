@@ -151,35 +151,90 @@ const DuoMatchmakerPage = () => {
   }, [user?.username]);
 
   const handleSwipe = (direction) => {
+    if (activeIndex >= profilesData.length) {
+      console.log("No more profiles to swipe.");
+      return; // Prevent further swiping if no profiles are left
+    }
+
     setTriggerSwipe(direction); // Trigger swipe animation
     setTimeout(() => {
       setTriggerSwipe(null); // Reset triggerSwipe after animation
       setActiveIndex((prevIndex) => prevIndex + 1); // Move to the next card
     }, 300); // Ensure this matches the animation duration
   };
+
+  const reloadMatches = () => {
+    setProfilesData([]); // Clear the current profiles
+    setActiveIndex(0); // Reset the active index
+    setTriggerSwipe(null); // Reset swipe trigger
+    // Explicitly call fetchProfiles to reload matches
+    const fetchProfiles = async () => {
+      setIsLoading(true); // Set loading state to true
+      try {
+        const { data } = await axios.get("api/matchmaker/", {
+          params: { username: user?.username },
+        });
+
+        if (data?.Matches) {
+          const formattedProfiles = data.Matches.map((profile) => ({
+            ...profile,
+            playertype: profile.playertype.map((type) =>
+              type.replace(/[\[\]]/g, "").trim()
+            ),
+            top5games: Array.isArray(profile.top5games)
+              ? profile.top5games
+              : profile.top5games.split(", "),
+            playertypeints: JSON.parse(profile.playertypeints),
+          }));
+          console.log("Fetched Matches:", formattedProfiles); // Log the matches
+          setProfilesData(formattedProfiles);
+        } else {
+          console.warn("No matches found in the API response");
+        }
+      } catch (error) {
+        console.error("Error fetching profiles:", error);
+      } finally {
+        setIsLoading(false); // Set loading state to false
+      }
+    };
+
+    fetchProfiles(); // Fetch new profiles
+  };
+
   return (
     <div className="page-layout">
       <div className="matches-layout">
-        {" "}
-        <LeftButton onClick={handleSwipe} />
-        <div className="match-profiles-container">
-          <AnimatePresence>
-            {profilesData.length > 0 && activeIndex < profilesData.length && (
-              <MatchProfileCard
-                key={activeIndex}
-                imgSrc={profilesData[activeIndex].imgSrc}
-                username={profilesData[activeIndex].username}
-                topGames={profilesData[activeIndex].top5games}
-                playerType={profilesData[activeIndex].playertype}
-                description={profilesData[activeIndex].description}
-                isActive={true}
-                onSwipe={() => setActiveIndex((prev) => prev + 1)}
-                triggerSwipe={triggerSwipe}
-              />
-            )}
-          </AnimatePresence>
-        </div>
-        <RightButton onClick={handleSwipe} />
+        {activeIndex >= profilesData.length ? (
+          <div className="no-more-matches">
+            <p>No more matches available</p>
+            <button onClick={reloadMatches} className="reload-button">
+              Reload Matches
+            </button>
+          </div>
+        ) : (
+          <>
+            <LeftButton onClick={() => handleSwipe("left")} />
+            <div className="match-profiles-container">
+              <AnimatePresence>
+                {profilesData.length > 0 &&
+                  activeIndex < profilesData.length && (
+                    <MatchProfileCard
+                      key={activeIndex}
+                      imgSrc={profilesData[activeIndex].imgSrc}
+                      username={profilesData[activeIndex].username}
+                      topGames={profilesData[activeIndex].top5games}
+                      playerType={profilesData[activeIndex].playertype}
+                      description={profilesData[activeIndex].description}
+                      isActive={true}
+                      onSwipe={() => setActiveIndex((prev) => prev + 1)}
+                      triggerSwipe={triggerSwipe}
+                    />
+                  )}
+              </AnimatePresence>
+            </div>
+            <RightButton onClick={() => handleSwipe("right")} />
+          </>
+        )}
       </div>
     </div>
   );
