@@ -99,39 +99,48 @@ const MatchProfileCard = ({
   );
 };
 
-const DecisionButton = ({ imgSrc, text, onClick, name }) => {
+const LeftButton = ({ onClick }) => {
   return (
-    <button className="decision-button" onClick={onClick}>
-      {imgSrc && <img src={imgSrc} alt="button icon" />}
-      {text}
+    <button
+      className="decision-button left-button"
+      onClick={() => onClick("left")}
+    >
+      <img src="/path/to/left-arrow-icon.png" alt="Swipe Left" />
+      Swipe Left
+    </button>
+  );
+};
+
+const RightButton = ({ onClick }) => {
+  return (
+    <button
+      className="decision-button right-button"
+      onClick={() => onClick("right")}
+    >
+      <img src="/path/to/right-arrow-icon.png" alt="Swipe Right" />
+      Swipe Right
     </button>
   );
 };
 
 const DuoMatchmakerPage = () => {
+  const { user } = useContext(UserContext);
   const [triggerSwipe, setTriggerSwipe] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [userPreferences, setUserPreferences] = useState(null);
+
   const [profilesData, setProfilesData] = useState([]);
 
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
-        const response = await axios.get("api/matchmaker/", {
-          params: {
-            username: "gamer123",
-            Top5Games: "Apex Legends,Fortnite,PUBG,Valorant,Overwatch",
-            PlayerType:
-              "Supportive/Backline, Exclusive(1 or 2 games at a time), Casual, Never, 1-3 Hours",
-            PlayerTypeInts: "3, 2, 4, 3, 1",
-            Description: "Looking for a duo partner",
-          },
+        const { data } = await axios.get("api/matchmaker/", {
+          params: { username: user?.username },
         });
-        console.log("API response:", response.data); // Log the API response
 
-        if (response.data && response.data.Matches) {
-          // Ensure playertype and top5games are arrays and clean up playertype
-          const formattedProfiles = response.data.Matches.map((profile) => ({
+        console.log("API response:", data); // Log the API response
+
+        if (data?.Matches) {
+          const formattedProfiles = data.Matches.map((profile) => ({
             ...profile,
             playertype: profile.playertype.map((type) =>
               type.replace(/[\[\]]/g, "").trim()
@@ -143,30 +152,30 @@ const DuoMatchmakerPage = () => {
           }));
           setProfilesData(formattedProfiles);
         } else {
-          console.error("No matches found in the API response");
+          console.warn("No matches found in the API response");
         }
       } catch (error) {
         console.error("Error fetching profiles:", error);
       }
     };
     fetchProfiles();
-  }, []);
+  }, [user?.username]);
 
-  const handleSwipe = () => {
-    setActiveIndex((prevIndex) => (prevIndex + 1) % profilesData.length);
-  };
-  const handlePreferencesSubmit = (preferences) => {
-    setUserPreferences(preferences);
+  const handleSwipe = (direction) => {
+    setTriggerSwipe(direction); // Trigger swipe animation for the active card
+    setTimeout(() => {
+      setTriggerSwipe(null); // Reset triggerSwipe after the animation
+      setActiveIndex((prevIndex) => (prevIndex + 1) % profilesData.length); // Move to the next card
+    }, 300); // Adjust timeout to match the swipe animation duration
   };
 
   return (
     <div className="page-layout">
       <div className="matches-layout">
-        <DecisionButton
-          text="GAME OVER"
-          onClick={() => setTriggerSwipe("left")}
-        />
+        {" "}
+        <LeftButton onClick={setTriggerSwipe} />
         <div className="match-profiles-container">
+          {" "}
           {profilesData && profilesData.length > 0 ? (
             profilesData.map((profile, index) => (
               <MatchProfileCard
@@ -185,11 +194,8 @@ const DuoMatchmakerPage = () => {
             <p>No profiles available</p>
           )}
         </div>
-        <div className="Yes-match">
-          <DecisionButton
-            text="GAME ON"
-            onClick={() => setTriggerSwipe(!"left")}
-          />
+        <div className="decision-buttons">
+          <RightButton onClick={setTriggerSwipe} />
         </div>
       </div>
     </div>
