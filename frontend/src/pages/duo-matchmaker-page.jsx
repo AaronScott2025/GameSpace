@@ -1,15 +1,12 @@
-import React, { use, useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   motion,
+  AnimatePresence,
   useMotionValue,
   useTransform,
   useAnimation,
 } from "framer-motion";
-import { GiSatelliteCommunication } from "react-icons/gi";
-import RadioButton from "../components/Radio-button";
-import { supabase } from "../../client";
 import { UserContext } from "./UserContext";
-import { LuSwords } from "react-icons/lu";
 import "../styles/duo-matchmaker-page.css";
 import axios from "axios";
 
@@ -23,40 +20,37 @@ const MatchProfileCard = ({
   onSwipe,
   triggerSwipe,
 }) => {
-  // to move the card as the user drags it
   const motionValue = useMotionValue(0);
-
-  // to rotate the card as the card moves on drag
   const rotateValue = useTransform(motionValue, [-150, 150], [-18, 18]);
-
-  // To decrease opacity of the card when swiped
-  // on dragging card to left(-200) or right(200)
-  // opacity gradually changes to 0
-  // and when the card is in center opacity = 1
   const opacityValue = useTransform(motionValue, [-150, 0, 150], [0, 1, 0]);
+  const animControls = useAnimation();
 
   const handleDragEnd = () => {
     if (Math.abs(motionValue.get()) > 100) {
-      // get rid of the frontcard
-      onSwipe();
+      const direction = motionValue.get() > 0 ? "right" : "left";
+      animControls
+        .start({ x: direction === "right" ? 300 : -300, opacity: 0 })
+        .then(() => {
+          onSwipe(direction); // Notify parent to update the active card
+        });
     } else {
-      motionValue.set(0);
+      motionValue.set(0); // Reset position if swipe threshold is not met
     }
   };
 
-  // framer animation hook
-  const animControls = useAnimation();
-
-  // when the card is swiped to left or right
   useEffect(() => {
     if (triggerSwipe) {
       animControls
-        .start({ x: triggerSwipe === "left" ? -200 : 200 })
+        .start({
+          x: triggerSwipe === "left" ? -300 : 300,
+          opacity: 0,
+        })
         .then(() => {
-          onSwipe();
+          onSwipe(triggerSwipe); // Notify parent to update the active card
         });
     }
   }, [triggerSwipe, onSwipe, animControls]);
+
   return (
     <motion.div
       className={`match-profile ${isActive ? "active" : ""}`}
@@ -70,18 +64,13 @@ const MatchProfileCard = ({
         <img src={imgSrc} alt="profile picture" />
       </div>
       <h1 className="match-username">{username}</h1>
-
-      {/** second part of the card: top games and type of player */}
       <div className="profile-information">
-        {/** top games */}
         <div className="top-games">
           <h2>Top Games</h2>
           {topGames.map((game, index) => (
             <p key={index}>{game}</p>
           ))}
         </div>
-
-        {/** type of player */}
         <div className="Player-Type">
           <h2>Player Type</h2>
           {playerType.map((type, index) => (
@@ -89,8 +78,6 @@ const MatchProfileCard = ({
           ))}
         </div>
       </div>
-
-      {/** third part the match card information: description */}
       <div className="description-container">
         <h2>Description</h2>
         <p>{description}</p>
@@ -99,36 +86,31 @@ const MatchProfileCard = ({
   );
 };
 
-const LeftButton = ({ onClick }) => {
-  return (
-    <button
-      className="decision-button left-button"
-      onClick={() => onClick("left")}
-    >
-      <img src="/path/to/left-arrow-icon.png" alt="Swipe Left" />
-      Swipe Left
-    </button>
-  );
-};
+const LeftButton = ({ onClick }) => (
+  <button
+    className="decision-button left-button"
+    onClick={() => onClick("left")}
+  >
+    <img />
+    Game Over
+  </button>
+);
 
-const RightButton = ({ onClick }) => {
-  return (
-    <button
-      className="decision-button right-button"
-      onClick={() => onClick("right")}
-    >
-      <img src="/path/to/right-arrow-icon.png" alt="Swipe Right" />
-      Swipe Right
-    </button>
-  );
-};
+const RightButton = ({ onClick }) => (
+  <button
+    className="decision-button right-button"
+    onClick={() => onClick("right")}
+  >
+    <img />
+    Game On
+  </button>
+);
 
 const DuoMatchmakerPage = () => {
   const { user } = useContext(UserContext);
-  const [triggerSwipe, setTriggerSwipe] = useState(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-
   const [profilesData, setProfilesData] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [triggerSwipe, setTriggerSwipe] = useState(null);
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -136,8 +118,6 @@ const DuoMatchmakerPage = () => {
         const { data } = await axios.get("api/matchmaker/", {
           params: { username: user?.username },
         });
-
-        console.log("API response:", data); // Log the API response
 
         if (data?.Matches) {
           const formattedProfiles = data.Matches.map((profile) => ({
@@ -162,41 +142,35 @@ const DuoMatchmakerPage = () => {
   }, [user?.username]);
 
   const handleSwipe = (direction) => {
-    setTriggerSwipe(direction); // Trigger swipe animation for the active card
+    setTriggerSwipe(direction); // Trigger swipe animation
     setTimeout(() => {
-      setTriggerSwipe(null); // Reset triggerSwipe after the animation
-      setActiveIndex((prevIndex) => (prevIndex + 1) % profilesData.length); // Move to the next card
-    }, 300); // Adjust timeout to match the swipe animation duration
+      setTriggerSwipe(null); // Reset triggerSwipe after animation
+      setActiveIndex((prevIndex) => prevIndex + 1); // Move to the next card
+    }, 300); // Ensure this matches the animation duration
   };
-
   return (
     <div className="page-layout">
       <div className="matches-layout">
         {" "}
-        <LeftButton onClick={setTriggerSwipe} />
+        <LeftButton onClick={handleSwipe} />
         <div className="match-profiles-container">
-          {" "}
-          {profilesData && profilesData.length > 0 ? (
-            profilesData.map((profile, index) => (
+          <AnimatePresence>
+            {profilesData.length > 0 && activeIndex < profilesData.length && (
               <MatchProfileCard
-                key={index}
-                imgSrc={profile.imgSrc}
-                username={profile.username}
-                topGames={profile.top5games}
-                playerType={profile.playertype}
-                description={profile.description}
-                isActive={index === activeIndex}
-                onSwipe={handleSwipe}
+                key={activeIndex}
+                imgSrc={profilesData[activeIndex].imgSrc}
+                username={profilesData[activeIndex].username}
+                topGames={profilesData[activeIndex].top5games}
+                playerType={profilesData[activeIndex].playertype}
+                description={profilesData[activeIndex].description}
+                isActive={true}
+                onSwipe={() => setActiveIndex((prev) => prev + 1)}
                 triggerSwipe={triggerSwipe}
               />
-            ))
-          ) : (
-            <p>No profiles available</p>
-          )}
+            )}
+          </AnimatePresence>
         </div>
-        <div className="decision-buttons">
-          <RightButton onClick={setTriggerSwipe} />
-        </div>
+        <RightButton onClick={handleSwipe} />
       </div>
     </div>
   );
