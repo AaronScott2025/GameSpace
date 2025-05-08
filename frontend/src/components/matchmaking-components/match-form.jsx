@@ -4,12 +4,17 @@ import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../pages/UserContext";
 import "../../styles/duo-matchmaker-page.css";
 import { LuSwords } from "react-icons/lu";
-import { getFavoriteGames } from "../../scripts/account-page-scripts";
+import {
+  getFavoriteGames,
+  handleGameSelection,
+} from "../../scripts/account-page-scripts";
 import RadioButton from "../Radio-button";
 import FavoriteGamesSection from "../FavoriteGameSection";
+import { useNavigate } from "react-router-dom";
 
 function MatchmakingForm() {
   const { user } = useContext(UserContext);
+  const navigate = useNavigate();
   const [preferences, setPreferences] = useState({
     playStyle: "",
     playerDescription: "",
@@ -200,24 +205,44 @@ function MatchmakingForm() {
 }
 const NextSteps = ({ setShowNextSteps }) => {
   const { user } = useContext(UserContext);
+  const navigate = useNavigate();
   const [favoriteGames, setFavoriteGames] = useState({});
   const [showGamePopup, setShowGamePopup] = useState(false);
   const [currentGameSlot, setCurrentGameSlot] = useState(null);
+  const [description, setDescription] = useState(""); // State for description
 
   const handleGameClick = (slotNumber) => {
     setCurrentGameSlot(slotNumber);
     setShowGamePopup(true);
   };
 
-  const handleSelectGame = (game, slotNumber) => {
-    setFavoriteGames((prev) => {
-      const newGames = { ...prev };
-      newGames[slotNumber] = game;
-      return newGames;
-    });
-    setShowGamePopup(false);
-  };
+  const handleSelectGame = async (game, slotNumber) => {
+    if (!game || !user.id || !user.username) return;
 
+    try {
+      const result = await handleGameSelection(
+        user.id,
+        user.username,
+        game.id,
+        slotNumber
+      );
+      if (result.success) {
+        setFavoriteGames((prev) => {
+          const newGames = { ...prev };
+          newGames[slotNumber] = game;
+          return newGames;
+        });
+      } else {
+        console.error("Failed to update favorite game.");
+        alert("Failed to update favorite game. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error selecting game:", err);
+      alert("An unexpected error occurred. Please try again.");
+    } finally {
+      setShowGamePopup(false);
+    }
+  };
   const handleRemoveGame = (slotNumber) => {
     setFavoriteGames((prev) => {
       const newGames = { ...prev };
@@ -228,7 +253,6 @@ const NextSteps = ({ setShowNextSteps }) => {
   useEffect(() => {
     const fetchFavoriteGames = async () => {
       try {
-        console.log("Fetching favorite games for:", user.id, user.username);
         const games = await getFavoriteGames(user.id, user.username);
         if (games) {
           setFavoriteGames(games);
@@ -248,26 +272,56 @@ const NextSteps = ({ setShowNextSteps }) => {
   if (!favoriteGames) {
     return <div>Loading...</div>;
   }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // Validate description
+    if (!description.trim()) {
+      alert("Please provide a description before submitting.");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("duo_matchmaker")
+        .update({ description }) // Update the description column
+        .eq("username", user.username); // Match the row by username
+
+      if (error) {
+        console.error("Error updating description:", error);
+        alert("Failed to update description. Please try again.");
+      } else {
+        navigate("/matches"); // Redirect to /matches
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      alert("An unexpected error occurred. Please try again.");
+    }
+  };
+
   return (
     <div className="preferences-form">
-      <form>
+      <form onSubmit={handleSubmit}>
         <label className="preferences-description-label">
-          What are you looking for in a gaming partner?
+          Describe what you are looking for?
         </label>
-        <textarea className="description-textarea"></textarea>
-        <label className="preferences-description-label">
-          Here are your favorite games based on our records:
-        </label>
-        <FavoriteGamesSection
-          favoriteGames={favoriteGames}
-          handleGameClick={handleGameClick}
-          handleRemoveGame={handleRemoveGame}
-          showGamePopup={showGamePopup}
-          setShowGamePopup={setShowGamePopup}
-          handleSelectGame={handleSelectGame}
-          currentGameSlot={currentGameSlot}
-        />
+        <textarea
+          className="description-textarea"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        ></textarea>
       </form>
+      <label className="preferences-description-label">
+        Here are your favorite games based on our records:
+      </label>
+      <FavoriteGamesSection
+        favoriteGames={favoriteGames}
+        handleGameClick={handleGameClick}
+        handleRemoveGame={handleRemoveGame}
+        showGamePopup={showGamePopup}
+        setShowGamePopup={setShowGamePopup}
+        handleSelectGame={handleSelectGame}
+        currentGameSlot={currentGameSlot}
+      />
       <div className="buttons-container">
         <button
           type="button"
@@ -276,7 +330,7 @@ const NextSteps = ({ setShowNextSteps }) => {
         >
           Back
         </button>
-        <button type="submit">
+        <button type="submit" onClick={handleSubmit}>
           <LuSwords />
           Submit
         </button>
