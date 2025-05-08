@@ -30,6 +30,7 @@ import { supabase } from "../../client.js";
 import CreateEventModal from "../components/create-event-modal.jsx"; // Import your modal component
 
 import { GiAstronautHelmet } from "react-icons/gi"; // TODO: figure out how to use this icon
+import GoogleMapsProvider from "../hooks/GoogleMapsProvider.jsx";
 
 function EventsPage() {
   const { position, error, geoError } = useGeolocation();
@@ -244,7 +245,9 @@ function EventsPage() {
            * change the tag logic for a better user experience
            * add a loading state when creating an event
            */}
+
           <CreateEventModal onSubmit={handleCreateEvent} />
+
           <div className="events-filter">
             <input
               className="events-filter-checkbox"

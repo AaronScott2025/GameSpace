@@ -3,7 +3,10 @@ import { IoMdAdd } from "react-icons/io";
 import { FaTimes } from "react-icons/fa";
 import { IoTimeOutline } from "react-icons/io5";
 import { createPortal } from "react-dom";
+
+import PlaceAutocompleteComponent from "./PlaceAutocompleteComponent";
 import "../styles/create-event-modal.css";
+import GoogleMapsProvider from "../hooks/GoogleMapsProvider";
 
 const AVAILABLE_TAGS = [
   "Gaming",
@@ -420,6 +423,8 @@ function CreateEventModal({ onSubmit }) {
                 handleEventSubmit(data);
               }}
             >
+              <PlaceAutocompleteComponent />
+
               {eventFormInputs.map((input, index) => (
                 <label key={index}>
                   {input.label}
