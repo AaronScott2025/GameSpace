@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
 import useSound from "../hooks/useSound"; // Custom hook
 import StartDmButton from "../components/startdms.jsx"
+import { BsHandThumbsUp, BsHandThumbsUpFill } from "react-icons/bs";
 
 const HomePage = () => {
 
@@ -45,6 +46,7 @@ const HomePage = () => {
   const [showUserPopup, setShowUserPopup] = useState(false);
   const [favoriteGames, setFavoriteGames] = useState([]);
   const [isBlueBackground, setIsBlueBackground] = useState(false);
+  const [likedPosts, setLikedPosts] = useState(new Set());
   
 
   const handleUsernameClick = async (username) => {
@@ -87,39 +89,51 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   // Fetch posts from Supabase
-  const fetchPosts = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      let { data: posts, error } = await supabase
-        .from("post")
-        .select(
-          `
-          *,
-          profiles (
+const fetchPosts = async () => {
+  setLoading(true);
+  setError(null);
+  try {
+    let { data: posts, error } = await supabase
+      .from("post")
+      .select(`
+        *,
+        profiles (
           id,
-      profile_pic,
-      bio,
-      steam_link,
-      Epic_link,
-      PSN_link,
-      Xbox_link,
-      Discord_link
-    )
-        `
+          profile_pic,
+          bio,
+          steam_link,
+          Epic_link,
+          PSN_link,
+          Xbox_link,
+          Discord_link
         )
-        .order("created_at", { ascending: false }); // (newest first)
-      if (error) {
-        setError(error.message);
-      } else {
-        setData(posts);
-      }
-    } catch (err) {
-      setError("Error fetching data");
-    } finally {
-      setLoading(false);
+      `)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      setError(error.message);
+    } else {
+      setData(posts);
     }
-  };
+
+    // Fetch user's liked posts
+    if (user) {
+      const { data: likesData, error: likesError } = await supabase
+        .from("likes")
+        .select("post_id")
+        .eq("profile_id", user.id);
+
+      if (!likesError) {
+        const likedPostIds = new Set(likesData.map((like) => like.post_id));
+        setLikedPosts(likedPostIds);
+      }
+    }
+  } catch (err) {
+    setError("Error fetching data");
+  } finally {
+    setLoading(false);
+  }
+};
   useEffect(() => {
     fetchPosts();
   }, []);
@@ -216,86 +230,69 @@ const HomePage = () => {
   
   //////////////////////////////////////////////////////////////
   ///////////////////Function to Handle Likes///////////////////////////
-  const handleLikePost = async (postId) => {
-    if (!user) {
-      alert("You must be logged in to like a post.");
-      return;
-    }
-  
-    try {
-      // Step 1: Use the profile id directly
-      const profileId = user.id;
-  
-      // Step 2: Check if this user already liked this post
-      const { data: existingLike, error: likeError } = await supabase
-        .from('likes')
-        .select('*')
-        .eq('post_id', postId)
-        .eq('profile_id', profileId)
-        .maybeSingle(); // maybeSingle avoids crashing if not found
-  
-      if (likeError) {
-        console.error("Error checking existing like:", likeError.message);
+const handleLikePost = async (postId) => {
+  if (!user) {
+    alert("You must be logged in to like a post.");
+    return;
+  }
+
+  try {
+    const profileId = user.id;
+
+    if (likedPosts.has(postId)) {
+      // Unlike the post
+      const { error: deleteError } = await supabase
+        .from("likes")
+        .delete()
+        .eq("post_id", postId)
+        .eq("profile_id", profileId);
+
+      if (deleteError) {
+        console.error("Error removing like:", deleteError.message);
         return;
       }
-  
-      if (existingLike) {
-        alert("You already liked this post!");
-        return;
-      }
-  
-      console.log("No existing like found, inserting new like...");
-  
-      // Step 3: Insert the new like
-      const { error: insertLikeError } = await supabase
-        .from('likes')
+
+      setLikedPosts((prev) => {
+        const updated = new Set(prev);
+        updated.delete(postId);
+        return updated;
+      });
+    } else {
+      // Like the post
+      const { error: insertError } = await supabase
+        .from("likes")
         .insert([{ post_id: postId, profile_id: profileId }]);
-  
-      if (insertLikeError) {
-        console.error("Error inserting like:", insertLikeError.message);
+
+      if (insertError) {
+        console.error("Error inserting like:", insertError.message);
         return;
       }
-  
-      console.log("Like inserted successfully!");
-  
-      // Step 4: Re-count the total likes for this post
-      const { count, error: countError } = await supabase
-        .from('likes')
-        .select('*', { count: 'exact', head: true })
-        .eq('post_id', postId);
-  
-      if (countError) {
-        console.error("Error counting likes:", countError.message);
-        return;
-      }
-  
-      console.log("Total likes for post:", count);
-  
-      // Step 5: Update the post.likes field
-      const { error: updateError } = await supabase
-        .from('post')
+
+      setLikedPosts((prev) => new Set(prev).add(postId));
+    }
+
+    // Recount total likes
+    const { count, error: countError } = await supabase
+      .from("likes")
+      .select("*", { count: "exact", head: true })
+      .eq("post_id", postId);
+
+    if (!countError) {
+      await supabase
+        .from("post")
         .update({ likes: count })
-        .eq('post_id', postId);
-  
-      if (updateError) {
-        console.error("Error updating post likes:", updateError.message);
-        return;
-      }
-  
-      console.log("Post likes updated to:", count);
-  
-      // Step 6: Refresh posts to show updated like count
-      setData(prevData => 
-        prevData.map(post => 
-          post.post_id === postId 
-            ? { ...post, likes: count } 
-            : post
+        .eq("post_id", postId);
+
+      setData((prevData) =>
+        prevData.map((post) =>
+          post.post_id === postId ? { ...post, likes: count } : post
         )
       );
-    } catch (error) {
-      console.error("Unexpected error during like:", error);
     }
-  };
+  } catch (error) {
+    console.error("Unexpected error during like:", error);
+  }
+};
 
 
   //////////////////////////////////////////////////////////////
@@ -367,14 +364,18 @@ const HomePage = () => {
 
 <div className="likes-section">
   <button
-    className="like-button"
-    onClick={(e) => {
-      e.stopPropagation(); // prevent navigating to PostDetails
-      handleLikePost(item.post_id);
-    }}
-  >
-    Like 👍
-  </button>
+  className="like-button"
+  onClick={(e) => {
+    e.stopPropagation();
+    handleLikePost(item.post_id);
+  }}
+>
+  {likedPosts.has(item.post_id) ? (
+    <BsHandThumbsUpFill size={20} />
+  ) : (
+    <BsHandThumbsUp size={20} />
+  )}
+</button>
   <span className="like-count">{item.likes || 0} likes</span>
 </div>
 
