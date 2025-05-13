@@ -146,3 +146,15 @@
 .back-button:hover {
   background-color: #222;
 }
+
+.like-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 1.1em;
+  color:black;
+}
