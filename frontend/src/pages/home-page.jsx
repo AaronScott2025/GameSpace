@@ -7,15 +7,13 @@ import { supabase } from "../../client";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
 import useSound from "../hooks/useSound"; // Custom hook
-import StartDmButton from "../components/startdms.jsx"
+import StartDmButton from "../components/startdms.jsx";
+import { BsHandThumbsUp, BsHandThumbsUpFill } from "react-icons/bs";
 
 const HomePage = () => {
-
-  
   //////////////////////////////////////////////////////////////
   ///////////////To navigate pages//////////////////////////////
   const navigate = useNavigate();
-
 
   //////////////////////////////////////////////////////////////
   //////////////Toggle post container///////////////////////
@@ -37,15 +35,13 @@ const HomePage = () => {
   const gameStartSound = useSound("/sounds/game-start.mp3");
   const blipSound = useSound("/sounds/blip.mp3");
 
-  
-
   //////////////////////////////////////////////////////////////
   //////////////Profile Popup Handler///////////////////////
   const [selectedUser, setSelectedUser] = useState(null);
   const [showUserPopup, setShowUserPopup] = useState(false);
   const [favoriteGames, setFavoriteGames] = useState([]);
   const [isBlueBackground, setIsBlueBackground] = useState(false);
-  
+  const [likedPosts, setLikedPosts] = useState(new Set());
 
   const handleUsernameClick = async (username) => {
     const userData = data.find((item) => item.username === username);
@@ -60,9 +56,9 @@ const HomePage = () => {
         .from("favorite_games")
         .select(
           `
-          rank,
-          games ( title )
-        `
+        rank,
+        games ( title )
+      `
         )
         .eq("profile_id", userData.profiles.id) // profiles.id is the primary key you want
         .order("rank", { ascending: true });
@@ -95,24 +91,39 @@ const HomePage = () => {
         .from("post")
         .select(
           `
-          *,
-          profiles (
+        *,
+        profiles (
           id,
-      profile_pic,
-      bio,
-      steam_link,
-      Epic_link,
-      PSN_link,
-      Xbox_link,
-      Discord_link
-    )
-        `
+         user_id, 
+          profile_pic,
+          bio,
+          steam_link,
+          Epic_link,
+          PSN_link,
+          Xbox_link,
+          Discord_link
         )
-        .order("created_at", { ascending: false }); // (newest first)
+      `
+        )
+        .order("created_at", { ascending: false });
+
       if (error) {
         setError(error.message);
       } else {
         setData(posts);
+      }
+
+      // Fetch user's liked posts
+      if (user) {
+        const { data: likesData, error: likesError } = await supabase
+          .from("likes")
+          .select("post_id")
+          .eq("profile_id", user.id);
+
+        if (!likesError) {
+          const likedPostIds = new Set(likesData.map((like) => like.post_id));
+          setLikedPosts(likedPostIds);
+        }
       }
     } catch (err) {
       setError("Error fetching data");
@@ -213,7 +224,7 @@ const HomePage = () => {
       alert("Something went wrong while creating the post.");
     }
   };
-  
+
   //////////////////////////////////////////////////////////////
   ///////////////////Function to Handle Likes///////////////////////////
   const handleLikePost = async (postId) => {
@@ -221,82 +232,64 @@ const HomePage = () => {
       alert("You must be logged in to like a post.");
       return;
     }
-  
+
     try {
-      // Step 1: Use the profile id directly
       const profileId = user.id;
-  
-      // Step 2: Check if this user already liked this post
-      const { data: existingLike, error: likeError } = await supabase
-        .from('likes')
-        .select('*')
-        .eq('post_id', postId)
-        .eq('profile_id', profileId)
-        .maybeSingle(); // maybeSingle avoids crashing if not found
-  
-      if (likeError) {
-        console.error("Error checking existing like:", likeError.message);
-        return;
+
+      if (likedPosts.has(postId)) {
+        // Unlike the post
+        const { error: deleteError } = await supabase
+          .from("likes")
+          .delete()
+          .eq("post_id", postId)
+          .eq("profile_id", profileId);
+
+        if (deleteError) {
+          console.error("Error removing like:", deleteError.message);
+          return;
+        }
+
+        setLikedPosts((prev) => {
+          const updated = new Set(prev);
+          updated.delete(postId);
+          return updated;
+        });
+      } else {
+        // Like the post
+        const { error: insertError } = await supabase
+          .from("likes")
+          .insert([{ post_id: postId, profile_id: profileId }]);
+
+        if (insertError) {
+          console.error("Error inserting like:", insertError.message);
+          return;
+        }
+
+        setLikedPosts((prev) => new Set(prev).add(postId));
       }
-  
-      if (existingLike) {
-        alert("You already liked this post!");
-        return;
-      }
-  
-      console.log("No existing like found, inserting new like...");
-  
-      // Step 3: Insert the new like
-      const { error: insertLikeError } = await supabase
-        .from('likes')
-        .insert([{ post_id: postId, profile_id: profileId }]);
-  
-      if (insertLikeError) {
-        console.error("Error inserting like:", insertLikeError.message);
-        return;
-      }
-  
-      console.log("Like inserted successfully!");
-  
-      // Step 4: Re-count the total likes for this post
+
+      // Recount total likes
       const { count, error: countError } = await supabase
-        .from('likes')
-        .select('*', { count: 'exact', head: true })
-        .eq('post_id', postId);
-  
-      if (countError) {
-        console.error("Error counting likes:", countError.message);
-        return;
+        .from("likes")
+        .select("*", { count: "exact", head: true })
+        .eq("post_id", postId);
+
+      if (!countError) {
+        await supabase
+          .from("post")
+          .update({ likes: count })
+          .eq("post_id", postId);
+
+        setData((prevData) =>
+          prevData.map((post) =>
+            post.post_id === postId ? { ...post, likes: count } : post
+          )
+        );
       }
-  
-      console.log("Total likes for post:", count);
-  
-      // Step 5: Update the post.likes field
-      const { error: updateError } = await supabase
-        .from('post')
-        .update({ likes: count })
-        .eq('post_id', postId);
-  
-      if (updateError) {
-        console.error("Error updating post likes:", updateError.message);
-        return;
-      }
-  
-      console.log("Post likes updated to:", count);
-  
-      // Step 6: Refresh posts to show updated like count
-      setData(prevData => 
-        prevData.map(post => 
-          post.post_id === postId 
-            ? { ...post, likes: count } 
-            : post
-        )
-      );
     } catch (error) {
       console.error("Unexpected error during like:", error);
     }
   };
-
 
   //////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////
@@ -365,18 +358,22 @@ const HomePage = () => {
                   })}
                 </p>
 
-<div className="likes-section">
-  <button
-    className="like-button"
-    onClick={(e) => {
-      e.stopPropagation(); // prevent navigating to PostDetails
-      handleLikePost(item.post_id);
-    }}
-  >
-    Like 👍
-  </button>
-  <span className="like-count">{item.likes || 0} likes</span>
-</div>
+                <div className="likes-section">
+                  <button
+                    className="like-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLikePost(item.post_id);
+                    }}
+                  >
+                    {likedPosts.has(item.post_id) ? (
+                      <BsHandThumbsUpFill size={20} />
+                    ) : (
+                      <BsHandThumbsUp size={20} />
+                    )}
+                  </button>
+                  <span className="like-count">{item.likes || 0} likes</span>
+                </div>
 
                 <div className="media-left">
                   <div className="media-user-info">
@@ -509,7 +506,10 @@ const HomePage = () => {
                   )}
                 </ul>
               </div>
-              <StartDmButton currentUserId={user.user_id} participantId={selectedUser.profiles.user_id} />
+              <StartDmButton
+                currentUserId={user.user_id}
+                participantId={selectedUser.profiles.user_id}
+              />
             </div>
           </div>
         </div>

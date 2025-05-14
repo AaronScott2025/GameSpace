@@ -10,7 +10,8 @@ import {
 import { UserContext } from "./UserContext";
 import "../styles/duo-matchmaker-page.css";
 import axios from "axios";
-
+import useStartConversation from "../hooks/conversation";
+import { supabase } from "../../client";
 const MatchProfileCard = ({
   imgSrc,
   username,
@@ -114,10 +115,11 @@ const DuoMatchmakerPage = () => {
   const [triggerSwipe, setTriggerSwipe] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate(); // Initialize useNavigate
+  const { startConversation } = useStartConversation(); // Import the startConversation function
 
   useEffect(() => {
     const fetchProfiles = async () => {
-      setIsLoading(true); // Set loading state to true
+      setIsLoading(true);
       try {
         const { data } = await axios.get("api/matchmaker/", {
           params: { username: user?.username },
@@ -142,7 +144,7 @@ const DuoMatchmakerPage = () => {
       } catch (error) {
         console.error("Error fetching profiles:", error);
       } finally {
-        setIsLoading(false); // Set loading state to false
+        setIsLoading(false);
       }
     };
 
@@ -152,17 +154,55 @@ const DuoMatchmakerPage = () => {
     }
   }, [user?.username]);
 
-  const handleSwipe = (direction) => {
+  const handleSwipe = async (direction) => {
     if (activeIndex >= profilesData.length) {
       console.log("No more profiles to swipe.");
-      return; // Prevent further swiping if no profiles are left
+      return;
     }
 
-    setTriggerSwipe(direction); // Trigger swipe animation
+    setTriggerSwipe(direction);
     setTimeout(() => {
-      setTriggerSwipe(null); // Reset triggerSwipe after animation
-      setActiveIndex((prevIndex) => prevIndex + 1); // Move to the next card
-    }, 300); // Ensure this matches the animation duration
+      setTriggerSwipe(null);
+      setActiveIndex((prevIndex) => prevIndex + 1);
+    }, 300);
+
+    if (direction === "right") {
+      const participantUsername = profilesData[activeIndex]?.username;
+
+      console.log("Fetching participant ID for username:", participantUsername);
+
+      try {
+        const { data, error } = await supabase.rpc("get_user_id_by_username", {
+          input_username: participantUsername,
+        });
+
+        console.log("RPC Response Data:", data);
+        console.log("RPC Response Error:", error);
+
+        if (error) {
+          console.error("Error fetching participant ID:", error.message);
+          alert("Failed to fetch participant information.");
+          return;
+        }
+
+        const participantId = typeof data === "string" ? data : data?.user_id;
+
+        console.log("Participant ID before check:", participantId);
+
+        if (!participantId) {
+          alert("This is a fake profile.");
+          return;
+        }
+
+        console.log("Current User ID:", user.user_id);
+        console.log("Participant User ID:", participantId);
+
+        startConversation(user.user_id, participantId);
+      } catch (err) {
+        console.error("Unexpected error fetching participant ID:", err.message);
+        alert("An unexpected error occurred. Please try again.");
+      }
+    }
   };
 
   const reloadMatches = () => {

@@ -181,3 +181,89 @@ html, body {
   object-fit: contain; /* Image will fit within the container, maintaining aspect ratio */
   border-radius: 12px; /* Match border-radius for smooth edges */
 }
+
+/*//////////////////////////////////////*/
+/*//////////////////////////////////////*/
+
+/* Modal Overlay */
+.rsvp-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent dark overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Modal Content Box */
+.rsvp-modal-content {
+  background-color: #f0f0f0;
+  color: #000000;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh; /* LIMIT height */
+  overflow-y: auto;  /* ENABLE scrolling */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+/* Close Button */
+.rsvp-close-button {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #000;
+  cursor: pointer;
+}
+
+/* Submit & Guest List Buttons */
+.rsvp-submit-button,
+.rsvp-button,
+.guest-list-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.rsvp-submit-button:hover,
+.rsvp-button:hover,
+.guest-list-button:hover {
+  background-color: #0056b3;
+}
+
+/* Form Inputs */
+.rsvp-modal-content input {
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Guest List Styles */
+.rsvp-modal-content ul {
+  max-height: 200px;
+  overflow-y: auto;
+  padding-left: 1rem;
+}
+
+.rsvp-modal-content li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ddd;
+}

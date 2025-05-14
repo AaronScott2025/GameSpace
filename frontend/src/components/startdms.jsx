@@ -1,18 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../../client";
+import { UserContext } from "../pages/UserContext";
 import { createClient } from "@supabase/supabase-js";
 
 // Reuse your Supabase configuration
-const supabaseUrl = import.meta.env.VITE_SUPABASE_REACT_APP_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_REACT_APP_API_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// const supabaseUrl = import.meta.env.VITE_SUPABASE_REACT_APP_URL;
+// const supabaseAnonKey = import.meta.env.VITE_SUPABASE_REACT_APP_API_KEY;
+// const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const StartDmButton = ({ currentUserId, participantId }) => {
+  const { user } = useContext(UserContext); // user context has the current user that is logged in
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Helper method to fetch the username for any given user ID
+  // // Helper method to fetch the username for any given user ID
   const fetchUsername = async (userId) => {
+    if (!userId) {
+      console.error("Invalid userId:", userId);
+      return "Invalid user ID";
+    }
     try {
       const { data, error } = await supabase
         .from("profiles")
@@ -29,17 +36,40 @@ const StartDmButton = ({ currentUserId, participantId }) => {
 
   // Method mirroring the DMPage startConversation logic
   const startConversation = async () => {
+    if (!currentUserId || !participantId) {
+      if (!participantId) {
+        alert("This is a fake profile.");
+      } else {
+        alert("Unable to start a conversation. Please try again.");
+      }
+      return;
+    }
+
+    // Check if the user is trying to start a conversation with themselves
+    if (currentUserId === participantId) {
+      alert("You cannot start a conversation with yourself.");
+      return;
+    }
+
     setLoading(true);
 
-    // Get the usernames for both participants
     const currentUsername = await fetchUsername(currentUserId);
     const participantUsername = await fetchUsername(participantId);
+
+    if (
+      currentUsername === "Invalid user ID" ||
+      participantUsername === "Invalid user ID"
+    ) {
+      setLoading(false);
+      alert("Invalid user IDs. Please try again.");
+      return;
+    }
 
     // Check for an existing conversation between these users via the mapping table
     const { data: mappingData, error: mappingError } = await supabase
       .from("user_conversation")
       .select("conversation_id")
-      .in("user_id", [currentUserId, participantId]);
+      .in("user_id", [currentUserId, participantId]); // use pass as props to the popup
 
     if (mappingError) {
       console.error("Error fetching conversation mappings:", mappingError);
@@ -111,7 +141,7 @@ const StartDmButton = ({ currentUserId, participantId }) => {
 
     setLoading(false);
     // After starting the conversation, navigate to the DM page.
-    navigate("/dm-page");
+    navigate("/dm-page", { state: { conversationId: conversation.id } });
   };
 
   return (
