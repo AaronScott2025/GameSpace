@@ -5,7 +5,7 @@ import { supabase } from "../../client.js";
 //import { BiSolidDownArrow } from "react-icons/bi";
 //import { GiAstronautHelmet, GiSatelliteCommunication } from "react-icons/gi";
 import { BsJoystick, BsRocket } from "react-icons/bs";
-import { FaUsers,FaMapMarkedAlt, } from "react-icons/fa";
+import { FaUsers, FaMapMarkedAlt } from "react-icons/fa";
 import { RiAliensFill } from "react-icons/ri";
 import { CiShoppingCart } from "react-icons/ci";
 import { TiMessages } from "react-icons/ti";
@@ -85,7 +85,7 @@ const Navbar = () => {
               className="profile-pic-nav"
               data-tooltip-id="profile-tooltip"
               onClick={() => setIsTooltipOpen((prev) => !prev)} // Toggle tooltip visibility
-              src={profilePic}
+              src={profilePic || "pic.jpg"}
             ></img>
             <Tooltip
               id="profile-tooltip"
