@@ -87,19 +87,36 @@ def chatbot():
 @app.route('/matchmaker/', methods=['GET'])
 def matchmaker():
     try:
-        mminfo = request.args
+        username = request.args.get('username', '')  # Only require the username
+        if not username:
+            return jsonify({'error': 'Username is required'}), 400
+
+        # Fetch user data from the database
+        response = supabase.table("duo_matchmaker").select("*").eq("username", username).execute()
+        if not response.data or len(response.data) == 0:
+            return jsonify({'error': 'User not found'}), 404
+        
+         # Fetch favorite games using the database function
+        favorite_games_response = supabase.rpc("get_favorite_games_by_username", {"username": username}).execute()
+        if not favorite_games_response.data:
+            return jsonify({'error': 'Could not fetch favorite games'}), 500
+
+        # Extract user data
+        user_data = response.data[0]
         match = DuoMatching(
-            username=mminfo.get('username', ''),
-            top5games=mminfo.get('Top5Games', '').split(','),
-            playertype=mminfo.get('PlayerType', '').split(','),
-            playertypeints=[int(i) for i in mminfo.get('PlayerTypeInts', '').split(',')],
-            description=mminfo.get('Description', ''),
-            weight=float(mminfo.get('Weight', 0))  # Assuming Weight is required
+            username=user_data.get('username', ''),
+            top5games=favorite_games_response.data,  # Use the result from the database function
+            playertype=user_data.get('playerType', '').split(','),
+            playertypeints=[int(i.strip('[]')) for i in user_data.get('playerTypeInts', '').split(',') if i.strip('[]').isdigit()],
+            description=user_data.get('description', ''),
+            weight=float(user_data.get('weight', 0))  # Assuming weight is optional
         )
-        data,listofallduos = ms.importSpecificProfiles(supabase, match)
+
+        # Fetch all profiles and perform matchmaking
+        data, listofallduos = ms.importSpecificProfiles(supabase, match)
         listofpotentialduos = ms.matchMaking(listofallduos, match)
-        return jsonify({
-            'Matches': listofpotentialduos}), 200
+
+        return jsonify({'Matches': listofpotentialduos}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 

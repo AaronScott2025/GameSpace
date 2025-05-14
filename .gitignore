@@ -22,3 +22,4 @@ GameSpaceBackend/services/__pycache__/
 packages/
 project.lock.json
 .fake
+node_modules/
