@@ -37,8 +37,11 @@ const StartDmButton = ({ currentUserId, participantId }) => {
   // Method mirroring the DMPage startConversation logic
   const startConversation = async () => {
     if (!currentUserId || !participantId) {
-      console.error("Missing user IDs:", { currentUserId, participantId });
-      alert("Unable to start a conversation. Please try again.");
+      if (!participantId) {
+        alert("This is a fake profile.");
+      } else {
+        alert("Unable to start a conversation. Please try again.");
+      }
       return;
     }
 
