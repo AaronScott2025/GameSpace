@@ -2,9 +2,81 @@ import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/marketplace_filter.css";
 import { supabase } from "../../client.js";
-import ButtonModal from "../components/button-modal.jsx";
 import { UserContext } from "./UserContext.jsx";
 import { IoMdAdd } from "react-icons/io";
+
+const FILTER_CATEGORIES = {
+  Games: [
+    "Action",
+    "Adventure",
+    "Role-Playing",
+    "Strategy",
+    "Sports",
+    "Simulation",
+    "Puzzle",
+    "Horror",
+    "Racing",
+    "Platform",
+  ],
+  "Gaming Accessories": [
+    "Headset",
+    "Keyboard",
+    "Mouse",
+    "Controller",
+    "Monitor",
+    "Speakers",
+    "VR",
+    "Chair",
+    "Gaming Desk",
+    "Mousepad",
+  ],
+  "Gaming Consoles": [
+    "PlayStation",
+    "Xbox",
+    "Nintendo Switch",
+    "PC",
+    "Retro",
+    "Steam Deck",
+    "Handheld",
+    "Mobile",
+  ],
+  Collectibles: [
+    "Figures",
+    "Posters",
+    "Cards",
+    "Stickers",
+    "Art Books",
+    "Limited Editions",
+    "Merchandise",
+    "Funko Pop",
+    "Statues",
+  ],
+};
+
+const CONDITION_OPTIONS = [
+  "New",
+  "Like New",
+  "Good",
+  "Used",
+  "Refurbished",
+  "For Parts",
+];
+
+const ALL_PREDEFINED_TAGS = Object.values(FILTER_CATEGORIES).flat();
+
+const getPopularTags = () => {
+  return [
+    "PlayStation",
+    "Action",
+    "Controller",
+    "PC",
+    "Nintendo Switch",
+    "Headset",
+    "Limited Editions",
+    "Adventure",
+    "Xbox",
+  ];
+};
 
 const CollapsibleSection = ({ title, items, onItemClick, selectedTags }) => {
   const [open, setOpen] = useState(false);
@@ -18,16 +90,16 @@ const CollapsibleSection = ({ title, items, onItemClick, selectedTags }) => {
       </div>
       {open && (
         <ul className="section-list">
-          {items.map((item, index) => (
-            <li key={index}>
-              <label>
+          {items.map((item) => (
+            <li key={item}>
+              <label className="filter-checkbox">
                 <input
                   type="checkbox"
                   name={item}
                   checked={selectedTags.includes(item)}
-                  onChange={() => onItemClick && onItemClick(item)}
+                  onChange={() => onItemClick(item)}
                 />
-                {item}
+                <span className="filter-label">{item}</span>
               </label>
             </li>
           ))}
@@ -49,13 +121,13 @@ const TagsSection = ({ popularTags, onTagClick, selectedTags }) => {
       </div>
       {open && (
         <div className="tags-list">
-          {popularTags.map((tag, index) => (
+          {popularTags.map((tag) => (
             <span
-              key={index}
+              key={tag}
               className={`filter-tag ${
                 selectedTags.includes(tag) ? "selected" : ""
               }`}
-              onClick={() => onTagClick && onTagClick(tag)}
+              onClick={() => onTagClick(tag)}
             >
               {tag}
             </span>
@@ -74,9 +146,34 @@ const FilterSection = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
-  const [popularTags, setPopularTags] = useState([]);
   const [searchInput, setSearchInput] = useState(currentSearchQuery || "");
-  const [selectedTags, setSelectedTags] = useState(activeFilters);
+  const [selectedTags, setSelectedTags] = useState(activeFilters || []);
+  const [popularTags, setPopularTags] = useState(getPopularTags());
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [listingFormData, setListingFormData] = useState({
+    title: "",
+    description: "",
+    location: "",
+    price: "",
+    condition: "New",
+    picture: null,
+  });
+  const [selectedModalTags, setSelectedModalTags] = useState([]);
+  const [tagSearchInput, setTagSearchInput] = useState("");
+  const [activeTagCategory, setActiveTagCategory] = useState("Popular");
+  const [filteredTags, setFilteredTags] = useState([]);
+
+  useEffect(() => {
+    // Only update selectedTags if activeFilters has changed
+    if (JSON.stringify(selectedTags) !== JSON.stringify(activeFilters)) {
+      setSelectedTags(activeFilters);
+    }
+  }, [activeFilters, selectedTags]);
+
+  useEffect(() => {
+    setSearchInput(currentSearchQuery || "");
+  }, [currentSearchQuery]);
 
   const handleMarketplaceClick = () => {
     navigate("/marketplace");
@@ -85,54 +182,16 @@ const FilterSection = ({
   const handleSearchInputChange = (e) => {
     const newSearchValue = e.target.value;
     setSearchInput(newSearchValue);
-    // Apply search in real-time as user types
     if (onSearch) {
       onSearch(newSearchValue);
     }
   };
 
-  // We can keep the handleSearchSubmit for Enter key presses,
-  // but it's not strictly necessary since search happens in real-time now
   const handleSearchSubmit = (e) => {
     if (e.key === "Enter" && onSearch) {
       onSearch(searchInput);
     }
   };
-
-  useEffect(() => {
-    // Only update selectedTags if activeFilters has changed
-    if (JSON.stringify(selectedTags) !== JSON.stringify(activeFilters)) {
-      setSelectedTags(activeFilters);
-    }
-  }, [activeFilters, selectedTags]);
-  useEffect(() => {
-    const fetchPopularTags = async () => {
-      try {
-        const { data, error } = await supabase.from("listings").select("tags");
-        if (error) {
-          console.error("Error fetching tags:", error);
-          return;
-        }
-
-        if (data && data.length > 0) {
-          const allTags = data.flatMap((listing) => listing.tags || []);
-          const uniqueTags = [...new Set(allTags)];
-          setPopularTags(uniqueTags.slice(0, 10));
-        } else {
-          setPopularTags([]);
-        }
-      } catch (err) {
-        console.error("Error processing tags:", err);
-        setPopularTags([]);
-      }
-    };
-
-    fetchPopularTags();
-  }, []);
-
-  useEffect(() => {
-    setSearchInput(currentSearchQuery || "");
-  }, [currentSearchQuery]);
 
   const handleTagClick = (tag) => {
     if (onTagSelect) {
@@ -140,89 +199,144 @@ const FilterSection = ({
     }
   };
 
-  const handleCreateListing = async (data) => {
-    const { title, description, location, price, condition, picture, tags } =
-      data;
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    resetForm();
+  };
 
-    let processedTags = [];
-    if (tags) {
-      processedTags = tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag !== "");
-    }
+  const resetForm = () => {
+    setListingFormData({
+      title: "",
+      description: "",
+      location: "",
+      price: "",
+      condition: "New",
+      picture: null,
+    });
+    setSelectedModalTags([]);
+    setTagSearchInput("");
+    setActiveTagCategory("Popular");
+  };
 
-    let pictureUrl = null;
-    if (picture) {
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("marketplace-images")
-        .upload(`public/${Date.now()}_${picture.name}`, picture);
-      if (uploadError) {
-        console.error("Error uploading image:", uploadError);
-        return;
-      }
-      const { data: publicURLData, error: urlError } = supabase.storage
-        .from("marketplace-images")
-        .getPublicUrl(uploadData.path);
-      if (urlError) {
-        console.error("Error getting public URL:", urlError);
-        return;
-      }
-      pictureUrl = publicURLData.publicUrl;
-    }
+  const handleInputChange = (e) => {
+    const { name, value, type, files } = e.target;
 
-    const { error } = await supabase
-      .from("listings")
-      .insert([
-        {
-          username: user.username,
-          title,
-          picture: pictureUrl,
-          listing_description: description,
-          location,
-          listing_price: price,
-          condition,
-          tags: processedTags,
-        },
-      ])
-      .single();
-
-    if (error) {
-      console.error("Error creating listing:", error);
+    if (type === "file") {
+      setListingFormData((prev) => ({
+        ...prev,
+        [name]: files[0],
+      }));
     } else {
-      console.log("Listing created successfully!");
-      window.location.reload();
+      setListingFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
   };
 
-  const filterSections = [
-    {
-      title: "Games",
-      items: ["Action", "Adventure", "Role-Playing", "Strategy", "Sports"],
-    },
-    {
-      title: "Gaming Accessories",
-      items: ["Headset", "Keyboard", "Mouse", "Controller", "Monitor"],
-    },
-    {
-      title: "Gaming Consoles",
-      items: ["PlayStation", "Xbox", "Nintendo Switch", "PC", "Others"],
-    },
-    {
-      title: "Collectibles",
-      items: [
-        "Figures",
-        "Posters",
-        "Stickers",
-        "Art Books",
-        "Limited Editions",
-      ],
-    },
-    {
-      title: "Advanced Filter",
-      items: ["Price Range", "Release Date", "User Ratings", "Availability"],
-    },
-  ];
+  useEffect(() => {
+    if (tagSearchInput.trim()) {
+      setFilteredTags(
+        ALL_PREDEFINED_TAGS.filter((tag) =>
+          tag.toLowerCase().includes(tagSearchInput.toLowerCase())
+        )
+      );
+    } else if (activeTagCategory === "Popular") {
+      setFilteredTags(popularTags);
+    } else {
+      setFilteredTags(FILTER_CATEGORIES[activeTagCategory] || []);
+    }
+  }, [tagSearchInput, activeTagCategory, popularTags]);
+
+  const handleTagSearch = (e) => {
+    setTagSearchInput(e.target.value);
+  };
+
+  const toggleModalTag = (tag) => {
+    setSelectedModalTags((prev) => {
+      if (prev.includes(tag)) {
+        return prev.filter((t) => t !== tag);
+      }
+      return [...prev, tag];
+    });
+  };
+
+  const handleCategoryChange = (category) => {
+    setActiveTagCategory(category);
+    setTagSearchInput("");
+  };
+
+  const handleCreateListing = async (e) => {
+    e.preventDefault();
+
+    if (
+      !listingFormData.title ||
+      !listingFormData.description ||
+      !listingFormData.location ||
+      !listingFormData.price
+    ) {
+      alert("Please fill all required fields");
+      return;
+    }
+
+    if (selectedModalTags.length === 0) {
+      alert("Please select at least one tag");
+      return;
+    }
+
+    try {
+      let pictureUrl = null;
+      if (listingFormData.picture) {
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("marketplace-images")
+          .upload(
+            `public/${Date.now()}_${listingFormData.picture.name}`,
+            listingFormData.picture
+          );
+
+        if (uploadError) {
+          console.error("Error uploading image:", uploadError);
+          throw uploadError;
+        }
+
+        const { data: publicURLData, error: urlError } = supabase.storage
+          .from("marketplace-images")
+          .getPublicUrl(uploadData.path);
+
+        if (urlError) {
+          console.error("Error getting public URL:", urlError);
+          throw urlError;
+        }
+
+        pictureUrl = publicURLData.publicUrl;
+      }
+
+      const { error } = await supabase.from("listings").insert([
+        {
+          username: user.username,
+          title: listingFormData.title,
+          picture: pictureUrl,
+          listing_description: listingFormData.description,
+          location: listingFormData.location,
+          listing_price: parseFloat(listingFormData.price),
+          condition: listingFormData.condition,
+          tags: selectedModalTags,
+        },
+      ]);
+
+      if (error) {
+        console.error("Error creating listing:", error);
+        throw error;
+      }
+
+      alert("Listing created successfully!");
+      closeModal();
+      window.location.reload();
+    } catch (error) {
+      alert(`Error creating listing: ${error.message}`);
+    }
+  };
 
   return (
     <aside className="filter-section">
@@ -253,52 +367,237 @@ const FilterSection = ({
           </button>
         )}
       </div>
-      <ButtonModal
-        buttonText="Create Listing"
+
+      <button
         className="create-listing-button"
-        icon={IoMdAdd}
-        iconSize={24}
-        title="Create New Listing"
-        inputs={[
-          { label: "Title", type: "text", name: "title" },
-          { label: "Description", type: "textarea", name: "description" },
-          { label: "Location", type: "text", name: "location" },
-          { label: "Price", type: "number", name: "price" },
-          { label: "Condition", type: "text", name: "condition" },
-          {
-            label: "Tags (comma separated)",
-            type: "text",
-            name: "tags",
-            placeholder: "electronics, gaming, used",
-          },
-          { label: "Picture", type: "file", name: "picture" },
-        ]}
-        onSubmit={handleCreateListing}
-        id="create-listing-button"
-        araia-label="Create Listing"
-        formClassName={"listing-form"}
-        modalClassName={"listing-modal"}
-        submitButtonClassName={"submit-listing-button"}
-        closeButtonClassName={"close-listing-button"}
-        buttonsClassName={"listing-buttons"}
-      />
+        onClick={openModal}
+        aria-label="Create Listing"
+      >
+        <IoMdAdd size={24} />
+        Create Listing
+      </button>
+
+      {isModalOpen && (
+        <div
+          className="modal-overlay"
+          onClick={(e) => {
+            if (e.target.className === "modal-overlay") {
+              closeModal();
+            }
+          }}
+        >
+          <div className="listing-modal">
+            <div className="listing-modal-header">
+              <h2>Create New Listing</h2>
+            </div>
+
+            <form className="listing-form" onSubmit={handleCreateListing}>
+              <div className="form-layout">
+                <div className="form-column">
+                  <div className="form-group">
+                    <label htmlFor="title">Title</label>
+                    <input
+                      type="text"
+                      id="title"
+                      name="title"
+                      value={listingFormData.title}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="description">Description</label>
+                    <textarea
+                      id="description"
+                      name="description"
+                      value={listingFormData.description}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="location">Location</label>
+                      <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        value={listingFormData.location}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="price">Price ($)</label>
+                      <input
+                        type="number"
+                        id="price"
+                        name="price"
+                        min="0"
+                        step="0.01"
+                        value={listingFormData.price}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="condition">Condition</label>
+                      <select
+                        id="condition"
+                        name="condition"
+                        value={listingFormData.condition}
+                        onChange={handleInputChange}
+                        required
+                      >
+                        {CONDITION_OPTIONS.map((cond) => (
+                          <option key={cond} value={cond}>
+                            {cond}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="picture">Picture</label>
+                      <input
+                        type="file"
+                        id="picture"
+                        name="picture"
+                        accept="image/*"
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-column tag-column">
+                  <div className="form-group tag-selector-container">
+                    <label>
+                      Tags <span className="required-indicator">*</span>
+                    </label>
+
+                    <div className="tag-search">
+                      <input
+                        type="text"
+                        placeholder="Search for tags..."
+                        value={tagSearchInput}
+                        onChange={handleTagSearch}
+                      />
+                    </div>
+
+                    <div className="tag-categories-tabs">
+                      <button
+                        type="button"
+                        className={`category-tab ${
+                          activeTagCategory === "Popular" ? "active" : ""
+                        }`}
+                        onClick={() => handleCategoryChange("Popular")}
+                      >
+                        Popular
+                      </button>
+                      {Object.keys(FILTER_CATEGORIES).map((category) => (
+                        <button
+                          key={category}
+                          type="button"
+                          className={`category-tab ${
+                            activeTagCategory === category ? "active" : ""
+                          }`}
+                          onClick={() => handleCategoryChange(category)}
+                        >
+                          {category}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="selected-tags-container">
+                      {selectedModalTags.length > 0 ? (
+                        <div className="selected-tags-list">
+                          {selectedModalTags.map((tag) => (
+                            <div key={tag} className="selected-tag">
+                              <span>{tag}</span>
+                              <button
+                                type="button"
+                                onClick={() => toggleModalTag(tag)}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="no-tags-selected">No tags selected</div>
+                      )}
+                    </div>
+
+                    <div className="available-tags-grid">
+                      {filteredTags.map((tag) => (
+                        <button
+                          key={tag}
+                          type="button"
+                          className={`tag-option ${
+                            selectedModalTags.includes(tag) ? "selected" : ""
+                          }`}
+                          onClick={() => toggleModalTag(tag)}
+                        >
+                          {tag}
+                        </button>
+                      ))}
+
+                      {filteredTags.length === 0 && (
+                        <p className="no-tags-found">No matching tags found</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-actions">
+                <button
+                  type="button"
+                  className="cancel-button"
+                  onClick={closeModal}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="submit-button">
+                  Create Listing
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="filter-group">
-        {popularTags.length > 0 && (
-          <TagsSection
-            popularTags={popularTags}
-            onTagClick={handleTagClick}
-            selectedTags={selectedTags}
-          />
-        )}
-        {filterSections.map((section, index) => (
+        <TagsSection
+          popularTags={popularTags}
+          onTagClick={handleTagClick}
+          selectedTags={selectedTags}
+        />
+
+        {Object.entries(FILTER_CATEGORIES).map(([category, tags]) => (
           <CollapsibleSection
-            key={index}
-            title={section.title}
-            items={section.items}
+            key={category}
+            title={category}
+            items={tags}
             onItemClick={handleTagClick}
             selectedTags={selectedTags}
           />
         ))}
+
+        <CollapsibleSection
+          key="Condition"
+          title="Condition"
+          items={CONDITION_OPTIONS}
+          onItemClick={handleTagClick}
+          selectedTags={selectedTags}
+        />
       </div>
     </aside>
   );
