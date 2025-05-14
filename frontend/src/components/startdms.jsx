@@ -42,6 +42,12 @@ const StartDmButton = ({ currentUserId, participantId }) => {
       return;
     }
 
+    // Check if the user is trying to start a conversation with themselves
+    if (currentUserId === participantId) {
+      alert("You cannot start a conversation with yourself.");
+      return;
+    }
+
     setLoading(true);
 
     const currentUsername = await fetchUsername(currentUserId);
