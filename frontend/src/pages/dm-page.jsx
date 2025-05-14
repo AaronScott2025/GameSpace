@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
+import { useLocation } from "react-router-dom";
 import "../styles/dm-page.css";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_REACT_APP_URL;
@@ -15,6 +16,28 @@ const DMPage = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [username, setUsername] = useState("");
+
+  const location = useLocation();
+  const initialConversationId = location.state?.conversationId || null;
+
+  useEffect(() => {
+    if (initialConversationId) {
+      // Automatically select the conversation passed from StartDmButton
+      const fetchConversation = async () => {
+        const { data, error } = await supabase
+          .from("conversations")
+          .select("*")
+          .eq("id", initialConversationId)
+          .maybeSingle();
+        if (error) {
+          console.error("Error fetching conversation:", error);
+        } else {
+          setSelectedChat(data);
+        }
+      };
+      fetchConversation();
+    }
+  }, [initialConversationId]);
 
   // Fetch the current user's username from the profiles table
   const fetchUsername = async (userId) => {
@@ -226,10 +249,12 @@ const DMPage = () => {
       conversation = data[0];
 
       // Insert rows into user_conversation for both participants
-      const { error: mapError } = await supabase.from("user_conversation").insert([
-        { user_id: userId, conversation_id: conversation.id },
-        { user_id: participantId, conversation_id: conversation.id },
-      ]);
+      const { error: mapError } = await supabase
+        .from("user_conversation")
+        .insert([
+          { user_id: userId, conversation_id: conversation.id },
+          { user_id: participantId, conversation_id: conversation.id },
+        ]);
 
       if (mapError) {
         console.error("Error mapping users to conversation:", mapError);
@@ -239,7 +264,9 @@ const DMPage = () => {
 
     // Update the conversation list locally and clear search fields
     setConversations((prev) =>
-      prev.find((c) => c.id === conversation.id) ? prev : [...prev, conversation]
+      prev.find((c) => c.id === conversation.id)
+        ? prev
+        : [...prev, conversation]
     );
     setSelectedChat(conversation);
     setSearchResults([]);
@@ -281,7 +308,11 @@ const DMPage = () => {
           />
           <button
             onClick={handleSearch}
-            style={{ color: "white", backgroundColor: "gray", marginTop: "10px" }}
+            style={{
+              color: "white",
+              backgroundColor: "gray",
+              marginTop: "10px",
+            }}
           >
             Search
           </button>
@@ -315,7 +346,9 @@ const DMPage = () => {
         {conversations.map((chat) => (
           <div
             key={chat.id}
-            className={`chat-item ${selectedChat?.id === chat.id ? "active" : ""}`}
+            className={`chat-item ${
+              selectedChat?.id === chat.id ? "active" : ""
+            }`}
             onClick={() => setSelectedChat(chat)}
           >
             {/* Instead of chat.name, we show the other participant's username */}

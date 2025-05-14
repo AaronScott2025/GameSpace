@@ -132,7 +132,7 @@ const StartDmButton = ({ currentUserId, participantId }) => {
 
     setLoading(false);
     // After starting the conversation, navigate to the DM page.
-    navigate("/dm-page");
+    navigate("/dm-page", { state: { conversationId: conversation.id } });
   };
 
   return (
