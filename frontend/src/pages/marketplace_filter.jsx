@@ -52,7 +52,9 @@ const TagsSection = ({ popularTags, onTagClick, selectedTags }) => {
           {popularTags.map((tag, index) => (
             <span
               key={index}
-              className={`filter-tag ${selectedTags.includes(tag) ? "selected" : ""}`}
+              className={`filter-tag ${
+                selectedTags.includes(tag) ? "selected" : ""
+              }`}
               onClick={() => onTagClick && onTagClick(tag)}
             >
               {tag}
@@ -64,7 +66,12 @@ const TagsSection = ({ popularTags, onTagClick, selectedTags }) => {
   );
 };
 
-const FilterSection = ({ onTagSelect, onSearch, currentSearchQuery = "", activeFilters = [] }) => {
+const FilterSection = ({
+  onTagSelect,
+  onSearch,
+  currentSearchQuery = "",
+  activeFilters = [],
+}) => {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
   const [popularTags, setPopularTags] = useState([]);
@@ -87,28 +94,28 @@ const FilterSection = ({ onTagSelect, onSearch, currentSearchQuery = "", activeF
   // We can keep the handleSearchSubmit for Enter key presses,
   // but it's not strictly necessary since search happens in real-time now
   const handleSearchSubmit = (e) => {
-    if (e.key === 'Enter' && onSearch) {
+    if (e.key === "Enter" && onSearch) {
       onSearch(searchInput);
     }
   };
 
   useEffect(() => {
-    setSelectedTags(activeFilters);
-  }, [activeFilters]);
-
+    // Only update selectedTags if activeFilters has changed
+    if (JSON.stringify(selectedTags) !== JSON.stringify(activeFilters)) {
+      setSelectedTags(activeFilters);
+    }
+  }, [activeFilters, selectedTags]);
   useEffect(() => {
     const fetchPopularTags = async () => {
       try {
-        const { data, error } = await supabase
-          .from("listings")
-          .select("tags");
+        const { data, error } = await supabase.from("listings").select("tags");
         if (error) {
           console.error("Error fetching tags:", error);
           return;
         }
 
         if (data && data.length > 0) {
-          const allTags = data.flatMap(listing => listing.tags || []);
+          const allTags = data.flatMap((listing) => listing.tags || []);
           const uniqueTags = [...new Set(allTags)];
           setPopularTags(uniqueTags.slice(0, 10));
         } else {
@@ -134,11 +141,15 @@ const FilterSection = ({ onTagSelect, onSearch, currentSearchQuery = "", activeF
   };
 
   const handleCreateListing = async (data) => {
-    const { title, description, location, price, condition, picture, tags } = data;
+    const { title, description, location, price, condition, picture, tags } =
+      data;
 
     let processedTags = [];
     if (tags) {
-      processedTags = tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+      processedTags = tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag !== "");
     }
 
     let pictureUrl = null;
@@ -171,7 +182,7 @@ const FilterSection = ({ onTagSelect, onSearch, currentSearchQuery = "", activeF
           location,
           listing_price: price,
           condition,
-          tags: processedTags
+          tags: processedTags,
         },
       ])
       .single();
@@ -199,7 +210,13 @@ const FilterSection = ({ onTagSelect, onSearch, currentSearchQuery = "", activeF
     },
     {
       title: "Collectibles",
-      items: ["Figures", "Posters", "Stickers", "Art Books", "Limited Editions"],
+      items: [
+        "Figures",
+        "Posters",
+        "Stickers",
+        "Art Books",
+        "Limited Editions",
+      ],
     },
     {
       title: "Advanced Filter",
@@ -248,7 +265,12 @@ const FilterSection = ({ onTagSelect, onSearch, currentSearchQuery = "", activeF
           { label: "Location", type: "text", name: "location" },
           { label: "Price", type: "number", name: "price" },
           { label: "Condition", type: "text", name: "condition" },
-          { label: "Tags (comma separated)", type: "text", name: "tags", placeholder: "electronics, gaming, used" },
+          {
+            label: "Tags (comma separated)",
+            type: "text",
+            name: "tags",
+            placeholder: "electronics, gaming, used",
+          },
           { label: "Picture", type: "file", name: "picture" },
         ]}
         onSubmit={handleCreateListing}
