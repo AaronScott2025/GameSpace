@@ -8,6 +8,8 @@ const EventDetailPage = () => {
   const { eventId } = useParams();
   const [isRSVPOpen, setIsRSVPOpen] = useState(false);
   const [eventData, setEventData] = useState(null);
+  const [guestList, setGuestList] = useState([]);
+  const [showGuestModal, setShowGuestModal] = useState(false);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -31,6 +33,45 @@ const EventDetailPage = () => {
     setIsRSVPOpen(!isRSVPOpen);
   };
 
+  const fetchGuestList = async () => {
+    const { data, error } = await supabase
+      .from("rsvps")
+      .select("username, email")
+      .eq("event_id", eventId);
+
+    if (error) {
+      console.error("Error fetching guest list:", error);
+    } else {
+      setGuestList(data);
+      setShowGuestModal(true);
+    }
+  };
+
+  const handleRSVPSubmit = async (e) => {
+    e.preventDefault();
+    const name = e.target.name.value.trim();
+    const email = e.target.email.value.trim();
+
+    if (!name || !email) {
+      alert("Please provide both your name and email.");
+      return;
+    }
+
+    const { error } = await supabase.from("rsvps").insert({
+      event_id: eventData.event_id,
+      username: name,
+      email: email,
+    });
+
+    if (error) {
+      console.error("RSVP failed:", error.message);
+      alert("RSVP submission failed. Please try again later.");
+    } else {
+      alert("RSVP submitted successfully!");
+      setIsRSVPOpen(false);
+    }
+  };
+
   if (!eventData) return <div>Loading event details...</div>;
 
   return (
@@ -47,6 +88,9 @@ const EventDetailPage = () => {
               ? "Online"
               : `${eventData.street_address}, ${eventData.location_city}, ${eventData.location_state}, ${eventData.location_country}`}
           </div>
+          <button onClick={fetchGuestList} className="guest-list-button">
+            View Guest List
+          </button>
         </div>
 
         <div className="event-image-container">
@@ -55,10 +99,9 @@ const EventDetailPage = () => {
         </div>
       </div>
 
-      {/* Interactive Map */}
       <div className="event-map-container">
         {eventData.is_online ? (
-        <img src="/online_event.jpg" alt="online" className="online" />
+          <img src="/online_event.jpg" alt="online" className="online" />
         ) : (
           <GoogleEventMap
             address={`${eventData.street_address}, ${eventData.location_city}, ${eventData.location_state}, ${eventData.location_country}`}
@@ -66,19 +109,38 @@ const EventDetailPage = () => {
         )}
       </div>
 
-      {/* RSVP Modal */}
       {isRSVPOpen && (
         <div className="rsvp-modal">
           <div className="rsvp-modal-content">
             <button onClick={toggleRSVP} className="rsvp-close-button">×</button>
             <h2>RSVP for Event</h2>
-            <form>
+            <form onSubmit={handleRSVPSubmit}>
               <label>Name:</label>
-              <input type="text" placeholder="Your Name" required />
+              <input type="text" name="name" placeholder="Your Name" required />
               <label>Email:</label>
-              <input type="email" placeholder="Your Email" required />
+              <input type="email" name="email" placeholder="Your Email" required />
               <button type="submit" className="rsvp-submit-button">Submit</button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showGuestModal && (
+        <div className="rsvp-modal">
+          <div className="rsvp-modal-content">
+            <button onClick={() => setShowGuestModal(false)} className="rsvp-close-button">×</button>
+            <h2>Guest List</h2>
+            {guestList.length > 0 ? (
+              <ul>
+                {guestList.map((guest, idx) => (
+                  <li key={idx}>
+                    <strong>{guest.username}</strong> ({guest.email})
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No guests have RSVP’d yet.</p>
+            )}
           </div>
         </div>
       )}
@@ -89,7 +151,7 @@ const EventDetailPage = () => {
 const GoogleEventMap = ({ address }) => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_API_KEY,
-    libraries: ['places'],
+    libraries: ["places"],
   });
 
   const [location, setLocation] = useState(null);
