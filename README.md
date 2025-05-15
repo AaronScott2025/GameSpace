@@ -5,11 +5,19 @@ https://docs.google.com/document/d/1GVYy_ugEEEXSTECDWvKZdvpSaumvHdlYjlTiTfo8qJQ/
 
 **Team Members:**
 
-- Aaron Scott — Project Manager | Full Stack Developer
-- Kevin Paiz Ramos — Full Stack Developer
-- Alec Muczynski — Frontend Developer
-- Prajwol Shrestha — Frontend Developer
-- Robert Biersach — Frontend Developer
+- ![GitHub](https://img.icons8.com/ios-glyphs/16/github.png) [Aaron Scott](https://github.com/AaronScott2025) — Project Manager | Full Stack Developer  
+  [![LinkedIn](https://img.icons8.com/ios-filled/16/linkedin.png)](https://linkedin.com/in/aaron-scott-1042252a0/) [![Website](https://img.icons8.com/ios-glyphs/16/domain.png)](aaronscott2025.github.io)
+
+- ![GitHub](https://img.icons8.com/ios-glyphs/16/github.png) [Kevin Paiz Ramos](https://github.com/KevinPaizRamos) — Full Stack Developer  
+  [![LinkedIn](https://img.icons8.com/ios-filled/16/linkedin.png)](www.linkedin.com/in/kevinpaiz) [![Website](https://img.icons8.com/ios-glyphs/16/domain.png)](https://kevin-paiz.vercel.app/)
+
+- ![GitHub](https://img.icons8.com/ios-glyphs/16/github.png) [Alec Muczynski](https://github.com/alecmucz) — Frontend Developer  
+  [![LinkedIn](https://img.icons8.com/ios-filled/16/linkedin.png)](https://linkedin.com/in/alec-muczynski) [![Website](https://img.icons8.com/ios-glyphs/16/domain.png)](alecmucz.github.io)
+
+- ![GitHub](https://img.icons8.com/ios-glyphs/16/github.png) [Prajwol Shrestha](https://github.com/Praj003) — Frontend Developer  
+  [![LinkedIn](https://img.icons8.com/ios-filled/16/linkedin.png)](https://www.linkedin.com/in/prajwol-shrestha-30aa6025b/)
+- ![GitHub](https://img.icons8.com/ios-glyphs/16/github.png) [Robert Biersach](https://github.com/RBiersach) — Frontend Developer  
+  [![LinkedIn](https://img.icons8.com/ios-filled/16/linkedin.png)](https://www.linkedin.com/in/robert-biersach-4a48a8339/)
 
 # Overview
 
