@@ -5,8 +5,7 @@ https://docs.google.com/document/d/1GVYy_ugEEEXSTECDWvKZdvpSaumvHdlYjlTiTfo8qJQ/
 
 **Team Members:**
 
-- [Aaron Scott](https://github.com/AaronScott2025) — Project Manager | Full Stack Developer  
-  [![LinkedIn](https://img.icons8.com/color/20/linkedin.png)](https://linkedin.com/in/aaron-scott-1042252a0/) [![Website](https://img.icons8.com/color/20/domain.png)](https://aaronscott2025.github.io)
+- [Aaron Scott](https://github.com/AaronScott2025) — Project Manager | Full Stack Developer | [![LinkedIn](https://img.icons8.com/color/20/linkedin.png)](https://linkedin.com/in/aaron-scott-1042252a0/)[![Website](https://img.icons8.com/color/20/domain.png)](https://aaronscott2025.github.io)
 
 - [Kevin Paiz Ramos](https://github.com/KevinPaizRamos) — Full Stack Developer  
   [![LinkedIn](https://img.icons8.com/color/20/linkedin.png)](https://www.linkedin.com/in/kevinpaiz) [![Website](https://img.icons8.com/color/20/domain.png)](https://kevin-paiz.vercel.app/)
