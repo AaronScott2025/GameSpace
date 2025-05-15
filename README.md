@@ -15,10 +15,10 @@ https://docs.google.com/document/d/1GVYy_ugEEEXSTECDWvKZdvpSaumvHdlYjlTiTfo8qJQ/
   [![LinkedIn](https://img.icons8.com/color/20/linkedin.png)](https://linkedin.com/in/alec-muczynski) [![Website](https://img.icons8.com/color/20/domain.png)](https://alecmucz.github.io)
 
 - [Prajwol Shrestha](https://github.com/Praj003) — Frontend Developer  
-  [![LinkedIn](https://img.icons8.com/color/20/linkedin.png)](https://www.linkedin.com/in/prajwol-shrestha-30aa6025b/) [![Website](https://img.icons8.com/color/20/domain.png)](https://prajwolshrestha.dev)
+  [![LinkedIn](https://img.icons8.com/color/20/linkedin.png)](https://www.linkedin.com/in/prajwol-shrestha-30aa6025b/)
 
 - [Robert Biersach](https://github.com/RBiersach) — Frontend Developer  
-  [![LinkedIn](https://img.icons8.com/color/20/linkedin.png)](https://www.linkedin.com/in/robert-biersach-4a48a8339/) [![Website](https://img.icons8.com/color/20/domain.png)](https://robertbiersach.dev)
+  [![LinkedIn](https://img.icons8.com/color/20/linkedin.png)](https://www.linkedin.com/in/robert-biersach-4a48a8339/)
 
 # Overview
 
